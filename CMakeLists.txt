@@ -34,6 +34,8 @@ if (NOT UPPERCASE_CMAKE_BUILD_TYPE MATCHES "^(DEBUG|RELEASE)$")
   message(FATAL_ERROR "Invalid value for CMAKE_BUILD_TYPE: ${CMAKE_BUILD_TYPE}")
 endif()
 
+set_source_files_properties(src/predicates.cpp PROPERTIES COMPILE_FLAGS "-Wno-float-equal -Wno-missing-declarations")
+
 add_executable(fpg
                   src/eventQueue.cpp
                   src/initialPolygonGenerator.cpp
