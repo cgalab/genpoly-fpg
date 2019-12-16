@@ -537,9 +537,10 @@ void Vertex::write(FILE * const f, double factor) const{
 		text = -1;
 	else
 		text = getPID();*/
-	text = id;
-
-	fprintf(f, "<node positionX=\"%f\" positionY=\"%f\" id=\"%llu\" mainText=\"%llu\"></node>\n", x * factor, y * factor, id, text);
+	fprintf(f, "<node id=\"%llu\">"
+	           "<data key=\"x\">%.16f</data>"
+	           "<data key=\"y\">%.16f</data>"
+	           "</node>\n", id, x * factor, y * factor, id);
 }
 
 /*

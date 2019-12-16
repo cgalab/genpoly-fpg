@@ -330,34 +330,28 @@ void Triangulation::writePolygon(const char *filename) const{
 
 	// Print the graphml header
 	fprintf(f, "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
-	fprintf(f, "<graphml>\n");
-	fprintf(f, "<graph id=\"Graph\" edgeDefault=\"undirected\">\n");
+	fprintf(f, "<graphml xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns=\"http://graphml.graphdrawing.org/xmlns\" xsi:schemaLocation=\"http://graphml.graphdrawing.org/xmlns http://graphml.graphdrawing.org/xmlns/1.0/graphml.xsd\">\n"
+	           "  <key attr.name=\"vertex-coordinate-x\" attr.type=\"string\" for=\"node\" id=\"x\"/>\n"
+	           "  <key attr.name=\"vertex-coordinate-y\" attr.type=\"string\" for=\"node\" id=\"y\"/>\n"
+	           "  <key attr.name=\"edge-weight\" attr.type=\"string\" for=\"edge\" id=\"w\">\n"
+	           "    <default>1.0</default>\n"
+	           "  </key>\n"
+	           "  <key attr.name=\"edge-weight-additive\" attr.type=\"string\" for=\"edge\" id=\"wa\">\n"
+	           "    <default>0.0</default>\n"
+	           "  </key>\n"
+	           "  <graph edgedefault=\"undirected\">\n");
 
 	// Print all polygon nodes
-	fprintf(f, "<nodes>\n");
 	for(auto const& i : vertices){
-		if(i != NULL && !(*i).isRectangleVertex())
-			(*i).write(f, scale);
+		(*i).write(f, scale);
 	}
-	fprintf(f, "</nodes>\n");
 
 	// Print all polygon edges
-	fprintf(f, "<edges>\n");
-
-	// Print first edge
-	start = vertices[0];
-	e = (*start).getToNext();
-	(*e).write(f);
-	v = (*start).getNext();
-
-	// Add all others till the start vertex is reached again
-	while((*v).getID() != (*start).getID()){
+	for(auto const& v : vertices){
 		e = (*v).getToNext();
 		(*e).write(f);
-		v = (*v).getNext();
 	}
 
-	fprintf(f, "</edges>\n");
 
 	fprintf(f, "</graph>\n");
 	fprintf(f, "</graphml>\n");

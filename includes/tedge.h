@@ -303,10 +303,6 @@ public:
 
 	/*
 		The function write() writes the edge to a .graphml file.
-		Edges of type POLYGON get the weight 5 plus the number of assigned triangles, of type
-		FRAME gets the weight 10 plus the number of assigned triangles and edges oftype
-		triangulation get as weight the number of assigned triangles (2 for a correct
-		triangulation).
 
 		@param 	f 	Pointer to the file to print in
 	*/
