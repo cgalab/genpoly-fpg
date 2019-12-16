@@ -301,6 +301,13 @@ public:
 	*/
 	void writePolygonToDat(const char *filename) const;
 
+	/*
+		The function writePolygonToLine() writes all polygons to a .line file
+
+		@param 	filename 	The name of the .dat file
+	*/
+	void writePolygonToLine(const char *filename) const;
+
 
 	/*
 		O ~ T ~ H ~ E ~ R ~ S

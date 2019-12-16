@@ -17,6 +17,8 @@
 
 #include "tpolygon.h"
 
+#include <cassert>
+
 /*
 	S ~ T ~ A ~ T ~ I ~ C 	V ~ A ~ R ~ I ~ A ~ B ~ L ~ E ~ S
 */
@@ -125,4 +127,26 @@ Vertex *TPolygon::removeVertex(const int i){
 	vertices.erase(vertices.begin() + i);
 
 	return v;
+}
+
+
+/*
+	Write this polygon to os in line format.
+	@param  os      Output stream
+*/
+void TPolygon::writeToLine(std::ostream& os) const {
+	unsigned cnt = 0;
+	unsigned num_v = vertices.size() + 1;
+	os << num_v << std::endl;
+	const Vertex * const start = getVertex(0);
+	const Vertex * other = start;
+	do {
+		os << other->getX() << " " << other->getY() << std::endl;
+		++cnt;
+		other = other->getNext();
+	} while (other != start);
+	os << other->getX() << " " << other->getY() << std::endl;
+	++cnt;
+	assert(cnt == num_v);
+	os << std::endl;
 }

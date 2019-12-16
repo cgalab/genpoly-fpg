@@ -72,6 +72,7 @@ FeedbackMode Settings::feedback = FeedbackMode::EXECUTION;
 bool Settings::executionInfo = true;
 bool Settings::correctionInfo = false;
 bool Settings::mute = false;
+OutputFormat Settings::outputFormat = OutputFormat::DAT;
 bool Settings::simplicityCheck = false;
 char* Settings::polygonFile = (char*)"polygon.dat";
 bool Settings::triangulationOutputRequired = false;
@@ -148,6 +149,23 @@ void Settings::readConfigFile(char *filename){
         		exit(13);
         	}
         	Settings::polygonFile = token;
+        }else if(!strcmp(token, "OUTPUTFORMAT")){
+        	if(!(token = strtok(0, delimiters))){
+        		printf("OutputFormat: missing argument!\n");
+        		exit(13);
+        	}
+        	for (i = 0; i < strlen(token); i++)
+        		token[i] = (char) toupper(token[i]);
+        	if (!strcmp(token, "DAT")) {
+        		Settings::outputFormat = OutputFormat::DAT;
+        	} else if (!strcmp(token, "LINE")) {
+        		Settings::outputFormat = OutputFormat::LINE;
+        	} else if (!strcmp(token, "GRAPHML")) {
+        		Settings::outputFormat = OutputFormat::GRAPHML;
+        	} else {
+        		printf("OutputFormat: unknown format %s!\n", token);
+        		exit(13);
+        	}
         }else if(!strcmp(token, "TRIANGULATIONFILE")){
         	if(!(token = strtok(0, delimiters))){
         		printf("TriangulationFile: missing argument!\n");
@@ -241,6 +259,11 @@ void Settings::printSettings(){
 
 	printf("Output settings:\n");
 	printf("Polygon file: %s\n", polygonFile);
+	switch (outputFormat) {
+		case OutputFormat::DAT: printf("outputFormat: dat\n"); break;
+		case OutputFormat::LINE: printf("outputFormat: line\n"); break;
+		case OutputFormat::GRAPHML: printf("outputFormat: graphml\n"); break;
+	}
 	if(triangulationOutputRequired)
 		printf("Triangulation file: %s\n", triangulationFile);
 	if(statisticsFile != NULL)
@@ -530,6 +553,13 @@ void Settings::printDummyFile(){
 	fprintf(f, "# Specifies the output file for the polygon (optional; default: polygon.dat)     #\n");
 	fprintf(f, "##################################################################################\n");
 	fprintf(f, "PolygonFile = \"poly.dat\"\n");
+
+	fprintf(f, "\n\n");
+
+	fprintf(f, "##################################################################################\n");
+	fprintf(f, "# Specifies the output format for the polygon (dat, line, graphml)               #\n");
+	fprintf(f, "##################################################################################\n");
+	fprintf(f, "OutputFormat = \"dat\"\n");
 
 	fprintf(f, "\n");
 

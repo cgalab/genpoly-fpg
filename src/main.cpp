@@ -79,8 +79,11 @@ int main(int argc, char *argv[]){
 	else
 		strategyWithHoles0(T);
 
-	(*T).writePolygonToDat(Settings::polygonFile);
-	(*T).writePolygon("polygon.graphml");
+	switch (Settings::outputFormat) {
+		case OutputFormat::DAT: (*T).writePolygonToDat(Settings::polygonFile); break;
+		case OutputFormat::LINE: (*T).writePolygonToLine(Settings::polygonFile); break;
+		case OutputFormat::GRAPHML: (*T).writePolygon(Settings::polygonFile); break;
+	};
 
 	if(Settings::triangulationOutputRequired)
 		(*T).writeTriangulation(Settings::triangulationFile);

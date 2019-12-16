@@ -17,6 +17,7 @@
 
 #include "triangulation.h"
 
+#include <fstream>
 /*
 	C ~ O ~ N ~ S ~ T ~ R ~ U ~ C ~ T ~ O ~ R ~ S
 */
@@ -417,6 +418,26 @@ void Triangulation::writePolygonToDat(const char *filename) const{
 
 	if(Settings::executionInfo)
 		printf("successful\n");
+}
+
+
+/*
+	The function writePolygonToLine() writes all polygons to a .line file
+
+	@param 	filename 	The name of the .dat file
+*/
+void Triangulation::writePolygonToLine(const char *filename) const {
+	std::ofstream os(filename);
+	if (!os) {
+		std::cerr << "Opening " << filename << " failed: " << strerror(errno) << std::endl;
+		exit(13);
+	}
+
+	os.precision(16);
+	outerPolygon->writeToLine(os);
+	for(auto const& i : innerPolygons){
+		i->writeToLine(os);
+	};
 }
 
 

@@ -31,6 +31,8 @@
 enum class FeedbackMode {LACONIC, EXECUTION, VERBOSE};
 enum class Arithmetics {EXACT, DOUBLE};
 
+enum class OutputFormat {DAT, LINE, GRAPHML};
+
 class Settings{
 
 public:
@@ -154,6 +156,9 @@ public:
 
 	// Filename for polygon output file
 	static char *polygonFile;
+
+	// Output format for polygon file
+	static OutputFormat outputFormat;
 
 	// A flag whether the triangulation is required
 	static bool triangulationOutputRequired;

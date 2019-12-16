@@ -19,6 +19,7 @@
 	Include standard libraries
 */
 #include <vector>
+#include <ostream>
 
 
 /*
@@ -129,6 +130,12 @@ public:
 		@return 	The vertex to be removed
 	*/
 	Vertex *removeVertex(const int i);
+
+	/*
+		Write this polygon to os in line format.
+		@param  os      Output stream
+	*/
+	void writeToLine(std::ostream& os) const;
 };
 
 #endif
