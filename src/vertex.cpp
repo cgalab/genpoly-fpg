@@ -540,7 +540,7 @@ void Vertex::write(FILE * const f, double factor) const{
 	fprintf(f, "<node id=\"%llu\">"
 	           "<data key=\"x\">%.16f</data>"
 	           "<data key=\"y\">%.16f</data>"
-	           "</node>\n", id, x * factor, y * factor, id);
+	           "</node>\n", id, x * factor, y * factor);
 }
 
 /*
