@@ -23,7 +23,7 @@
 unsigned int Settings::nrInnerPolygons = 0;
 int Settings::outerSize = 0;
 std::vector<int> Settings::innerSizes;
-
+const std::string Settings::dummyFileName = "dummy.fpg";
 
 /*
 	Initial polygon
@@ -465,7 +465,13 @@ void Settings::readHoleSizes(bool &found){
 void Settings::printDummyFile(){
 	FILE *f;
 
-	f = fopen("dummy.fpg", "w");
+	f = fopen(dummyFileName.c_str(), "a+");
+	fseek(f,0,SEEK_END);
+	if(ftell(f) > 0 ) {
+		std::cout << "file " << dummyFileName << " already exists." << std::endl;
+		fclose(f);
+		return;
+	}
 
 	fprintf(f, "##################################################################################\n");
 	fprintf(f, "# This is an example configuration file for FPG                                  #\n");
@@ -602,4 +608,6 @@ void Settings::printDummyFile(){
 	fprintf(f, "NumericalCorrectionInfo = true\n");
 
 	fclose(f);
+
+	printf("Printed a dummy config file named %s\n",dummyFileName.c_str());
 }

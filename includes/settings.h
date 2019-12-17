@@ -204,6 +204,8 @@ public:
 
 	// Enable simplicity check
 	static bool simplicityCheck;
+
+	static const std::string dummyFileName;
 };
 
 #endif
