@@ -2,6 +2,8 @@ cmake_minimum_required (VERSION 3.10)
 project (fpg)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
+set(ENABLE_CLI "using command line parser instead of config file" OFF) # should be enabled per default in the future
+
 set( CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -Wall" )
 
 set( CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -W -Wfloat-equal -Wundef -Wpointer-arith" )
@@ -35,6 +37,10 @@ if (NOT UPPERCASE_CMAKE_BUILD_TYPE MATCHES "^(DEBUG|RELEASE)$")
 endif()
 
 set_source_files_properties(src/predicates.cpp PROPERTIES COMPILE_FLAGS "-Wno-float-equal -Wno-missing-declarations")
+
+if( ENABLE_CLI )
+	add_definitions(-DENABLE_CLI)
+endif()
 
 add_executable(fpg
                   src/eventQueue.cpp
