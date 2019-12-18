@@ -24,7 +24,9 @@
 #include "polygonTransformer.h"
 #include "settings.h"
 #include "statistics.h"
-
+#ifdef ENABLE_CLI
+#include "argparse.h"
+#endif
 /*
 list of exit codes:
 code 	name						meaning
@@ -51,6 +53,10 @@ code 	name						meaning
 int main(int argc, char *argv[]){
 	Triangulation* T;
 
+#ifdef ENABLE_CLI
+	Parser parse(argc,argv);
+	Settings::checkAndApplySettings();
+#else
 	if(argc != 2){
 		printf("Usage: fpg <CONFIG FILE>\n");
 		Settings::printDummyFile();
@@ -62,7 +68,7 @@ int main(int argc, char *argv[]){
 		if(!Settings::mute)
 			Settings::printSettings();
 	}
-
+#endif
 	T = generateRegularPolygon();
 
 	(*T).check();
