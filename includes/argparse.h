@@ -35,7 +35,7 @@ static struct option long_options[] = {
 		{ "numericalcorrectioninfo" , no_argument,  0, 'c'},
 		{ "disablelocalchecks"      , no_argument,  0, 'l'},
 		{ "enableglobalchecks"      , no_argument,  0, 'g'},
-		{ "notcompletemute"    , no_argument,       0, 'm'},
+		{ "verbose"                 , no_argument,  0, 'v'},
 		{ 0, 0, 0, 0}
 };
 
@@ -46,7 +46,7 @@ static struct option long_options[] = {
 
 	fprintf(f,"Usage: %s [options] <OUTPUT>\n", progname);
 	fprintf(f,"  options: --nrofholes <num>          state number of holes (default: 0).\n");
-	fprintf(f,"           --polygonsize <num>        polygon size (default 100).\n");
+	fprintf(f,"           --polygonsize <num>        polygon size (default 20).\n");
 	fprintf(f,"           --startsize <num>          polygon start-size, initial-size (default 10).\n");
 	fprintf(f,"           --seed <num>               seed for rnd (default random).\n");
 	fprintf(f,"           --fixedseed                set seed as fixed ?\n");
@@ -58,7 +58,7 @@ static struct option long_options[] = {
 	fprintf(f,"           --numericalcorrectioninfo  (default off).\n");
 	fprintf(f,"           --disablelocalchecks       (default on).\n");
 	fprintf(f,"           --enableglobalchecks       (default off).\n");
-	fprintf(f,"           --notcompletemute          (default on).\n");
+	fprintf(f,"           --verbose                  (default off).\n");
 	fprintf(f,"\n");
 	fprintf(f,"  holesizes example:  --holesizes 3,6,7\n");
 	exit(err);
@@ -169,7 +169,7 @@ private:
 				globalChecking = true;
 				break;
 			}
-			case 'm': {
+			case 'v': {
 				mute = false;
 				break;
 			}
@@ -193,7 +193,6 @@ private:
 			}
 		}
 
-		std::cout << "hmm..3 " << polygonFile << std::endl;
 		if(nrInnerPolygons == 0 && innerSizes.size() > 0) {nrInnerPolygons = innerSizes.size();}
 		if(nrInnerPolygons > 0) {
 			if(innerSizes.size() > nrInnerPolygons) {innerSizes.resize(nrInnerPolygons);}
@@ -204,7 +203,7 @@ private:
 			}
 		}
 
-		if(outerSize == 0)   {outerSize = 100;}
+		if(outerSize == 0)   {outerSize = 20;}
 		if(initialSize == 0) {initialSize = 10;}
 	}
 };
