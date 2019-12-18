@@ -24,10 +24,8 @@ static const char* short_options = "hc:v::S:D";
 static struct option long_options[] = {
 		{ "help"               , no_argument      , 0, 'h'},
 		{ "nrofholes"          , required_argument, 0, 'n'},
-		{ "polygonsize"        , required_argument, 0, 'p'},
 		{ "startsize"          , required_argument, 0, 'i'},
 		{ "seed"               , required_argument, 0, 's'},
-		{ "fixedseed"          , no_argument,       0, 'f'},
 		{ "arithmetic"         , no_argument,       0, 'a'},
 		{ "holesizes"          , required_argument, 0, 'h'},
 		{ "outputformat"       , required_argument, 0, 'o'},
@@ -44,19 +42,17 @@ static struct option long_options[] = {
  usage(const char *progname, int err) {
 	FILE *f = err ? stderr : stdout;
 
-	fprintf(f,"Usage: %s [options] <OUTPUT>\n", progname);
+	fprintf(f,"Usage: %s [options] <nr. of vertices> <output-file>\n", progname);
 	fprintf(f,"  options: --nrofholes <num>          state number of holes (default: 0).\n");
-	fprintf(f,"           --polygonsize <num>        polygon size (default 20).\n");
 	fprintf(f,"           --startsize <num>          polygon start-size, initial-size (default 10).\n");
 	fprintf(f,"           --seed <num>               seed for rnd (default random).\n");
-	fprintf(f,"           --fixedseed                set seed as fixed ?\n");
 	fprintf(f,"           --arithmetic               enable 'exact' arithmetic? (default off).\n");
 	fprintf(f,"           --holesizes <a,b,c,...>    define hole sizes.\n");
 	fprintf(f,"           --outputformat <format>    dat, line, or graphml (default graphml).\n");
 
-	fprintf(f,"           --noexecutioninfo          (default on).\n");
+	fprintf(f,"           --noexecutioninfo          \n");
 	fprintf(f,"           --numericalcorrectioninfo  (default off).\n");
-	fprintf(f,"           --disablelocalchecks       (default on).\n");
+	fprintf(f,"           --disablelocalchecks       \n");
 	fprintf(f,"           --enableglobalchecks       (default off).\n");
 	fprintf(f,"           --verbose                  (default off).\n");
 	fprintf(f,"\n");
@@ -102,14 +98,6 @@ private:
 				}
 				break;
 			}
-			case 'p': {
-				outerSize = (unsigned int)strtoul(optarg,&end_ptr,10);
-				if (*end_ptr != '\0' || outerSize == 0) {
-					std::cerr << "Invalid outerSize " << optarg << "." << std::endl;
-					exit(1);
-				}
-				break;
-			}
 			case 'i': {
 				initialSize = (unsigned int)strtoul(optarg,&end_ptr,10);
 				if (*end_ptr != '\0' || initialSize == 0) {
@@ -119,15 +107,12 @@ private:
 				break;
 			}
 			case 's': {
+				fixedSeed = true;
 				seed = (unsigned int)strtoul(optarg,&end_ptr,10);
 				if (*end_ptr != '\0') {
 					std::cerr << "Invalid seed " << optarg << "." << std::endl;
 					exit(1);
 				}
-				break;
-			}
-			case 'f': {
-				fixedSeed = true;
 				break;
 			}
 			case 'a': {
@@ -182,14 +167,20 @@ private:
 		} /* end while */
 
 
-		if (argc - optind > 1) {
+		if (argc - optind > 2 || argc < 2) {
 			usage(argv[0], 1);
 		}
 
+		/* get polygon size */
 		if (argc - optind >= 1) {
-			std::string fn(argv[optind]);
+			outerSize = std::stol(argv[optind]);
+		}
+
+		/* get output file */
+		if (argc - optind >= 2) {
+			std::string fn(argv[optind+1]);
 			if (fn != "-") {
-				polygonFile = argv[optind];
+				polygonFile = argv[optind+1];
 			}
 		}
 
