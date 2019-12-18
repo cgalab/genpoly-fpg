@@ -74,7 +74,7 @@ class Timer{
 
          elapsed = elapsedTime();
 
-         printf("%f", elapsed);
+         fprintf(stderr, "%f", elapsed);
       }
 
 };
