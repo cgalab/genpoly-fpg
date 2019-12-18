@@ -54,7 +54,7 @@ int main(int argc, char *argv[]){
 	Triangulation* T;
 
 #ifdef ENABLE_CLI
-	Parser parse(argc,argv);
+	Parser parse(argc, argv);
 	Settings::checkAndApplySettings();
 #else
 	if(argc != 2){
@@ -63,12 +63,13 @@ int main(int argc, char *argv[]){
 		exit(14);
 	}else{
 		Settings::readConfigFile(argv[1]);
-		Settings::checkAndApplySettings();
-		
-		if(!Settings::mute)
-			Settings::printSettings();
+		Settings::checkAndApplySettings();	
 	}
 #endif
+
+	if(!Settings::mute)
+			Settings::printSettings();
+
 	T = generateRegularPolygon();
 
 	(*T).check();

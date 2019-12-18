@@ -33,7 +33,7 @@ static struct option long_options[] = {
 		{ "outputformat"       , required_argument, 0, 'o'},
 		{ "noexecutioninfo"    , no_argument,       0, 'e'},
 		{ "numericalcorrectioninfo" , no_argument,  0, 'c'},
-		{ "enablelocalchecks"       , no_argument,  0, 'l'},
+		{ "disablelocalchecks"      , no_argument,  0, 'l'},
 		{ "enableglobalchecks"      , no_argument,  0, 'g'},
 		{ "notcompletemute"    , no_argument,       0, 'm'},
 		{ 0, 0, 0, 0}
@@ -52,11 +52,11 @@ static struct option long_options[] = {
 	fprintf(f,"           --fixedseed                set seed as fixed ?\n");
 	fprintf(f,"           --arithmetic               enable 'exact' arithmetic? (default off).\n");
 	fprintf(f,"           --holesizes <a,b,c,...>    define hole sizes.\n");
-	fprintf(f,"           --outputformat <format>    dat,line, or graphml (default graphml).\n");
+	fprintf(f,"           --outputformat <format>    dat, line, or graphml (default graphml).\n");
 
 	fprintf(f,"           --noexecutioninfo          (default on).\n");
 	fprintf(f,"           --numericalcorrectioninfo  (default off).\n");
-	fprintf(f,"           --enablelocalchecks        (default off).\n");
+	fprintf(f,"           --disablelocalchecks       (default on).\n");
 	fprintf(f,"           --enableglobalchecks       (default off).\n");
 	fprintf(f,"           --notcompletemute          (default on).\n");
 	fprintf(f,"\n");
@@ -162,7 +162,7 @@ private:
 				break;
 			}
 			case 'l': {
-				localChecking = true;
+				localChecking = false;
 				break;
 			}
 			case 'g': {

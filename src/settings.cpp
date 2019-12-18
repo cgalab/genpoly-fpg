@@ -261,9 +261,9 @@ void Settings::printSettings(){
 	printf("Output settings:\n");
 	printf("Polygon file: %s\n", polygonFile);
 	switch (outputFormat) {
-		case OutputFormat::DAT: printf("outputFormat: dat\n"); break;
-		case OutputFormat::LINE: printf("outputFormat: line\n"); break;
-		case OutputFormat::GRAPHML: printf("outputFormat: graphml\n"); break;
+		case OutputFormat::DAT: printf("OutputFormat: dat\n"); break;
+		case OutputFormat::LINE: printf("OutputFormat: line\n"); break;
+		case OutputFormat::GRAPHML: printf("OutputFormat: graphml\n"); break;
 	}
 	if(triangulationOutputRequired)
 		printf("Triangulation file: %s\n", triangulationFile);
