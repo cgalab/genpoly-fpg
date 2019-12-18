@@ -109,14 +109,14 @@ bool Translation::generateInitialQueue(){
 
 			// If the longest edge is a polygon edge, then we have an error here
 			if((*opposite).getEdgeType() == EdgeType::POLYGON){
-				printf("The vertex %llu to be translated lays exactly on a polygon edge :0\n", (*original).getID());
+				fprintf(stderr, "The vertex %llu to be translated lays exactly on a polygon edge :0\n", (*original).getID());
 				exit(7);
 			}
 
 			// Otherwise we can do a flip, but will reject the translation because this flip will
 			// crash the iterator of this loop
 			if(Settings::correctionInfo)
-				printf("Numerical correction: The moving vertex lays exactly on an edge before the translation -> security flip\n");
+				fprintf(stderr, "Numerical correction: The moving vertex lays exactly on an edge before the translation -> security flip\n");
 
 			flip(i, true);
 			return false;
@@ -134,14 +134,14 @@ bool Translation::generateInitialQueue(){
 
 			if(t < 0){
 				if(Settings::correctionInfo)
-					printf("Numerical correction: Collapse time of collapsing triangle was %.20f \n", t);
+					fprintf(stderr, "Numerical correction: Collapse time of collapsing triangle was %.20f \n", t);
 
 				t = 0;
 			}
 
 			if(t > 1){
 				if(Settings::correctionInfo)
-					printf("Numerical correction: Collapse time of collapsing triangle was %.20f \n", t);
+					fprintf(stderr, "Numerical correction: Collapse time of collapsing triangle was %.20f \n", t);
 
 				t = 1;
 			}
@@ -339,7 +339,7 @@ bool Translation::checkEdge(Vertex * const fromV, TEdge * const newE) const{
 	// Multiple intersections -> numerical error
 	}else if(count > 1){
 		if(Settings::correctionInfo)
-			printf("CheckEdge: new edge intersects multiple edges of the surrounding polygon -> translation rejected due to numerical problem\n");
+			fprintf(stderr, "CheckEdge: new edge intersects multiple edges of the surrounding polygon -> translation rejected due to numerical problem\n");
 		
 		return false;
 	}
@@ -375,7 +375,7 @@ bool Translation::checkEdge(Vertex * const fromV, TEdge * const newE) const{
 		// Check for numerical problems
 		if(iType0 != IntersectionType::NONE && iType1 != IntersectionType::NONE){
 			if(Settings::correctionInfo)
-				printf("CheckEdge: new edge intersects multiple edges of the actual triangle -> translation rejected due to numerical problem\n");
+				fprintf(stderr, "CheckEdge: new edge intersects multiple edges of the actual triangle -> translation rejected due to numerical problem\n");
 			
 			return false;
 		}
@@ -428,7 +428,7 @@ void Translation::repairEnd(){
 
 		if(area == 0){
 			if(type == TranslationType::DEFAULT && Settings::correctionInfo){
-				printf("Translation: Triangle area = 0 after translation...");
+				fprintf(stderr, "Translation: Triangle area = 0 after translation...");
 			}
 
 			edge = (*i).getLongestEdgeAlt();
@@ -444,13 +444,13 @@ void Translation::repairEnd(){
 				delete trans;
 
 				if(ex == Executed::REJECTED){
-					printf("\nTriangle area = 0 after translation: PE can not be fliped\n");
+					fprintf(stderr, "\nTriangle area = 0 after translation: PE can not be fliped\n");
 					exit(2);
 				}
 			}
 
 			if(type == TranslationType::DEFAULT && Settings::correctionInfo)
-				printf("corrected! \n");
+				fprintf(stderr, "corrected! \n");
 		}
 	}
 }
@@ -621,8 +621,8 @@ bool Translation::flip(Triangle *t0, const bool singleFlip){
 	// Get the edge which should be flipped
 	e = (*t0).getLongestEdgeAlt();
 	if((*e).getEdgeType() == EdgeType::POLYGON){
-		printf("Flip: polygon edge gets deleted\n");
-		printf("id: %llu index: %d dx: %f dy: %f \n", (*original).getID(), index, dx, dy);
+		fprintf(stderr, "Flip: polygon edge gets deleted\n");
+		fprintf(stderr, "id: %llu index: %d dx: %f dy: %f \n", (*original).getID(), index, dx, dy);
 
 		(*T).check();
 		exit(3);
@@ -955,7 +955,7 @@ bool Translation::undo(){
 	if(!ok){
 
 		if(Settings::correctionInfo)
-			printf("Surrounding polygon check after abortion failed...");
+			fprintf(stderr, "Surrounding polygon check after abortion failed...");
 
 		// Undo all flips
 		while(!FlipStack.empty()){
@@ -988,7 +988,7 @@ bool Translation::undo(){
 		(*original).setPosition((*oldV).getX(), (*oldV).getY());
 
 		if(Settings::correctionInfo)
-			printf("translation undone!\n");
+			fprintf(stderr, "translation undone!\n");
 
 		return true;
 	}
@@ -1296,13 +1296,13 @@ Translation::~Translation(){
 	ok = (*original).checkSurroundingPolygon();
 
 	if(!ok){
-		printf("\nstart position:\n");
+		fprintf(stderr, "\nstart position:\n");
 		(*oldV).print();
-		printf("original position:\n");
+		fprintf(stderr, "original position:\n");
 		(*original).print();
-		printf("target position:\n");
+		fprintf(stderr, "target position:\n");
 		(*newV).print();
-		printf("translation vector: dx = %.20f dy = %.20f \n", dx, dy);
+		fprintf(stderr, "translation vector: dx = %.20f dy = %.20f \n", dx, dy);
 
 		(*T).writeTriangulation("bug.graphml");
 

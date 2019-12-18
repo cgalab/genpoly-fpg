@@ -181,5 +181,5 @@ void Insertion::translate() const{
 	}
 
 	if(Settings::correctionInfo && count == Settings::insertionTries)
-		printf("Warning: Was not able to find a suitable translation after the insertion!\n");
+		fprintf(stderr, "Warning: Was not able to find a suitable translation after the insertion!\n");
 }

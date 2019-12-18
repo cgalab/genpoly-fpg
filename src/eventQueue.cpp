@@ -165,7 +165,7 @@ void EventQueue::stabilizeConvex(struct Event* e0, struct Event* e1, TEdge* comm
 			e1 -> triangle = t0;
 
 			if(Settings::correctionInfo)
-				printf("Numerical correction: Order change for events with time diff: %.20f \n",
+				fprintf(stderr, "Numerical correction: Order change for events with time diff: %.20f \n",
 					fabs(e0 -> collapseTime - e1 -> collapseTime));
 		}
 
@@ -184,7 +184,7 @@ void EventQueue::stabilizeConvex(struct Event* e0, struct Event* e1, TEdge* comm
 			e1 -> triangle = t0;
 
 			if(Settings::correctionInfo)
-				printf("Numerical correction: Order change for events with time diff: %.20f \n",
+				fprintf(stderr, "Numerical correction: Order change for events with time diff: %.20f \n",
 					fabs(e0 -> collapseTime - e1 -> collapseTime));
 		}
 	}
@@ -257,7 +257,7 @@ void EventQueue::stabilizeNonConvex(struct Event *e0, struct Event *e1, TEdge *c
 			e1 -> triangle = t0;
 
 			if(Settings::correctionInfo)
-				printf("Numerical correction: Order change for events with time diff: %.20f \n",
+				fprintf(stderr, "Numerical correction: Order change for events with time diff: %.20f \n",
 					fabs(e0 -> collapseTime - e1 -> collapseTime));
 		}
 
@@ -277,7 +277,7 @@ void EventQueue::stabilizeNonConvex(struct Event *e0, struct Event *e1, TEdge *c
 			e1 -> triangle = t0;
 
 			if(Settings::correctionInfo)
-				printf("Numerical correction: Order change for events with time diff: %.20f \n",
+				fprintf(stderr, "Numerical correction: Order change for events with time diff: %.20f \n",
 					fabs(e0 -> collapseTime - e1 -> collapseTime));
 		}
 	}
@@ -408,18 +408,18 @@ bool EventQueue::makeStable(const bool initial){
 				dif = fabs(time1 - e1 -> next -> collapseTime);
 				if(dif < Settings::epsEventTime){
 					if(initial)
-						printf("Eventqueue: More than two events at the same time -> refused translation\n");
+						fprintf(stderr, "Eventqueue: More than two events at the same time -> refused translation\n");
 					else
-						printf("Eventqueue: More than two events at the same time -> aborted translation\n");
+						fprintf(stderr, "Eventqueue: More than two events at the same time -> aborted translation\n");
 					return false;
 				}
 			}*/
 
 			if(Settings::correctionInfo){
 				if(initial)
-					printf("Eventqueue: Two events at the same time -> refused translation\n");
+					fprintf(stderr, "Eventqueue: Two events at the same time -> refused translation\n");
 				else
-					printf("Eventqueue: Two events at the same time -> aborted translation\n");
+					fprintf(stderr, "Eventqueue: Two events at the same time -> aborted translation\n");
 			}
 			
 			return false;
@@ -503,7 +503,7 @@ void EventQueue::print() const{
 
 	e = first;
 	while(e != NULL){
-		printf("Element nr. %d: time = %f \n", i, e -> collapseTime);
+		fprintf(stderr, "Element nr. %d: time = %f \n", i, e -> collapseTime);
 
 		i++;
 		e = e -> next;

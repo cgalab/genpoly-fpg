@@ -58,18 +58,18 @@ void calculateRadialDistanceDistribution(Triangulation const * const T, const do
 	}
 
 	for(i = 0; i < n_seg; i++)
-		printf("%.4f \t", width * i + width / 2);
+		fprintf(stderr, "%.4f \t", width * i + width / 2);
 
-	printf("\n");
+	fprintf(stderr, "\n");
 
 	for(i = 0; i < n_seg - 1; i++){
 		area = pow((i + 1) * width, 2) * M_PI - pow(i * width, 2) * M_PI;
-		printf("%6.f \t", segments[i] / area);
+		fprintf(stderr, "%6.f \t", segments[i] / area);
 	}
 	area = pow(Settings::boxSize, 2) - area;
-	printf("%6.f \t", segments[n_seg - 1] / area);
+	fprintf(stderr, "%6.f \t", segments[n_seg - 1] / area);
 
-	printf("\n");
+	fprintf(stderr, "\n");
 }
 
 void calculateRadialDistanceDeviation(Triangulation const * const T){
@@ -94,9 +94,9 @@ void calculateRadialDistanceDeviation(Triangulation const * const T){
 
 	sum = sqrt(sum);
 
-	printf("Initial radius: %.3f\n", radius);
-	printf("Box size: %.3f\n", Settings::boxSize);
-	printf("Radial distance deviation: %.3f\n", sum);
+	fprintf(stderr, "Initial radius: %.3f\n", radius);
+	fprintf(stderr, "Box size: %.3f\n", Settings::boxSize);
+	fprintf(stderr, "Radial distance deviation: %.3f\n", sum);
 }
 
 void calculateMaxTwist(Triangulation const * const T){
@@ -106,7 +106,7 @@ void calculateMaxTwist(Triangulation const * const T){
 
 	// Calculate the average inside angle of the polygon
 	average = 180 * (1 - 2.0 / n);
-	printf("Average inside angle: %.3f\n", average);
+	fprintf(stderr, "Average inside angle: %.3f\n", average);
 
 	start = (*T).getVertex(0, 0);
 
@@ -132,8 +132,8 @@ void calculateMaxTwist(Triangulation const * const T){
 		v = (*v).getNext();
 	}
 
-	printf("sum at end: %.3f\n", sum);
-	printf("min: %.3f max: %.3f amplitude: %.3f\n", min, max, fabs(min) + fabs(max));
+	fprintf(stderr, "sum at end: %.3f\n", sum);
+	fprintf(stderr, "min: %.3f max: %.3f amplitude: %.3f\n", min, max, fabs(min) + fabs(max));
 
 }
 
@@ -169,5 +169,5 @@ void countOrientationChanges(Triangulation const * const T){
 		}
 	}while((*v).getID() != (*start).getID());
 
-	printf("Number of orientation changes: %d\n", n);
+	fprintf(stderr, "Number of orientation changes: %d\n", n);
 }

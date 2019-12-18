@@ -395,26 +395,26 @@ void doubleprint(double number)
   exponent = (int) expo;
   exponent = exponent - 1023;
   if (sign) {
-    printf("-");
+    fprintf(stderr, "-");
   } else {
-    printf(" ");
+    fprintf(stderr, " ");
   }
   if (exponent == -1023) {
-    printf(
+    fprintf(stderr, 
       "0.0000000000000000000000000000000000000000000000000000_     (   )");
   } else {
-    printf("1.");
+    fprintf(stderr, "1.");
     bottomi = -1;
     for (i = 0; i < 52; i++) {
       if (no & 0x0008000000000000ll) {
-        printf("1");
+        fprintf(stderr, "1");
         bottomi = i;
       } else {
-        printf("0");
+        fprintf(stderr, "0");
       }
       no <<= 1;
     }
-    printf("_%d  (%d)", exponent, exponent - 1 - bottomi);
+    fprintf(stderr, "_%d  (%d)", exponent, exponent - 1 - bottomi);
   }
 }
 */
@@ -441,25 +441,25 @@ void floatprint(float number)
   exponent = (int) expo;
   exponent = exponent - 127;
   if (sign) {
-    printf("-");
+    fprintf(stderr, "-");
   } else {
-    printf(" ");
+    fprintf(stderr, " ");
   }
   if (exponent == -127) {
-    printf("0.00000000000000000000000_     (   )");
+    fprintf(stderr, "0.00000000000000000000000_     (   )");
   } else {
-    printf("1.");
+    fprintf(stderr, "1.");
     bottomi = -1;
     for (i = 0; i < 23; i++) {
       if (no & 0x00400000) {
-        printf("1");
+        fprintf(stderr, "1");
         bottomi = i;
       } else {
-        printf("0");
+        fprintf(stderr, "0");
       }
       no <<= 1;
     }
-    printf("_%3d  (%3d)", exponent, exponent - 1 - bottomi);
+    fprintf(stderr, "_%3d  (%3d)", exponent, exponent - 1 - bottomi);
   }
 }
 */
@@ -480,9 +480,9 @@ void expansion_print(int elen, double *e)
   for (i = elen - 1; i >= 0; i--) {
     doublePRINT(e[i]);
     if (i > 0) {
-      printf(" +\n");
+      fprintf(stderr, " +\n");
     } else {
-      printf("\n");
+      fprintf(stderr, "\n");
     }
   }
 }

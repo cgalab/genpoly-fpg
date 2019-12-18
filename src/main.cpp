@@ -58,7 +58,7 @@ int main(int argc, char *argv[]){
 	Settings::checkAndApplySettings();
 #else
 	if(argc != 2){
-		printf("Usage: fpg <CONFIG FILE>\n");
+		fprintf(stderr, "Usage: fpg <CONFIG FILE>\n");
 		Settings::printDummyFile();
 		exit(14);
 	}else{
@@ -75,7 +75,7 @@ int main(int argc, char *argv[]){
 	(*T).check();
 
 	if(Settings::executionInfo)
-		printf("Initial polygon with %d vertices in regular shape computed after %f seconds\n",
+		fprintf(stderr, "Initial polygon with %d vertices in regular shape computed after %f seconds\n",
 			Settings::initialSize, (*Settings::timer).elapsedTime());
 
 	if(Settings::nrInnerPolygons == 0)

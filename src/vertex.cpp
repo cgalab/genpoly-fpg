@@ -359,7 +359,7 @@ double Vertex::getDirectedEdgeLength(const double alpha) const{
 		}
 	}
 	
-	printf("was not able to find the triangle for vertex %llu in direction %f, truely zero: \n", id, alpha);
+	fprintf(stderr, "was not able to find the triangle for vertex %llu in direction %f, truely zero: \n", id, alpha);
 	
 	return - getMediumEdgeLength();
 }
@@ -558,7 +558,7 @@ void Vertex::writeToDat(FILE * const f) const{
 	It prints the ID and both coordinates in a precision of 15 decimal digits.
 */
 void Vertex::print() const{
-	printf("Vertex %llu at (%.15f, %.15f)\n", id, x, y);
+	fprintf(stderr, "Vertex %llu at (%.15f, %.15f)\n", id, x, y);
 }
 
 /*
@@ -682,7 +682,7 @@ void Vertex::writeSurroundingTriangulation(const char *filename) const{
 	vertices to stdout.
 */
 void Vertex::printStats(){
-	printf("created: %llu deleted: %llu still existing: %llu \n", n, deleted, n - deleted);
+	fprintf(stderr, "created: %llu deleted: %llu still existing: %llu \n", n, deleted, n - deleted);
 }
 
 
@@ -708,17 +708,17 @@ bool Vertex::check(){
 		}
 
 		if(n != 2){
-			printf("Vertex %llu has %d polygon edges\n", id, n);
+			fprintf(stderr, "Vertex %llu has %d polygon edges\n", id, n);
 			ok = false;
 		}
 
 		if(toPrev == NULL){
-			printf("Edge to previous vertex is missing for vertex %llu \n", id);
+			fprintf(stderr, "Edge to previous vertex is missing for vertex %llu \n", id);
 			ok = false;
 		}
 
 		if(toNext == NULL){
-			printf("Edge to next vertex is missing for vertex %llu \n", id);
+			fprintf(stderr, "Edge to next vertex is missing for vertex %llu \n", id);
 			ok = false;
 		}
 	}
@@ -801,7 +801,7 @@ bool Vertex::checkSurroundingPolygon(){
 	if(area0 == 0){
 		t = getTriangleWith(first, second);
 		e = (*t).getLongestEdgeAlt();
-		printf("surrouding polygon check: area is exactly 0!\n");
+		fprintf(stderr, "surrouding polygon check: area is exactly 0!\n");
 		if((*e).getEdgeType() == EdgeType::POLYGON)
 			exit(10);
 	}
@@ -819,7 +819,7 @@ bool Vertex::checkSurroundingPolygon(){
 		if(area == 0){
 			t = getTriangleWith(first, second);
 			e = (*t).getLongestEdgeAlt();
-			printf("surrouding polygon check: area is exactly 0!\n");
+			fprintf(stderr, "surrouding polygon check: area is exactly 0!\n");
 			if((*e).getEdgeType() == EdgeType::POLYGON)
 				exit(10);
 			else

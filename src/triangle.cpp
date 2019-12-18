@@ -171,7 +171,7 @@ Triangle::Triangle(TEdge *E0, TEdge *E1, TEdge *E2, Vertex *V0, Vertex *V1, Vert
 	// Check whether a triangle with the same edges already exists
 	t = (*e0).getOtherTriangle(this);
 	if(t != NULL && (*t).contains(e1) && (*t).contains(e2)){
-		printf("The same triangle already exists\n");
+		fprintf(stderr, "The same triangle already exists\n");
 		exit(5);
 	}
 
@@ -287,7 +287,7 @@ TEdge *Triangle::getEdgeNotContaining(Vertex const * const v) const{
 	if(!(*e1).contains(v)) return e1;
 	if(!(*e2).contains(v)) return e2;
 
-	printf("error: all edges are containing the vertex %llu \n", (*v).getID());
+	fprintf(stderr, "error: all edges are containing the vertex %llu \n", (*v).getID());
 	return NULL;
 }
 
@@ -305,7 +305,7 @@ TEdge *Triangle::getEdgeContaining(Vertex const * const v) const{
 	if((*e1).contains(v)) return e1;
 	if((*e2).contains(v)) return e2;
 
-	printf("error: none of the edges is containing the vertex %llu \n", (*v).getID());
+	fprintf(stderr, "error: none of the edges is containing the vertex %llu \n", (*v).getID());
 	return NULL;
 }
 
@@ -327,7 +327,7 @@ TEdge *Triangle::getOtherEdgeContaining(Vertex const * const v, TEdge const * co
 	(*e0).print();
 	(*e1).print();
 	(*e2).print();
-	printf("error: no other edge is containing the vertex %llu \n", (*v).getID());
+	fprintf(stderr, "error: no other edge is containing the vertex %llu \n", (*v).getID());
 	return NULL;
 }
 
@@ -448,8 +448,8 @@ TEdge *Triangle::getLongestEdgeAlt() const{
 	if((*e2).isBetween(v))
 		return e2;
 
-	printf("was not able to detect a longest edge by comparison\n");
-	printf("triangle area: %.16f \n", signedArea());
+	fprintf(stderr, "was not able to detect a longest edge by comparison\n");
+	fprintf(stderr, "triangle area: %.16f \n", signedArea());
 	print();
 	(*v0).print();
 	(*v1).print();
@@ -523,7 +523,7 @@ double Triangle::getRange(Vertex const * const v, const double alpha) const{
 	The function print() prints all three vertices of the triangle
 */
 void Triangle::print() const{
-	printf("Triangle %llu:\n", id);
+	fprintf(stderr, "Triangle %llu:\n", id);
 	(*v0).print();
 	(*v1).print();
 	(*v2).print();

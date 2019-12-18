@@ -89,11 +89,11 @@ void Settings::readConfigFile(char *filename){
 	unsigned int i;
 	bool found;
 
-	printf("Read configuration file %s...", filename);
+	fprintf(stderr, "Read configuration file %s...", filename);
 
 	file.open(filename, std::ios::in);
 	if(!file.is_open()){
-		printf("\nCannot open configuration file: \"%s\"\n", filename);
+		fprintf(stderr, "\nCannot open configuration file: \"%s\"\n", filename);
 		exit(100);
 	}
 
@@ -108,51 +108,51 @@ void Settings::readConfigFile(char *filename){
             token[i] = (char) toupper(token[i]);
         if(!strcmp(token, "NROFHOLES")){
         	if(!(token = strtok(0, delimiters)) || !sscanf(token, "%d", &nrInnerPolygons)){
-        		printf("NrOfHoles: expected integer, got \"%s\"!\n", token);
+        		fprintf(stderr, "NrOfHoles: expected integer, got \"%s\"!\n", token);
         		exit(13);
         	}
         }else if(!strcmp(token, "POLYGONSIZE")){
         	if(!(token = strtok(0, delimiters)) || !sscanf(token, "%d", &outerSize)){
-        		printf("PolygonSize: expected integer, got \"%s\"!\n", token);
+        		fprintf(stderr, "PolygonSize: expected integer, got \"%s\"!\n", token);
         		exit(13);
         	}
         }else if(!strcmp(token, "STARTSIZE")){
         	if(!(token = strtok(0, delimiters)) || !sscanf(token, "%d", &initialSize)){
-        		printf("StartSize: expected integer, got \"%s\"!\n", token);
+        		fprintf(stderr, "StartSize: expected integer, got \"%s\"!\n", token);
         		exit(13);
         	}
         }else if(!strcmp(token, "SEED")){
         	if(!(token = strtok(0, delimiters)) || !sscanf(token, "%d", &seed)){
-        		printf("Seed: expected integer, got \"%s\"!\n", token);
+        		fprintf(stderr, "Seed: expected integer, got \"%s\"!\n", token);
         		exit(13);
         	}
         }else if(!strcmp(token, "FIXEDSEED")){
         	fixedSeed = Settings::readBoolean(found);
         	if(!found){
-        		printf("FixedSeed: boolean expected!\n");
+        		fprintf(stderr, "FixedSeed: boolean expected!\n");
         		exit(13);
         	}
         }else if(!strcmp(token, "ARITHMETIC")){
         	arithmetics = Settings::readArithmeticType(found);
         	if(!found){
-        		printf("Arithmetic: \"EXACT\" or \"DOUBLE\" expected!\n");
+        		fprintf(stderr, "Arithmetic: \"EXACT\" or \"DOUBLE\" expected!\n");
         		exit(13);
         	}
         }else if(!strcmp(token, "HOLESIZES")){
         	Settings::readHoleSizes(found);
         	if(!found){
-        		printf("HoleSizes: single integer or list of integers expected!\n");
+        		fprintf(stderr, "HoleSizes: single integer or list of integers expected!\n");
         		exit(13);
         	}
         }else if(!strcmp(token, "POLYGONFILE")){
         	if(!(token = strtok(0, delimiters))){
-        		printf("PolygonFile: missing argument!\n");
+        		fprintf(stderr, "PolygonFile: missing argument!\n");
         		exit(13);
         	}
         	Settings::polygonFile = token;
         }else if(!strcmp(token, "OUTPUTFORMAT")){
         	if(!(token = strtok(0, delimiters))){
-        		printf("OutputFormat: missing argument!\n");
+        		fprintf(stderr, "OutputFormat: missing argument!\n");
         		exit(13);
         	}
         	for (i = 0; i < strlen(token); i++)
@@ -164,121 +164,121 @@ void Settings::readConfigFile(char *filename){
         	} else if (!strcmp(token, "GRAPHML")) {
         		Settings::outputFormat = OutputFormat::GRAPHML;
         	} else {
-        		printf("OutputFormat: unknown format %s!\n", token);
+        		fprintf(stderr, "OutputFormat: unknown format %s!\n", token);
         		exit(13);
         	}
         }else if(!strcmp(token, "TRIANGULATIONFILE")){
         	if(!(token = strtok(0, delimiters))){
-        		printf("TriangulationFile: missing argument!\n");
+        		fprintf(stderr, "TriangulationFile: missing argument!\n");
         		exit(13);
         	}
         	Settings::triangulationFile = token;
         }else if(!strcmp(token, "STATISTICSFILE")){
         	if(!(token = strtok(0, delimiters))){
-        		printf("StatisticsFile: missing argument!\n");
+        		fprintf(stderr, "StatisticsFile: missing argument!\n");
         		exit(13);
         	}
         	Settings::statisticsFile = token;
         }else if(!strcmp(token, "PRINTEXECUTIONINFO")){
         	executionInfo = Settings::readBoolean(found);
         	if(!found){
-        		printf("PrintExecutionInfo: boolean expected!\n");
+        		fprintf(stderr, "PrintExecutionInfo: boolean expected!\n");
         		exit(13);
         	}
         }else if(!strcmp(token, "NUMERICALCORRECTIONINFO")){
         	correctionInfo = Settings::readBoolean(found);
         	if(!found){
-        		printf("NumericalCorrectionInfo: boolean expected!\n");
+        		fprintf(stderr, "NumericalCorrectionInfo: boolean expected!\n");
         		exit(13);
         	}
         }else if(!strcmp(token, "ENABLELOCALCHECKS")){
         	localChecking = Settings::readBoolean(found);
         	if(!found){
-        		printf("EnableLocalChecks: boolean expected!\n");
+        		fprintf(stderr, "EnableLocalChecks: boolean expected!\n");
         		exit(13);
         	}
         }else if(!strcmp(token, "ENABLEGLOBALCHECKS")){
         	globalChecking = Settings::readBoolean(found);
         	if(!found){
-        		printf("EnableGlobalChecks: boolean expected!\n");
+        		fprintf(stderr, "EnableGlobalChecks: boolean expected!\n");
         		exit(13);
         	}
         }else if(!strcmp(token, "COMPLETEMUTE")){
         	mute = Settings::readBoolean(found);
         	if(!found){
-        		printf("CompleteMute: boolean expected!\n");
+        		fprintf(stderr, "CompleteMute: boolean expected!\n");
         		exit(13);
         	}
         }else{
-        	printf("Unknown token %s\n", token);
+        	fprintf(stderr, "Unknown token %s\n", token);
         	exit(13);
         }
 	}
 
 	file.close();
 
-	printf("successful\n\n");
+	fprintf(stderr, "successful\n\n");
 }
 
 void Settings::printSettings(){
 	unsigned int i;
 
-	printf("Polygon settings:\n");
-	printf("Number of holes: %d\n", nrInnerPolygons);
-	printf("Number of vertices (start polygon): %d\n", initialSize);
-	printf("Target number of vertices (polygon): %d\n", outerSize);
+	fprintf(stderr, "Polygon settings:\n");
+	fprintf(stderr, "Number of holes: %d\n", nrInnerPolygons);
+	fprintf(stderr, "Number of vertices (start polygon): %d\n", initialSize);
+	fprintf(stderr, "Target number of vertices (polygon): %d\n", outerSize);
 
 	if(nrInnerPolygons > 0){
-		printf("Target number of vertices (holes):\n");
+		fprintf(stderr, "Target number of vertices (holes):\n");
 		for(i = 0; i < nrInnerPolygons; ++i){
-			printf("%d\n", innerSizes[i]);
+			fprintf(stderr, "%d\n", innerSizes[i]);
 		}
 	}
 
-	printf("\n");
+	fprintf(stderr, "\n");
 
-	printf("Machine settings:\n");
+	fprintf(stderr, "Machine settings:\n");
 	if(arithmetics == Arithmetics::DOUBLE)
-		printf("Arithmetic: DOUBLE\n");
+		fprintf(stderr, "Arithmetic: DOUBLE\n");
 	else
-		printf("Arithmetic: EXACT\n");
+		fprintf(stderr, "Arithmetic: EXACT\n");
 	if(fixedSeed)
-		printf("Seed configuration: FIXED\n");
+		fprintf(stderr, "Seed configuration: FIXED\n");
 	else
-		printf("Seed configuration: RANDOM\n");
-	printf("Seed: %llu\n", seed);
+		fprintf(stderr, "Seed configuration: RANDOM\n");
+	fprintf(stderr, "Seed: %llu\n", seed);
 	if(localChecking)
-		printf("Local checking: enabled\n");
+		fprintf(stderr, "Local checking: enabled\n");
 	else
-		printf("Local checking: disbaled\n");
+		fprintf(stderr, "Local checking: disbaled\n");
 	if(globalChecking)
-		printf("Global checking: enabled\n");
+		fprintf(stderr, "Global checking: enabled\n");
 	else
-		printf("Global checking: disbaled\n");
+		fprintf(stderr, "Global checking: disbaled\n");
 
-	printf("\n");
+	fprintf(stderr, "\n");
 
-	printf("Output settings:\n");
-	printf("Polygon file: %s\n", polygonFile);
+	fprintf(stderr, "Output settings:\n");
+	fprintf(stderr, "Polygon file: %s\n", polygonFile);
 	switch (outputFormat) {
-		case OutputFormat::DAT: printf("OutputFormat: dat\n"); break;
-		case OutputFormat::LINE: printf("OutputFormat: line\n"); break;
-		case OutputFormat::GRAPHML: printf("OutputFormat: graphml\n"); break;
+		case OutputFormat::DAT: fprintf(stderr, "OutputFormat: dat\n"); break;
+		case OutputFormat::LINE: fprintf(stderr, "OutputFormat: line\n"); break;
+		case OutputFormat::GRAPHML: fprintf(stderr, "OutputFormat: graphml\n"); break;
 	}
 	if(triangulationOutputRequired)
-		printf("Triangulation file: %s\n", triangulationFile);
+		fprintf(stderr, "Triangulation file: %s\n", triangulationFile);
 	if(statisticsFile != NULL)
-		printf("Statistics file: %s\n", statisticsFile);
+		fprintf(stderr, "Statistics file: %s\n", statisticsFile);
 	if(executionInfo)
-		printf("Print execution information: true\n");
+		fprintf(stderr, "Print execution information: true\n");
 	else
-		printf("Print execution information: false\n");
+		fprintf(stderr, "Print execution information: false\n");
 	if(correctionInfo)
-		printf("Print numerical correction information: true\n");
+		fprintf(stderr, "Print numerical correction information: true\n");
 	else
-		printf("Print numerical correction information: false\n");
+		fprintf(stderr, "Print numerical correction information: false\n");
 
-	printf("\n");
+	fprintf(stderr, "\n");
 }
 
 // cast string to char*
@@ -337,29 +337,29 @@ Arithmetics Settings::readArithmeticType(bool &found){
 void Settings::checkAndApplySettings(){
 	unsigned int i;
 	bool conflict = false;
-	printf("Checking for configuration conflicts...");
+	fprintf(stderr, "Checking for configuration conflicts...");
 
 	if(outerSize < 3){
-		printf("The polygon must have at least 3 vertices, given number %d\n", outerSize);
+		fprintf(stderr, "The polygon must have at least 3 vertices, given number %d\n", outerSize);
 		exit(14);
 	}
 
 	if(outerSize < initialSize){
-		printf("The size of the start polygon is not allowed to exceed the target size:\n");
-		printf("Given start size: %d Given target size: %d\n", initialSize, outerSize);
+		fprintf(stderr, "The size of the start polygon is not allowed to exceed the target size:\n");
+		fprintf(stderr, "Given start size: %d Given target size: %d\n", initialSize, outerSize);
 		exit(14);
 	}
 
 	if(nrInnerPolygons != innerSizes.size()){
-		printf("Conflicting number of holes:\n");
-		printf("Given number: %d Given number of sizes: %d\n", nrInnerPolygons,
+		fprintf(stderr, "Conflicting number of holes:\n");
+		fprintf(stderr, "Given number: %d Given number of sizes: %d\n", nrInnerPolygons,
 			innerSizes.size());
 		exit(14);
 	}
 
 	for(i = 0; i < nrInnerPolygons; i++){
 		if(innerSizes[i] < 3){
-			printf("Holes must have a size of at least 3, given size for polygon with id %d: %d\n",
+			fprintf(stderr, "Holes must have a size of at least 3, given size for polygon with id %d: %d\n",
 				i + 1, innerSizes[i]);
 			exit(14);
 		}
@@ -367,20 +367,20 @@ void Settings::checkAndApplySettings(){
 
 	if(fixedSeed){
 		if(seed == 0){
-			printf("\nNote: FixedSeed is marked to use, but no seed is given!\n");
+			fprintf(stderr, "\nNote: FixedSeed is marked to use, but no seed is given!\n");
 			conflict = true;
 		}
 	}else{
 		if(seed != 0){
-			printf("\nNote: A seed is given but FixedSeed is not marked to use!\n");
+			fprintf(stderr, "\nNote: A seed is given but FixedSeed is not marked to use!\n");
 			conflict = true;
 		}
 	}
 
 	if(!conflict)
-		printf("no conflicts\n\n");
+		fprintf(stderr, "no conflicts\n\n");
 	else
-		printf("\n");
+		fprintf(stderr, "\n");
 
 
 	// Apply settings
@@ -390,7 +390,7 @@ void Settings::checkAndApplySettings(){
 		executionInfo = false;
 		correctionInfo = false;
 
-		printf("Command line muted!\n");
+		fprintf(stderr, "Command line muted!\n");
 	}
 
 	// Generate and start Timer
@@ -436,7 +436,7 @@ void Settings::readHoleSizes(bool &found){
 	if(!(token = strtok(0, delimiters)) || !sscanf(token, "%d", &n)){
 		// If no additional size is given, all holes may have the same size
 		if(nrInnerPolygons == 0){
-			printf("HoleSizes: Can not be specified as single integer before specifying\
+			fprintf(stderr, "HoleSizes: Can not be specified as single integer before specifying\
 				the number of holes\n");
 			found = false;
 			return;
@@ -455,7 +455,7 @@ void Settings::readHoleSizes(bool &found){
 
 		if(token != NULL){
 			if(!sscanf(token, "%d", &n)){
-				printf("HoleSizes: integer expected, got %s\n", token);
+				fprintf(stderr, "HoleSizes: integer expected, got %s\n", token);
 			}
 		}
 	}
@@ -610,5 +610,5 @@ void Settings::printDummyFile(){
 
 	fclose(f);
 
-	printf("Printed a dummy config file named %s\n",dummyFileName.c_str());
+	fprintf(stderr, "Printed a dummy config file named %s\n",dummyFileName.c_str());
 }

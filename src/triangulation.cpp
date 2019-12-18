@@ -265,7 +265,7 @@ void Triangulation::writeTriangulation(const char *filename) const{
 	int scale = 4000;
 
 	if(Settings::executionInfo)
-		printf("Write triangulation to .graphml file %s...", filename);
+		fprintf(stderr, "Write triangulation to .graphml file %s...", filename);
 
 	f = fopen(filename, "w");
 
@@ -305,7 +305,7 @@ void Triangulation::writeTriangulation(const char *filename) const{
 	fclose(f);
 
 	if(Settings::executionInfo)
-		printf("successful\n");
+		fprintf(stderr, "successful\n");
 }
 
 /*
@@ -324,7 +324,7 @@ void Triangulation::writePolygon(const char *filename) const{
 	Vertex *v, *start;
 
 	if(Settings::executionInfo)
-		printf("Write polygon to .graphml file %s...", filename);
+		fprintf(stderr, "Write polygon to .graphml file %s...", filename);
 
 	f = fopen(filename, "w");
 
@@ -359,7 +359,7 @@ void Triangulation::writePolygon(const char *filename) const{
 	fclose(f);
 
 	if(Settings::executionInfo)
-		printf("successful\n");
+		fprintf(stderr, "successful\n");
 }
 
 /*
@@ -374,7 +374,7 @@ void Triangulation::writePolygonToDat(const char *filename) const{
 	int id = 0;
 
 	if(Settings::executionInfo)
-		printf("Write polygon to .dat file %s...", filename);
+		fprintf(stderr, "Write polygon to .dat file %s...", filename);
 
 	f = fopen(filename, "w");
 
@@ -411,7 +411,7 @@ void Triangulation::writePolygonToDat(const char *filename) const{
 	}
 
 	if(Settings::executionInfo)
-		printf("successful\n");
+		fprintf(stderr, "successful\n");
 }
 
 
@@ -468,13 +468,13 @@ bool Triangulation::check() const{
 		// Check the number of triangles for each edge
 		if(type == EdgeType::FRAME){
 			if(n != 1){
-				printf("Edge of type FRAME with %d triangles:\n \t", n);
+				fprintf(stderr, "Edge of type FRAME with %d triangles:\n \t", n);
 				(*e).print();
 				ok = false;
 			}
 		}else{
 			if(n != 2){
-				printf("Edge of type not FRAME with %d triangles:\n \t", n);
+				fprintf(stderr, "Edge of type not FRAME with %d triangles:\n \t", n);
 				(*e).print();
 				ok = false;
 			}
@@ -482,7 +482,7 @@ bool Triangulation::check() const{
 
 		// Check whether there is a circle edge
 		if((*e).getV0() == (*e).getV1()){
-			printf("Edge %llu has two identical vertices with id %llu \n", (*e).getID(), (*(*e).getV1()).getID());
+			fprintf(stderr, "Edge %llu has two identical vertices with id %llu \n", (*e).getID(), (*(*e).getV1()).getID());
 			ok = false;
 		}		
 	}
@@ -495,7 +495,7 @@ bool Triangulation::check() const{
 		ok = ok && part;
 
 		if(!part){
-			printf("Triangulation error: vertex %llu is outside of its surrounding polygon\n", (*i).getID());
+			fprintf(stderr, "Triangulation error: vertex %llu is outside of its surrounding polygon\n", (*i).getID());
 		}
 	}
 
@@ -577,7 +577,7 @@ void Triangulation::checkSimplicity() const{
 			type = checkIntersection(toCheck, otherEdge, true);
 
 			if(type != IntersectionType::NONE){
-				printf("Found intersection of type: %d \n", (int)type);
+				fprintf(stderr, "Found intersection of type: %d \n", (int)type);
 				(*toCheck).print();
 				(*otherEdge).print();
 				exit(11);

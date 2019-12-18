@@ -49,7 +49,7 @@ TEdge::TEdge(Vertex * const V0, Vertex * const V1) :
 	n++;
 
 	if(v0 == NULL || v1 == NULL || (*v0).getID() == (*v1).getID()){
-		printf("error circle edge\n");
+		fprintf(stderr, "error circle edge\n");
 		exit(1);
 	}
 }
@@ -85,7 +85,7 @@ TEdge::TEdge(Vertex * const V0, Vertex * const V1, const EdgeType tp) :
 	n++;
 
 	if(v0 == NULL || v1 == NULL || (*v0).getID() == (*v1).getID()){
-		printf("error circle edge\n");
+		fprintf(stderr, "error circle edge\n");
 		exit(1);
 	}
 }
@@ -128,12 +128,12 @@ void TEdge::setTriangle(Triangle * const t){
 	if(t0 == NULL) t0 = t;
 	else if(t1 == NULL) t1 = t;
 	else{
-		printf("The edge from vertex %llu to vertex %llu already has two triangles!\n", (*v0).getID(), (*v1).getID());
+		fprintf(stderr, "The edge from vertex %llu to vertex %llu already has two triangles!\n", (*v0).getID(), (*v1).getID());
 		exit(4);
 	}
 
 	if(t0 != NULL && t1 != NULL && (*t0).getID() == (*t1).getID()){
-		printf("The edge from vertex %llu to vertex %llu has already registered the same triangle! \n", (*v0).getID(), (*v1).getID());
+		fprintf(stderr, "The edge from vertex %llu to vertex %llu has already registered the same triangle! \n", (*v0).getID(), (*v1).getID());
 		exit(5);
 	}	
 }
@@ -253,7 +253,7 @@ void TEdge::removeTriangle(Triangle * const t){
 	else if(t1 != NULL && (*t1).getID() == (*t).getID()) 
 		t1 = NULL;
 	else 
-		printf("Removed triangle was not adjacent to edge from vertex %llu to vertex %llu \n", (*v0).getID(), (*v1).getID());
+		fprintf(stderr, "Removed triangle was not adjacent to edge from vertex %llu to vertex %llu \n", (*v0).getID(), (*v1).getID());
 }
 
 
@@ -283,7 +283,7 @@ void TEdge::print() const{
 	else if(type == EdgeType::FRAME) tp = "FRAME";
 	else tp = "TRIANGULATION";
 
-	printf("Edge %llu from vertex %llu to vertex %llu of type %s \n", id, (*v0).getID(), (*v1).getID(), tp.c_str());
+	fprintf(stderr, "Edge %llu from vertex %llu to vertex %llu of type %s \n", id, (*v0).getID(), (*v1).getID(), tp.c_str());
 	(*v0).print();
 	(*v1).print();
 }
