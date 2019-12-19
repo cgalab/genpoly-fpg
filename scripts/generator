@@ -16,20 +16,17 @@ import tempfile
 import threading
 import time
 
-#DB = 'stats.db'
-CONVERTER = '/localhome/gue/bin/ord-format'
 FPG = './fpg'
 TIMEOUT = 1000
 
-parser = argparse.ArgumentParser(description='run benchmarks')
-parser.add_argument('-f', '--fpg', metavar='FPG', dest='fpg', default=FPG, help='fpg binary', required=True)
+parser = argparse.ArgumentParser(description='generator for fpg')
 parser.add_argument('-b', '--size-start', metavar='SIZESTART', dest='sizestart', type=int, default=20, help='start size of output polygon')
 parser.add_argument('-e', '--size-end', metavar='SIZEEND', dest='sizeend', type=int, default=200, help='end size of output polygon')
 parser.add_argument('-i', '--step-size', metavar='STEPSIZE', dest='stepsize', type=int, default=10, help='step size of produced output')
 parser.add_argument('-s', '--seed', metavar='SEED', dest='seed', type=int, default=-1, help='random seed for fpg (if not set, use random seed)')
 parser.add_argument('-o', '--output', metavar='OUT', dest='out', default='fpg-poly', help='output file name (exclude file ending)')
 parser.add_argument('-t', '--threads', metavar='THREADS', dest='threads', type=int, default=multiprocessing.cpu_count(), help='number of threads to start')
-parser.add_argument('extra', metavar='ARG', nargs='*', help='extra arguments to pass to FPG')
+parser.add_argument('fpg', type=str, help='fpg binary')
 args = parser.parse_args()
 
 def eprint(*args):
@@ -56,17 +53,17 @@ def limit_virtual_memory():
     resource.setrlimit(resource.RLIMIT_AS, (MAX_VIRTUAL_MEMORY, resource.RLIM_INFINITY))
 
 def run_fpg(fpg, size, seed, name):
+    if size < 10:
+        return False
     filename = name + "-" + '{:010.0f}'.format(size)
-
+    print(filename)
     cmd = []
     cmd.append(fpg)
-    cmd += args.extra
     cmd.append(str(size))
     if seed > 0:
         cmd.extend(["--seed",str(seed)])
         filename+="-s"+str(seed)
     cmd.append(filename + ".graphml")
-    print(cmd)
     
     timeout = TIMEOUT
     try:
@@ -88,7 +85,7 @@ def run_fpg(fpg, size, seed, name):
 
 def run_thread_range(args, thread_id):
     step_cnt = 0
-    print("thread_id: ",thread_id, ",start: ", args.sizestart, ", maxsize: ", args.sizeend)
+#    print("thread_id: ",thread_id, ",start: ", args.sizestart, ", maxsize: ", args.sizeend)
     current_size = 0
 
     single_range = (int)(args.sizeend-args.sizestart)/args.threads
