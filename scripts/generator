@@ -56,14 +56,14 @@ def limit_virtual_memory():
     resource.setrlimit(resource.RLIMIT_AS, (MAX_VIRTUAL_MEMORY, resource.RLIM_INFINITY))
 
 def run_fpg(fpg, size, seed, name):
-    filename = name + "-" + str(size);
+    filename = name + "-" + '{:010.0f}'.format(size)
+
     cmd = []
     cmd.append(fpg)
     cmd += args.extra
     cmd.append(str(size))
     if seed > 0:
         cmd.extend(["--seed",str(seed)])
-#        cmd.append(str(seed))
         filename+="-s"+str(seed)
     cmd.append(filename + ".graphml")
     print(cmd)
@@ -91,15 +91,11 @@ def run_thread_range(args, thread_id):
     print("thread_id: ",thread_id, ",start: ", args.sizestart, ", maxsize: ", args.sizeend)
     current_size = 0
 
-    single_range = (args.sizeend-args.sizestart)/args.threads
-#    print("single range: ",single_range)
+    single_range = (int)(args.sizeend-args.sizestart)/args.threads
 
     while current_size < args.sizeend:
         current_size = args.sizestart + (single_range * thread_id) + (args.stepsize * step_cnt)
-        #print(current_size)
-
         run_fpg(args.fpg, current_size, args.seed, args.out)
-
         step_cnt+=1
 
 
