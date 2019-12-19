@@ -1,0 +1,123 @@
+#!/usr/bin/python3
+
+import argparse
+import multiprocessing
+import collections
+import json
+import os
+import queue
+import re
+import resource
+import shlex
+import sqlite3
+import subprocess
+import sys
+import tempfile
+import threading
+import time
+
+#DB = 'stats.db'
+CONVERTER = '/localhome/gue/bin/ord-format'
+FPG = './fpg'
+TIMEOUT = 1000
+
+parser = argparse.ArgumentParser(description='run benchmarks')
+parser.add_argument('-f', '--fpg', metavar='FPG', dest='fpg', default=FPG, help='fpg binary', required=True)
+parser.add_argument('-b', '--size-start', metavar='SIZESTART', dest='sizestart', type=int, default=20, help='start size of output polygon')
+parser.add_argument('-e', '--size-end', metavar='SIZEEND', dest='sizeend', type=int, default=200, help='end size of output polygon')
+parser.add_argument('-i', '--step-size', metavar='STEPSIZE', dest='stepsize', type=int, default=10, help='step size of produced output')
+parser.add_argument('-s', '--seed', metavar='SEED', dest='seed', type=int, default=-1, help='random seed for fpg (if not set, use random seed)')
+parser.add_argument('-o', '--output', metavar='OUT', dest='out', default='fpg-poly', help='output file name (exclude file ending)')
+parser.add_argument('-t', '--threads', metavar='THREADS', dest='threads', type=int, default=multiprocessing.cpu_count(), help='number of threads to start')
+parser.add_argument('extra', metavar='ARG', nargs='*', help='extra arguments to pass to FPG')
+args = parser.parse_args()
+
+def eprint(*args):
+    print(*args, file=sys.stderr)
+
+def convert(converter, infile, gml):
+    cmd = []
+    cmd.append(converter)
+    cmd.append('--flatten')
+    cmd.append(infile)
+    cmd.append(gml.name)
+    try:
+        subprocess.check_call(cmd, stdin=subprocess.DEVNULL)
+    except:
+        return False
+    return True
+
+def limit_virtual_memory():
+    # The tuple below is of the form (soft limit, hard limit). Limit only
+    # the soft part so that the limit can be increased later (setting also
+    # the hard limit would prevent that).
+    # When the limit cannot be changed, setrlimit() raises ValueError.
+    MAX_VIRTUAL_MEMORY = 10 * 1024 * 1024 *1024 # 10 GB
+    resource.setrlimit(resource.RLIMIT_AS, (MAX_VIRTUAL_MEMORY, resource.RLIM_INFINITY))
+
+def run_fpg(fpg, size, seed, name):
+    filename = name + "-" + str(size);
+    cmd = []
+    cmd.append(fpg)
+    cmd += args.extra
+    cmd.append(str(size))
+    if seed > 0:
+        cmd.extend(["--seed",str(seed)])
+#        cmd.append(str(seed))
+        filename+="-s"+str(seed)
+    cmd.append(filename + ".graphml")
+    print(cmd)
+    
+    timeout = TIMEOUT
+    try:
+        output = subprocess.run(
+          cmd,
+          close_fds=False,
+          stdin=subprocess.DEVNULL,
+          stdout=subprocess.DEVNULL,
+          stderr=subprocess.DEVNULL,
+          timeout=timeout,
+          check=True,
+          preexec_fn=limit_virtual_memory)
+    except subprocess.CalledProcessError as e:
+        return False
+    except subprocess.TimeoutExpired as e:
+        return False
+
+    return True
+
+def run_thread_range(args, thread_id):
+    step_cnt = 0
+    print("thread_id: ",thread_id, ",start: ", args.sizestart, ", maxsize: ", args.sizeend)
+    current_size = 0
+
+    single_range = (args.sizeend-args.sizestart)/args.threads
+#    print("single range: ",single_range)
+
+    while current_size < args.sizeend:
+        current_size = args.sizestart + (single_range * thread_id) + (args.stepsize * step_cnt)
+        #print(current_size)
+
+        run_fpg(args.fpg, current_size, args.seed, args.out)
+
+        step_cnt+=1
+
+
+def handle_one(args, q, thread_id):
+  while True:
+    run_thread_range(args, thread_id)
+    q.task_done()
+
+if not os.path.exists(args.fpg):
+  eprint("Fpg binary", args.fpg, "does not exist.")
+  sys.exit(1)
+
+q = queue.Queue(maxsize = args.threads * 2)
+thread_id = 0
+for _ in range(args.threads):
+  worker = threading.Thread(target=handle_one, args=(args, q, thread_id))
+  thread_id+=1
+#  worker.setDaemon(True)
+  worker.start()
+
+q.join()
