@@ -18,10 +18,20 @@
 #include "statistics.h"
 
 /*
+	Initialise private variables
+*/
+double Statistics::radialDistDev = 0;
+double Statistics::twistMin = 0;
+double Statistics::twistMax = 0;
+double Statistics:: maxTwist = 0;
+unsigned int Statistics::sinuosity = 0;
+
+/*
 	Initialise global variables
 */
 unsigned long long Statistics::translationTries = 0;
 unsigned long long Statistics::translationsPerf = 0;
+unsigned long long Statistics::splits = 0;
 
 /*
 	The function calculateDistanceDistribution() calculates the distance distribution
@@ -36,6 +46,8 @@ unsigned long long Statistics::translationsPerf = 0;
 		defined as the rectangle minus the circle defined by the outer border of the
 		second outer layer.
 */
+// TODO:
+// Possibly kick that out
 void Statistics::calculateRadialDistanceDistribution(Triangulation const * const T, const double width){
 	int n_seg; // The number of segments
 	int n_vert; // The number of vertices of the polygon
@@ -100,9 +112,7 @@ void Statistics::calculateRadialDistanceDeviation(Triangulation const * const T)
 
 	sum = sqrt(sum);
 
-	fprintf(stderr, "Initial radius: %.3f\n", radius);
-	fprintf(stderr, "Box size: %.3f\n", Settings::boxSize);
-	fprintf(stderr, "Radial distance deviation: %.3f\n", sum);
+	radialDistDev = sum;
 }
 
 void Statistics::calculateMaxTwist(Triangulation const * const T){
@@ -112,7 +122,6 @@ void Statistics::calculateMaxTwist(Triangulation const * const T){
 
 	// Calculate the average inside angle of the polygon
 	average = 180 * (1 - 2.0 / n);
-	fprintf(stderr, "Average inside angle: %.3f\n", average);
 
 	start = (*T).getVertex(0, 0);
 
@@ -138,9 +147,9 @@ void Statistics::calculateMaxTwist(Triangulation const * const T){
 		v = (*v).getNext();
 	}
 
-	fprintf(stderr, "sum at end: %.3f\n", sum);
-	fprintf(stderr, "min: %.3f max: %.3f amplitude: %.3f\n", min, max, fabs(min) + fabs(max));
-
+	twistMin = min;
+	twistMax = max;
+	maxTwist = fabs(min) + fabs(max);
 }
 
 void Statistics::calculateSinuosity(Triangulation const * const T){
@@ -175,5 +184,27 @@ void Statistics::calculateSinuosity(Triangulation const * const T){
 		}
 	}while((*v).getID() != (*start).getID());
 
-	fprintf(stderr, "Number of orientation changes: %d\n", n);
+	sinuosity = n;
+}
+
+void Statistics::printStats(Triangulation const * const T){
+	unsigned int i;
+	unsigned int nrOfHoles;
+
+	fprintf(stderr, "Polygon:\n");
+	fprintf(stderr, "Number of vertices: %d\n", (*T).getActualNumberOfVertices(0));
+	nrOfHoles = (*T).getActualNrInnerPolygons();
+	fprintf(stderr, "Number of holes: %d\n", nrOfHoles);
+	if(nrOfHoles > 0){
+		fprintf(stderr, "Hole sizes:\n");
+		for(i = 1; i <= nrOfHoles; i++){
+			fprintf(stderr, "%d %d\n", i, (*T).getActualNumberOfVertices(i));
+		}
+	}
+	fprintf(stderr, "\n");
+
+	fprintf(stderr, "Translations:\n");
+	fprintf(stderr, "Number of checked translations: %llu\n", translationTries);
+	fprintf(stderr, "Number of performed translation: %llu\n", translationsPerf);
+	fprintf(stderr, "Number of split translations: %llu\n", splits);
 }

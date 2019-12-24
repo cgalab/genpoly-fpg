@@ -27,7 +27,7 @@ static struct option long_options[] = {
 		{ "startsize"          , required_argument, 0, 'i'},
 		{ "seed"               , required_argument, 0, 's'},
 		{ "arithmetic"         , no_argument,       0, 'a'},
-		{ "holesizes"          , required_argument, 0, 'h'},
+		{ "holesizes"          , required_argument, 0, 'H'},
 		{ "outputformat"       , required_argument, 0, 'o'},
 		{ "noexecutioninfo"    , no_argument,       0, 'e'},
 		{ "numericalcorrectioninfo" , no_argument,  0, 'c'},

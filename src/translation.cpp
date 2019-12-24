@@ -478,6 +478,8 @@ enum Executed Translation::executeSplitRetainSide() const{
 	Translation *trans;
 	enum Executed ex;
 
+	Statistics::splits++;
+
 	// Compute the intersection point to split the translation
 	intersectionPoint = getIntersectionPoint(prevOldE, nextNewE);
 	if(intersectionPoint == NULL)
@@ -496,8 +498,13 @@ enum Executed Translation::executeSplitRetainSide() const{
 	delete intersectionPoint;
 	delete trans;
 
-	if(ex != Executed::FULL)
+	if(ex != Executed::FULL){
+		if(ex == Executed::PARTIAL)
+			Statistics::translationsPerf++;
 		return ex;
+	}
+
+	Statistics::translationsPerf++;
 
 	// Second part of the translation from the intersection point to the target point
 	transX = (*newV).getX() - (*original).getX();
@@ -536,6 +543,8 @@ enum Executed Translation::executeSplitChangeSide(){
 	TEdge *edge;
 	Triangle *t;
 
+	Statistics::splits++;
+
 	// Get translation to end position of the first part which is the middle between the
 	// neighboring vertices
 	middleX = ((*prevV).getX() + (*nextV).getX()) / 2;
@@ -550,8 +559,13 @@ enum Executed Translation::executeSplitChangeSide(){
 
 	delete trans;
 
-	if(ex != Executed::FULL)
+	if(ex != Executed::FULL){
+		if(ex == Executed::PARTIAL)
+			Statistics::translationsPerf++;
 		return ex;
+	}
+
+	Statistics::translationsPerf++;
 
 	// For numerical reasons it is possible that the triangle of the old vertex and the
 	// neighboring vertices doesn't vanish at the time when the vertex arrives between its
@@ -1036,6 +1050,7 @@ Translation::Translation(Triangulation *Tr, int i, double dX, double dY) :
 	Q = new EventQueue(original, oldV, newV);
 
 	n++;
+	Statistics::translationTries++;
 }
 
 
@@ -1219,13 +1234,19 @@ enum Executed Translation::execute(){
 				undone = undo();
 				if(undone)
 					return Executed::UNDONE;
-				else
+				else{
+					if(!split)
+						Statistics::translationsPerf++;
 					return Executed::PARTIAL;
+				}
 			}
 		}
 
 		// Move the vertex to its target position
 		(*original).setPosition((*newV).getX(), (*newV).getY());
+
+		if(!split)
+			Statistics::translationsPerf++;
 
 		return Executed::FULL;
 	}

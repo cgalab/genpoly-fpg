@@ -26,6 +26,15 @@ class Statistics{
 
 private:
 
+	static double radialDistDev;
+	static double twistMin;
+	static double twistMax;
+	static double maxTwist;
+	static unsigned int sinuosity;
+	
+
+public:
+
 	/*
 		Total number of translation which have been checked
 	*/
@@ -36,7 +45,12 @@ private:
 	*/
 	static unsigned long long translationsPerf;
 
-public:
+	/*
+		Number of split translations
+	*/
+	static unsigned long long splits;
+
+
 
 	static void calculateRadialDistanceDistribution(Triangulation const * const T, const double width);
 
@@ -45,4 +59,6 @@ public:
 	static void calculateMaxTwist(Triangulation const * const T);
 
 	static void calculateSinuosity(Triangulation const * const T);
+
+	static void printStats(Triangulation const * const T);
 };

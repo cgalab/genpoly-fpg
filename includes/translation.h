@@ -34,6 +34,7 @@
 #include "triangulation.h"
 #include "eventQueue.h"
 #include "settings.h"
+#include "statistics.h"
 
 #ifndef __TRANSLATION_H_
 #define __TRANSLATION_H_
