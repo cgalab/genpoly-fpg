@@ -152,7 +152,10 @@ public:
 	// Flag whether info an numerical correction should be printed
 	static bool correctionInfo;
 
-	// Flag to mute all output
+	// Flag to enable statistics on the polygon and its generation
+	static bool enableStats;
+
+	// Flag to mute all command line output
 	static bool mute;
 
 	// Filename for polygon output file

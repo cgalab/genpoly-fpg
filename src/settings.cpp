@@ -72,6 +72,7 @@ RandomGenerator* Settings::generator = NULL;
 FeedbackMode Settings::feedback = FeedbackMode::EXECUTION;
 bool Settings::executionInfo = true;
 bool Settings::correctionInfo = false;
+bool Settings::enableStats = false;
 bool Settings::mute = false;
 OutputFormat Settings::outputFormat = OutputFormat::DAT;
 bool Settings::simplicityCheck = false;
@@ -174,6 +175,7 @@ void Settings::readConfigFile(char *filename){
         	}
         	Settings::triangulationFile = token;
         }else if(!strcmp(token, "STATISTICSFILE")){
+        	enableStats = true;
         	if(!(token = strtok(0, delimiters))){
         		fprintf(stderr, "StatisticsFile: missing argument!\n");
         		exit(13);

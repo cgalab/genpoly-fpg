@@ -20,7 +20,7 @@
 #include <getopt.h>
 #include <boost/algorithm/string.hpp>
 
-static const char* short_options = "hc:v::S:D";
+static const char* short_options = "hc:v::S:D:t";
 static struct option long_options[] = {
 		{ "help"               , no_argument      , 0, 'h'},
 		{ "nrofholes"          , required_argument, 0, 'n'},
@@ -34,6 +34,7 @@ static struct option long_options[] = {
 		{ "disablelocalchecks"      , no_argument,  0, 'l'},
 		{ "enableglobalchecks"      , no_argument,  0, 'g'},
 		{ "verbose"                 , no_argument,  0, 'v'},
+		{ "enablestats"				, no_argument,	0, 't'},
 		{ 0, 0, 0, 0}
 };
 
@@ -55,6 +56,7 @@ static struct option long_options[] = {
 	fprintf(f,"           --disablelocalchecks       \n");
 	fprintf(f,"           --enableglobalchecks       (default off).\n");
 	fprintf(f,"           --verbose                  (default off).\n");
+	fprintf(f,"			  --enablestats 			 (default off).\n");
 	fprintf(f,"\n");
 	fprintf(f,"  holesizes example:  --holesizes 3,6,7\n");
 	exit(err);
@@ -156,6 +158,10 @@ private:
 			}
 			case 'v': {
 				mute = false;
+				break;
+			}
+			case 't': {
+				enableStats = true;
 				break;
 			}
 			default:{
