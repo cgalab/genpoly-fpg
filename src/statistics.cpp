@@ -18,6 +18,12 @@
 #include "statistics.h"
 
 /*
+	Initialise global variables
+*/
+unsigned long long Statistics::translationTries = 0;
+unsigned long long Statistics::translationsPerf = 0;
+
+/*
 	The function calculateDistanceDistribution() calculates the distance distribution
 	for all vertices (including the vertices of the holes) and prints it to stdout.
 	Therefore it splits the bounding box into ring layers of diameter width, counts
@@ -30,7 +36,7 @@
 		defined as the rectangle minus the circle defined by the outer border of the
 		second outer layer.
 */
-void calculateRadialDistanceDistribution(Triangulation const * const T, const double width){
+void Statistics::calculateRadialDistanceDistribution(Triangulation const * const T, const double width){
 	int n_seg; // The number of segments
 	int n_vert; // The number of vertices of the polygon
 	int i, cat;
@@ -72,7 +78,7 @@ void calculateRadialDistanceDistribution(Triangulation const * const T, const do
 	fprintf(stderr, "\n");
 }
 
-void calculateRadialDistanceDeviation(Triangulation const * const T){
+void Statistics::calculateRadialDistanceDeviation(Triangulation const * const T){
 	double sum = 0;
 	double radius = Settings::radiusPolygon;
 	double dist;
@@ -99,7 +105,7 @@ void calculateRadialDistanceDeviation(Triangulation const * const T){
 	fprintf(stderr, "Radial distance deviation: %.3f\n", sum);
 }
 
-void calculateMaxTwist(Triangulation const * const T){
+void Statistics::calculateMaxTwist(Triangulation const * const T){
 	int n = (*T).getActualNumberOfVertices(0);
 	double min, max, sum, angle, average;
 	Vertex *start, *v;
@@ -137,7 +143,7 @@ void calculateMaxTwist(Triangulation const * const T){
 
 }
 
-void countOrientationChanges(Triangulation const * const T){
+void Statistics::calculateSinuosity(Triangulation const * const T){
 	int n = 0;
 	double angle;
 	Vertex *start, *v;

@@ -22,11 +22,27 @@
 #include "triangulation.h"
 #include "vertex.h"
 
+class Statistics{
 
-void calculateRadialDistanceDistribution(Triangulation const * const T, const double width);
+private:
 
-void calculateRadialDistanceDeviation(Triangulation const * const T);
+	/*
+		Total number of translation which have been checked
+	*/
+	static unsigned long long translationTries;
 
-void calculateMaxTwist(Triangulation const * const T);
+	/*
+		Number of translations which have been performed at least partially
+	*/
+	static unsigned long long translationsPerf;
 
-void countOrientationChanges(Triangulation const * const T);
+public:
+
+	static void calculateRadialDistanceDistribution(Triangulation const * const T, const double width);
+
+	static void calculateRadialDistanceDeviation(Triangulation const * const T);
+
+	static void calculateMaxTwist(Triangulation const * const T);
+
+	static void calculateSinuosity(Triangulation const * const T);
+};

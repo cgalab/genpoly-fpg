@@ -95,10 +95,10 @@ int main(int argc, char *argv[]){
 		(*T).writeTriangulation(Settings::triangulationFile);
 
 	if(Settings::enableStats){
-		calculateRadialDistanceDistribution(T, 0.25);
-		calculateMaxTwist(T);
-		countOrientationChanges(T);
-		calculateRadialDistanceDeviation(T);
+		Statistics::calculateRadialDistanceDistribution(T, 0.25);
+		Statistics::calculateMaxTwist(T);
+		Statistics::calculateSinuosity(T);
+		Statistics::calculateRadialDistanceDeviation(T);
 	}
 	
 	exit(0);
