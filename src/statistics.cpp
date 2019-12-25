@@ -196,6 +196,12 @@ void Statistics::printStats(Triangulation const * const T){
 	unsigned int i;
 	unsigned int nrOfHoles;
 
+	fprintf(stderr, "\n");
+
+	fprintf(stderr, "S T A T I S T I C S\n");
+
+	fprintf(stderr, "\n");
+
 	fprintf(stderr, "Polygon:\n");
 	fprintf(stderr, "Number of vertices: %d\n", (*T).getActualNumberOfVertices(0));
 	nrOfHoles = (*T).getActualNrInnerPolygons();
@@ -206,6 +212,9 @@ void Statistics::printStats(Triangulation const * const T){
 			fprintf(stderr, "%d %d\n", i, (*T).getActualNumberOfVertices(i));
 		}
 	}
+	fprintf(stderr, "Radius of the start polygon: %.2f\n", Settings::radiusPolygon);
+	fprintf(stderr, "Edge length of the bounding box: %.2f\n", Settings::boxSize);
+
 	fprintf(stderr, "\n");
 
 	fprintf(stderr, "Translations:\n");
@@ -218,4 +227,13 @@ void Statistics::printStats(Triangulation const * const T){
 	fprintf(stderr, "Average number of passed triangles: %.2f\n",
 		(double)nrTriangles / (double) nrChecks);
 	fprintf(stderr, "Max number of passed triangles: %d\n", maxTriangles);
+
+	fprintf(stderr, "\n");
+
+	fprintf(stderr, "Shape:\n");
+	fprintf(stderr, "Radial deviation from the start polygon: %.2f\n", radialDistDev);
+	fprintf(stderr, "Sinuosity: %d\n", sinuosity);
+	fprintf(stderr, "Max inside twist: %.2f°\n", twistMin);
+	fprintf(stderr, "Max outside twist: %.2f°\n", twistMax);
+	fprintf(stderr, "Overall max twist: %.2f°\n", maxTwist);
 }
