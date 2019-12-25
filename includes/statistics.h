@@ -50,6 +50,30 @@ public:
 	*/
 	static unsigned long long splits;
 
+	/*
+		Counts how often checkEdge() gets called	
+	*/
+	static unsigned long long nrChecks;
+
+	/*
+		Counts the number of triangles of the SP in all calls of checkEdge()
+	*/
+	static unsigned long long nrSPTriangles;
+
+	/*
+		The maximum number of triangles of an SP in checkEdge()
+	*/
+	static unsigned int maxSPTriangles;
+
+	/*
+		Number of passed triangles in all calls of checkEdge()
+	*/
+	static unsigned long long nrTriangles;
+
+	/*
+		Maximum number of passed triangles in any call of checkEdge()
+	*/
+	static unsigned int maxTriangles;
 
 
 	static void calculateRadialDistanceDistribution(Triangulation const * const T, const double width);

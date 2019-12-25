@@ -315,8 +315,19 @@ bool Translation::checkEdge(Vertex * const fromV, TEdge * const newE) const{
 	EdgeType eType;
 	Triangle *nextT = NULL;
 	int count = 0;
+	int size;
+	int passedTriangles = 1;
+
+	Statistics::nrChecks++;
+	Statistics::nrTriangles++;
 
 	surEdges = (*fromV).getSurroundingEdges();
+
+	size = surEdges.size();
+
+	Statistics::nrSPTriangles = Statistics::nrSPTriangles + size;
+	if(size > Statistics::maxSPTriangles)
+		Statistics::maxSPTriangles = size;
 
 	// Iterate over all edges of the surrounding polygon
 	for(auto& i : surEdges){
@@ -355,6 +366,9 @@ bool Translation::checkEdge(Vertex * const fromV, TEdge * const newE) const{
 		nextT = (*intersectedE).getTriangleNotContaining(fromV);
 		surEdges = (*nextT).getOtherEdges(intersectedE);
 	}
+
+	passedTriangles++;
+	Statistics::nrTriangles++;
 
 	// Iterate over the adjacent triangles if there was an intersection with a triangulation edge
 	// Here surEdges always have the length 2
@@ -399,6 +413,12 @@ bool Translation::checkEdge(Vertex * const fromV, TEdge * const newE) const{
 			nextT = (*intersectedE).getOtherTriangle(nextT);
 			surEdges = (*nextT).getOtherEdges(intersectedE);
 		}
+
+		passedTriangles++;
+		Statistics::nrTriangles++;
+
+		if(passedTriangles > Statistics::maxTriangles)
+			Statistics::maxTriangles = passedTriangles;
 	}
 
 	return true;
