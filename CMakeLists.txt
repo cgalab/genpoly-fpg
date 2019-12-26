@@ -57,5 +57,7 @@ add_executable(fpg
                   src/triangle.cpp
                   src/triangulation.cpp
                   src/vertex.cpp
+                  src/selectionTree.cpp
+                  src/stentry.cpp
                )
 include_directories(includes)
