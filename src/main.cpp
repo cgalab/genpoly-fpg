@@ -48,6 +48,7 @@ code 	name						meaning
 									polygons
 13 		Parameter error				A parameter given in the configuration file has a wrong type
 14 		Setting error				Some mandatory settings are not given or settings are conflicting
+15 		Not implemented yet
 */
 
 int main(int argc, char *argv[]){

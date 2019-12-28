@@ -91,9 +91,9 @@ void initialTriangulationPseudoStar(Triangulation * const T){
 	e0 = new TEdge(v0, v1, EdgeType::POLYGON); // e0 is the polygon edge
 	e1 = new TEdge(v1, center); // e1 is the edge of the higher vertex to the center
 	start = new TEdge(center, v0, EdgeType::POLYGON);
-	(*T).addEdge(e0);
-	(*T).addEdge(e1);
-	(*T).addEdge(start);
+	(*T).addEdge(e0, 0);
+	(*T).addEdge(e1, 0);
+	(*T).addEdge(start, 0);
 
 	new Triangle(e0, e1, start, v0, v1, center);
 
@@ -105,8 +105,8 @@ void initialTriangulationPseudoStar(Triangulation * const T){
 		e2 = e1;
 		e1 = new TEdge(v1, center);
 
-		(*T).addEdge(e0);
-		(*T).addEdge(e1);
+		(*T).addEdge(e0, 0);
+		(*T).addEdge(e1, 0);
 
 		new Triangle(e0, e1, e2, v0, v1, center);
 	}
@@ -114,9 +114,9 @@ void initialTriangulationPseudoStar(Triangulation * const T){
 	// At the end we have to insert a triangle outside of the polygon such that
 	// the triangulation forms the convex hull of the vertices
 	v0 = (*T).getVertex(1, 0);
-	(*e1).setEdgeType(EdgeType::POLYGON);
+	(*e1).setEdgeType(EdgeType::POLYGON, false);
 	e2 = new TEdge(v0, v1);
-	(*T).addEdge(e2);
+	(*T).addEdge(e2, 0);
 	new Triangle(e1, e2, start, v0, v1, center);
 }
 
@@ -139,7 +139,7 @@ void initialTriangulationZigZag(Triangulation * const T){
 	v0 = (*T).getVertex(0, 0);
 	v1 = (*T).getVertex(Settings::initialSize - 1, 0);
 	e0 = new TEdge(v1, v0, EdgeType::POLYGON);
-	(*T).addEdge(e0);
+	(*T).addEdge(e0, 0);
 
 	// The inital triangulation contains n-2 triangles
 	for(i = 0; i < Settings::initialSize - 2; i++){
@@ -154,8 +154,8 @@ void initialTriangulationZigZag(Triangulation * const T){
 			e0 = new TEdge(v0, v1, EdgeType::POLYGON);
 			e1 = new TEdge(v1, v2);
 
-			(*T).addEdge(e0);
-			(*T).addEdge(e1);
+			(*T).addEdge(e0, 0);
+			(*T).addEdge(e1, 0);
 
 			new Triangle(e0, e1, e2, v0, v1, v2);
 
@@ -169,19 +169,19 @@ void initialTriangulationZigZag(Triangulation * const T){
 			e0 = new TEdge(v0, v1);
 			e1 = new TEdge(v1, v2, EdgeType::POLYGON);
 
-			(*T).addEdge(e0);
-			(*T).addEdge(e1);
+			(*T).addEdge(e0, 0);
+			(*T).addEdge(e1, 0);
 
 			new Triangle(e0, e1, e2, v0, v1, v2);
 		}
 	}
 
-	// To close the polygon it makes a difference whether the number of veritces
+	// To close the polygon it makes a difference whether the number of vertices
 	// is even or odd
 	if(Settings::initialSize % 2 == 0){
-		(*e0).setEdgeType(EdgeType::POLYGON);
+		(*e0).setEdgeType(EdgeType::POLYGON, false);
 	}else{
-		(*e1).setEdgeType(EdgeType::POLYGON);
+		(*e1).setEdgeType(EdgeType::POLYGON, false);
 	}
 }
 
@@ -224,9 +224,9 @@ void generateInitialHoleTriangle(Triangulation * const T){
 	e0 = new TEdge(v0, v1, EdgeType::POLYGON);
 	e1 = new TEdge(v0, triangleV0);
 	e2 = new TEdge(v1, triangleV0);
-	(*T).addEdge(e0);
-	(*T).addEdge(e1);
-	(*T).addEdge(e2);
+	(*T).addEdge(e0, 1);
+	(*T).addEdge(e1, 1);
+	(*T).addEdge(e2, 1);
 
 	start = e1;
 
@@ -239,8 +239,8 @@ void generateInitialHoleTriangle(Triangulation * const T){
 		e0 = new TEdge(v0, v1, EdgeType::POLYGON);
 		e1 = e2;
 		e2 = new TEdge(v1, triangleV0);
-		(*T).addEdge(e0);
-		(*T).addEdge(e2);
+		(*T).addEdge(e0, 1);
+		(*T).addEdge(e2, 1);
 
 		new Triangle(e0, e1, e2, v0, v1, triangleV0);
 	}
@@ -249,8 +249,8 @@ void generateInitialHoleTriangle(Triangulation * const T){
 	e0 = new TEdge(triangleV1, triangleV0, EdgeType::POLYGON);
 	e1 = e2;
 	e2 = new TEdge(v1, triangleV1);
-	(*T).addEdge(e0);
-	(*T).addEdge(e2);
+	(*T).addEdge(e0, 1);
+	(*T).addEdge(e2, 1);
 
 	new Triangle(e0, e1, e2, v1, triangleV0, triangleV1);
 
@@ -264,8 +264,8 @@ void generateInitialHoleTriangle(Triangulation * const T){
 		e0 = new TEdge(v0, v1, EdgeType::POLYGON);
 		e1 = e2;
 		e2 = new TEdge(v1, triangleV1);
-		(*T).addEdge(e0);
-		(*T).addEdge(e2);
+		(*T).addEdge(e0, 1);
+		(*T).addEdge(e2, 1);
 
 		new Triangle(e0, e1, e2, v0, v1, triangleV1);
 	}
@@ -274,8 +274,8 @@ void generateInitialHoleTriangle(Triangulation * const T){
 	e0 = new TEdge(triangleV2, triangleV1, EdgeType::POLYGON);
 	e1 = e2;
 	e2 = new TEdge(v1, triangleV2);
-	(*T).addEdge(e0);
-	(*T).addEdge(e2);
+	(*T).addEdge(e0, 1);
+	(*T).addEdge(e2, 1);
 
 	new Triangle(e0, e1, e2, v1, triangleV1, triangleV2);
 
@@ -289,8 +289,8 @@ void generateInitialHoleTriangle(Triangulation * const T){
 		e0 = new TEdge(v0, v1, EdgeType::POLYGON);
 		e1 = e2;
 		e2 = new TEdge(v1, triangleV2);
-		(*T).addEdge(e0);
-		(*T).addEdge(e2);
+		(*T).addEdge(e0, 1);
+		(*T).addEdge(e2, 1);
 
 		new Triangle(e0, e1, e2, v0, v1, triangleV2);
 	}
@@ -299,8 +299,8 @@ void generateInitialHoleTriangle(Triangulation * const T){
 	e0 = new TEdge(triangleV0, triangleV2, EdgeType::POLYGON);
 	e1 = e2;
 	e2 = new TEdge(v1, triangleV0);
-	(*T).addEdge(e0);
-	(*T).addEdge(e2);
+	(*T).addEdge(e0, 1);
+	(*T).addEdge(e2, 1);
 
 	new Triangle(e0, e1, e2, v1, triangleV2, triangleV0);
 
@@ -309,7 +309,7 @@ void generateInitialHoleTriangle(Triangulation * const T){
 	new Triangle(triangleE0, triangleE1, triangleE2, triangleV0, triangleV1, triangleV2);
 
 	e0 = new TEdge(v1, (*T).getVertex(0, 0), EdgeType::POLYGON);
-	(*T).addEdge(e0);
+	(*T).addEdge(e0, 1);
 
 	new Triangle(e0, e2, start, v1, (*T).getVertex(0, 0), triangleV0);
 }
@@ -336,6 +336,7 @@ void splitHoleTriangle(Triangulation * const T){
 	TEdge *p1e0, *p1e1;
 	TEdge *p2e0, *p2e1, *p2e2;
 	TEdge *h0, *h1, *h2;
+	STEntry *entry0, *entry1;
 
 	// Get the actual number of inner polygons; we want to split the last one
 	n = (*T).getActualNrInnerPolygons();
@@ -358,6 +359,11 @@ void splitHoleTriangle(Triangulation * const T){
 	// Get the vertices we will need later of triangles
 	store0 = (*t0).getOtherVertex(e0);
 	store1 = (*t1).getOtherVertex(e2);
+
+	// Get the STEntries of the obsolete edges of the polygon, to replace the edges
+	// later by new ones
+	entry0 = (*e0).getSTEntry();
+	entry1 = (*e2).getSTEntry();
 
 	// Delete the edges containing v0
 	delete e0;
@@ -385,8 +391,10 @@ void splitHoleTriangle(Triangulation * const T){
 	// Generate the edges and the triangle of the first polygon
 	p1e0 = new TEdge(v1, n2, EdgeType::POLYGON);
 	p1e1 = new TEdge(n2, v2, EdgeType::POLYGON);
-	(*T).addEdge(p1e0);
-	(*T).addEdge(p1e1);
+	(*entry0).replaceEdge(p1e0);
+	(*T).addEdge(p1e0, n);
+	(*entry1).replaceEdge(p1e1);
+	(*T).addEdge(p1e1, n);
 	new Triangle(p1e0, p1e1, e1, v1, v2, n2);
 
 
@@ -407,37 +415,37 @@ void splitHoleTriangle(Triangulation * const T){
 	p2e0 = new TEdge(n0, v0, EdgeType::POLYGON);
 	p2e1 = new TEdge(n1, n0, EdgeType::POLYGON);
 	p2e2 = new TEdge(v0, n1, EdgeType::POLYGON);
-	(*T).addEdge(p2e0);
-	(*T).addEdge(p2e1);
-	(*T).addEdge(p2e2);
+	(*T).addEdge(p2e0, n + 1);
+	(*T).addEdge(p2e1, n + 1);
+	(*T).addEdge(p2e2, n + 1);
 	new Triangle(p2e0, p2e1, p2e2, v0, n0, n1);
 
 	// Add triangles to the outside
 	h0 = new TEdge(store1, n1);
 	h1 = (*v0).getEdgeTo(store1);
-	(*T).addEdge(h0);
+	(*T).addEdge(h0, n + 1);
 	new Triangle(h0, h1, p2e2, v0, store1, n1);
 
 	h1 = new TEdge(n1, v2);
 	h2 = (*store1).getEdgeTo(v2);
-	(*T).addEdge(h1);
+	(*T).addEdge(h1, n + 1);
 	new Triangle(h0, h1, h2, store1, n1, v2);
 
 	h0 = new TEdge(store0, n0);
 	h1 = (*v0).getEdgeTo(store0);
-	(*T).addEdge(h0);
+	(*T).addEdge(h0, n + 1);
 	new Triangle(h0, h1, p2e0, v0, store0, n0);
 
 	h1 = new TEdge(n0, v1);
 	h2 = (*store0).getEdgeTo(v1);
-	(*T).addEdge(h1);
+	(*T).addEdge(h1, n + 1);
 	new Triangle(h0, h1, h2, store0, n0, v1);
 
 	// Add triangles between the polygons
 	h0 = new TEdge(n1, n2);
 	h1 = new TEdge(n0, n2);
-	(*T).addEdge(h0);
-	(*T).addEdge(h1);
+	(*T).addEdge(h0, n + 1);
+	(*T).addEdge(h1, n + 1);
 	new Triangle(h0, h1, p2e1, n0, n1, n2);
 
 	new Triangle(h0, (*n1).getEdgeTo(v2), (*n2).getEdgeTo(v2), n1, n2, v2);
@@ -487,10 +495,10 @@ void boxPolygon(Triangulation * const T, const int startIndex){
 	re1 = new TEdge(rv1, rv2, EdgeType::FRAME);
 	re2 = new TEdge(rv2, rv3, EdgeType::FRAME);
 	re3 = new TEdge(rv3, rv0, EdgeType::FRAME);
-	(*T).addEdge(re0);
-	(*T).addEdge(re1);
-	(*T).addEdge(re2);
-	(*T).addEdge(re3);
+	(*T).addEdge(re0, 0);
+	(*T).addEdge(re1, 0);
+	(*T).addEdge(re2, 0);
+	(*T).addEdge(re3, 0);
 
 	// Calculate the last vertex for each quadrant
 	limit0 = (Settings::initialSize + 1) / 4;
@@ -500,13 +508,13 @@ void boxPolygon(Triangulation * const T, const int startIndex){
 	// First quadrant
 	v0 = (*T).getVertex(startIndex, 0);
 	start = new TEdge(v0, rv0);
-	(*T).addEdge(start);
+	(*T).addEdge(start, 0);
 	prev = start;
 
 	for(i = startIndex + 1; i <= limit0; i++){
 		v1 = (*T).getVertex(i, 0);
 		next = new TEdge(v1, rv0);
-		(*T).addEdge(next);
+		(*T).addEdge(next, 0);
 
 		new Triangle(prev, (*v0).getEdgeTo(v1), next, v0, v1, rv0);
 
@@ -518,14 +526,14 @@ void boxPolygon(Triangulation * const T, const int startIndex){
 
 	// Close the gap between first and second quadrant
 	next = new TEdge(v0, rv1);
-	(*T).addEdge(next);
+	(*T).addEdge(next, 0);
 	new Triangle(prev, next, re0, v0, rv0, rv1);
 	prev = next;
 
 	for(; i <= limit1; i++){
 		v1 = (*T).getVertex(i, 0);
 		next = new TEdge(v1, rv1);
-		(*T).addEdge(next);
+		(*T).addEdge(next, 0);
 
 		new Triangle(prev, (*v0).getEdgeTo(v1), next, v0, v1, rv1);
 
@@ -537,14 +545,14 @@ void boxPolygon(Triangulation * const T, const int startIndex){
 
 	// Close the gap between second and third quadrant
 	next = new TEdge(v0, rv2);
-	(*T).addEdge(next);
+	(*T).addEdge(next, 0);
 	new Triangle(prev, next, re1, v0, rv1, rv2);
 	prev = next;
 
 	for(; i <= limit2; i++){
 		v1 = (*T).getVertex(i, 0);
 		next = new TEdge(v1, rv2);
-		(*T).addEdge(next);
+		(*T).addEdge(next, 0);
 
 		new Triangle(prev, (*v0).getEdgeTo(v1), next, v0, v1, rv2);
 
@@ -556,14 +564,14 @@ void boxPolygon(Triangulation * const T, const int startIndex){
 
 	// Close the gap between third and fourth quadrant
 	next = new TEdge(v0, rv3);
-	(*T).addEdge(next);
+	(*T).addEdge(next, 0);
 	new Triangle(prev, next, re2, v0, rv2, rv3);
 	prev = next;
 
 	for(; i < Settings::initialSize; i++){
 		v1 = (*T).getVertex(i, 0);
 		next = new TEdge(v1, rv3);
-		(*T).addEdge(next);
+		(*T).addEdge(next, 0);
 
 		new Triangle(prev, (*v0).getEdgeTo(v1), next, v0, v1, rv3);
 
@@ -574,7 +582,7 @@ void boxPolygon(Triangulation * const T, const int startIndex){
 	// Close the gap between the first and the fourth quadrant
 	v1 = (*T).getVertex(startIndex, 0);
 	next = new TEdge(v1, rv3);
-	(*T).addEdge(next);
+	(*T).addEdge(next, 0);
 
 	new Triangle(prev, (*v0).getEdgeTo(v1), next, v0, v1, rv3);
 	new Triangle(next, start, re3, v1, rv0, rv3);

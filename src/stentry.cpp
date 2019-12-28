@@ -17,7 +17,7 @@
 
 #include "stentry.h"
 
-STEntry::STEntry(TEdge *e, STEntry *prt) : edge(e), parent(prt){
+STEntry::STEntry(TEdge *e, STEntry *prt) : edge(e), parent(prt) {
 	entryLength = (*edge).length();
 	leftLength = 0;
 	rightLength = 0;
@@ -29,6 +29,9 @@ STEntry::STEntry(TEdge *e, STEntry *prt) : edge(e), parent(prt){
 	nrElementsLeft = 0;
 	nrElementsRight = 0;
 	nrElementsTotal = 1;
+
+	// Register the entry at the edge
+	(*e).setSTEntry(this);
 }
 
 STEntry *STEntry::getLighterSubtree(){
@@ -54,6 +57,7 @@ void STEntry::addChild(STEntry *child){
 
 	if(parent != NULL)
 		(*parent).update();
+
 }
 
 STEntry *STEntry::getRandomChild(){
@@ -76,12 +80,36 @@ TEdge *STEntry::getEdge(){
 	return edge;
 }
 
-void STEntry::update(){
-	if(leftChild != NULL)
-		leftLength = (*leftChild).getTotalLength();
+unsigned int STEntry::getNrElementsTotal(){
+	return nrElementsTotal;
+}
 
-	if(rightChild != NULL)
+void STEntry::update(){
+	//fprintf(stderr, "here 1\n");
+	if(leftChild != NULL){
+		leftLength = (*leftChild).getTotalLength();
+		nrElementsLeft = (*leftChild).getNrElementsTotal();
+	}
+	//fprintf(stderr, "here 2\n");
+	if(rightChild != NULL){
 		rightLength = (*rightChild).getTotalLength();
+		nrElementsRight = (*rightChild).getNrElementsTotal();
+	}
+	//fprintf(stderr, "here 3\n");
+	entryLength = (*edge).length();
+	//fprintf(stderr, "here 4\n");
+	totalLength = entryLength + leftLength + rightLength;
+	nrElementsTotal = nrElementsLeft + nrElementsRight + 1;
+
+	if(parent != NULL)
+		(*parent).update();
+}
+
+void STEntry::replaceEdge(TEdge *e){
+	edge = e;
+
+	// Register the entry at the edge
+	(*edge).setSTEntry(this);
 
 	entryLength = (*edge).length();
 
@@ -89,4 +117,15 @@ void STEntry::update(){
 
 	if(parent != NULL)
 		(*parent).update();
+}
+
+void STEntry::check(){
+	// Just take a look whether the edge still exists
+	(*edge).length();
+
+	if(leftChild != NULL)
+		(*leftChild).check();
+
+	if(rightChild != NULL)
+		(*rightChild).check();
 }

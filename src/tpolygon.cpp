@@ -41,7 +41,7 @@ unsigned int TPolygon::N = 0;
 	@param 	n 	The target number of vertices of the new polygon
 */
 TPolygon::TPolygon(Triangulation const * const t, const int n) :
-	T(t), id(N) {
+	T(t), tree(new SelectionTree), id(N) {
 
 	vertices.reserve(n);
 
@@ -60,6 +60,13 @@ void TPolygon::addVertex(Vertex * const v){
 	vertices.push_back(v);
 
 	(*v).setPolygon(this);
+}
+
+/*
+	@param	e 	Edge to be added to the SelectionTree
+*/
+void TPolygon::addEdge(TEdge * const e){
+	(*tree).insert(e);
 }
 
 
@@ -110,6 +117,13 @@ int TPolygon::getActualPolygonSize() const{
 	return vertices.size();
 }
 
+/*
+	@return 	Any edge of the polygon selected uniformly at random by its length
+*/
+TEdge *TPolygon::getRandomEdgeWeighted() const{
+	return (*tree).getRandomEdge();
+}
+
 
 /*
 	R ~ E ~ M ~ O ~ V ~ E ~ R
@@ -149,4 +163,19 @@ void TPolygon::writeToLine(std::ostream& os) const {
 	++cnt;
 	assert(cnt == num_v);
 	os << std::endl;
+}
+
+/*
+	O ~ T ~ H ~ E ~ R ~ S
+*/
+
+/*
+	Check the correctness of the SelectionTree
+*/
+void TPolygon::checkST() const{
+	fprintf(stderr, "Start checking the SelectionTree of polygon %d\n", id);
+
+	(*tree).check();
+
+	fprintf(stderr, "SelectionTree successfully checked\n");
 }

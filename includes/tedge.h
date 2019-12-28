@@ -54,10 +54,12 @@ enum class IntersectionType {NONE, EDGE, VERTEX};
 class Triangulation;
 class Triangle;
 class Vertex;
+class STEntry;
 
 #include "triangulation.h"
 #include "triangle.h"
 #include "vertex.h"
+#include "stentry.h"
 
 /*
 	Define the different edge types:
@@ -97,6 +99,11 @@ private:
 	EdgeType type;
 
 	/*
+		The entry in the SelectionTree for polygon edges
+	*/
+	STEntry *entry;
+
+	/*
 		The unique ID of the edge
 	*/
 	const unsigned long long id;
@@ -121,6 +128,7 @@ public:
 		void 				setTriangulation(Triangulation * const t)
 		void 				setEdgeType(const EdgeType tp)
 		void 				setTriangle(Triangle * const t)
+		void 				setSTEntry(STEntry *ste)
 
 		GETTER:
 
@@ -196,9 +204,14 @@ public:
 	void setTriangulation(Triangulation * const t);
 
 	/*
-		@param 	tp 	The new type of the edge
+		@param 	tp 		The new type of the edge
+		@param 	temp	Use true if the change is just temporary!
+
+		Note:
+			Do not change the type from polygon to something else, because this would
+			lead to a none polygon edge in the SelectionTree of the polygon!!!
 	*/
-	void setEdgeType(const EdgeType tp);
+void setEdgeType(const EdgeType tp, const bool temp);
 
 	/*
 		The function setTriangle() registers a new triangle, which contains the edge, at the
@@ -210,6 +223,13 @@ public:
 		@param 	t 	The new triangle
 	*/
 	void setTriangle(Triangle * const t);
+
+	/*
+		Connects a polygon edge with its entry in the SelectionTree of its polygon
+
+		@param 	ste 	The entry in the SelectionTree
+	*/
+	void setSTEntry(STEntry *ste);
 
 	
 	/*
@@ -281,6 +301,10 @@ public:
 	*/
 	Vertex *getOtherVertex(Vertex const *  const v) const;
 
+	/*
+		@return 	The SelectionTree entry of the edge
+	*/
+	STEntry *getSTEntry() const;
 
 
 	/*

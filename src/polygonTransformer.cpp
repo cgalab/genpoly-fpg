@@ -132,7 +132,7 @@ void growPolygonBy(Triangulation * const T, const unsigned int pID, const int n)
 
 		// Check whether the choosen edge fulfills the stability criteria for insertions
 		ok = (*in).checkStability();
-;
+
 		// Recognized when it is hard to find a suitable edge to insert in
 		if(!ok){
 			delete in;

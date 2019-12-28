@@ -37,9 +37,11 @@
 */
 class Triangulation;
 class Vertex;
+class SelectionTree;
 
 #include "triangulation.h"
 #include "vertex.h"
+#include "selectionTree.h"
 
 class TPolygon{
 
@@ -54,6 +56,11 @@ private:
 		A vector of all vertices belonging to the polygon
 	*/
 	std::vector<Vertex*> vertices;
+
+	/*
+		A binary tree containing all edges of the polygon for weighted random selection
+	*/
+	SelectionTree *tree;
 
 	/*
 		The ID of the polygon
@@ -92,6 +99,11 @@ public:
 	*/
 	void addVertex(Vertex * const v);
 
+	/*
+		@param	e 	Edge to be added to the SelectionTree
+	*/
+	void addEdge(TEdge * const e);
+
 
 	/*
 		G ~ E ~ T ~ T ~ E ~ R ~ S
@@ -121,6 +133,11 @@ public:
 	*/
 	int getActualPolygonSize() const;
 
+	/*
+		@return 	Any edge of the polygon selected uniformly at random by its length
+	*/
+	TEdge *getRandomEdgeWeighted() const;
+
 
 	/*
 		R ~ E ~ M ~ O ~ V ~ E ~ R
@@ -134,9 +151,20 @@ public:
 
 	/*
 		Write this polygon to os in line format.
+
 		@param  os      Output stream
 	*/
 	void writeToLine(std::ostream& os) const;
+
+
+	/*
+		O ~ T ~ H ~ E ~ R ~ S
+	*/
+
+	/*
+		Checks the correctness of the SelectionTree
+	*/
+	void checkST() const;
 };
 
 #endif

@@ -25,6 +25,7 @@
 #include "triangle.h"
 #include "translation.h"
 #include "settings.h"
+#include "stentry.h"
 
 /*
 	Define the class Insertion:

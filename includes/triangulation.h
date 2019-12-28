@@ -70,8 +70,6 @@ private:
 			- An unordered map with a hashtable could be faster, but I do not know how efficient 
 				the deletion of elements is implemented their
 	*/
-	// TODO:
-	// Create something to disable this
 	std::map<int, TEdge*> edges;
 
 	/*
@@ -102,7 +100,7 @@ public:
 		void 			addVertex(Vertex * const v, const unsigned int pID)
 		void 			changeVertex(const int i, const unsigned int fromP,
 						const unsigned int toP)
-		void 			addEdge(TEdge * const e)
+		void 			addEdge(TEdge * const e , const unsigned int pID)
 		void 			setRectangle(Vertex * const v0, Vertex * const v1, Vertex * const v2,
 						Vertex * const v3)
 
@@ -129,6 +127,7 @@ public:
 		OTHERS:
 
 		bool 			check() const
+		void 			checkST() const
 		void 			stretch(const double factor)
 		void			checkSimplicity() const
 	*/
@@ -177,9 +176,14 @@ public:
 	void changeVertex(const int i, const unsigned int fromP, const unsigned int toP);
 
 	/*
-		@param	e 	Edge to be added to the edge map
+		Adds a new edge to the edge map of the triangulation if printing the whole
+		triangulation is required. Polygon edges get add to the SelectionTree of its 
+		polygon.
+
+		@param	e 		Edge to be added to the edge map
+		@param 	pID 	For polygon edges the ID of the polygon, for other edges no meaning
 	*/
-	void addEdge(TEdge * const e);
+	void addEdge(TEdge * const e , const unsigned int pID);
 
 	/*
 		The function setRectangle() sets the vertices of the Rectangle0, ..., Rectangle3 of
@@ -239,6 +243,12 @@ public:
 		@return 	The vertex at index i in the vertices vector
 	*/
 	Vertex *getVertex(const int i) const;
+
+	/*
+		@param 	pID 	The ID of the polygon of interest
+		@return 		Any edge of the polygon selected uniformly at random by its length
+	*/
+	TEdge *getRandomEdgeWeighted(const unsigned int pID) const;
 
 
 	/*
@@ -326,6 +336,11 @@ public:
 		@return 	true if everything is alright, otherwise false
 	*/
 	bool check() const;
+
+	/*
+		Checks the correctness of the SelectionTrees
+	*/
+	void checkST() const;
 
 	/*
 		The function stretch() stretches the whole polygon by a constant factor, i.e. the

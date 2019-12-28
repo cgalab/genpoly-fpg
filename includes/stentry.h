@@ -72,7 +72,13 @@ public:
 
 	TEdge *getEdge();
 
+	unsigned int getNrElementsTotal();
+
 	void update();
+
+	void replaceEdge(TEdge *e);
+
+	void check();
 
 };
 

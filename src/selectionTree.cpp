@@ -17,7 +17,7 @@
 
 #include "selectionTree.h"
 
-SelectionTree::SelectionTree() : root(NULL){}
+SelectionTree::SelectionTree() : root(NULL) {}
 
 void SelectionTree::insert(TEdge * e){
 	STEntry *entry, *child;
@@ -52,4 +52,13 @@ TEdge *SelectionTree::getRandomEdge(){
 	}
 
 	return (*entry).getEdge();
+}
+
+void SelectionTree::check(){
+	if(root == NULL)
+		return;
+
+	fprintf(stderr, "Total number of elements: %d\n", (*root).getNrElementsTotal());
+
+	(*root).check();
 }

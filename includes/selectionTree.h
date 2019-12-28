@@ -19,7 +19,6 @@
 /*
 	Include standard libraries
 */
-#include <stdlib.h>
 
 /*
 	Include my headers
@@ -55,6 +54,7 @@ public:
 
 	TEdge *getRandomEdge();
 
+	void check();
 };
 
 #endif

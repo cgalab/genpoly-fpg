@@ -106,14 +106,32 @@ void Triangulation::changeVertex(const int i, const unsigned int fromP, const un
 }
 
 /*
-	@param	e 	Edge to be added to the edge map
+	Adds a new edge to the edge map of the triangulation if printing the whole
+	triangulation is required. Polygon edges get add to the SelectionTree of its 
+	polygon.
+
+	@param	e 		Edge to be added to the edge map
+	@param 	pID 	For polygon edges the ID of the polygon, for other edges no meaning
 */
-void Triangulation::addEdge(TEdge * const e){
+void Triangulation::addEdge(TEdge * const e , const unsigned int pID){
 	if(Settings::triangulationOutputRequired)
 		edges.insert(std::pair<int, TEdge*>((*e).getID(), e));
 
 	// Do not forget to register the triangulation at the edge
 	(*e).setTriangulation(this);
+
+	if((*e).getEdgeType() == EdgeType::POLYGON){
+
+		// Check whether the new edge has already been added to the polygon, i.e. that
+		// it already has an entry in the SelectionTree
+		if((*e).getSTEntry() != NULL)
+			return;
+
+		if(pID == 0)
+			(*outerPolygon).addEdge(e);
+		else if(pID > 0 && pID <= Settings::nrInnerPolygons)
+			(*innerPolygons[pID - 1]).addEdge(e);
+	}
 }
 
 /*
@@ -211,6 +229,20 @@ Vertex *Triangulation::getVertex(const int i, const unsigned int pID) const{
 */
 Vertex *Triangulation::getVertex(const int i) const{
 	return vertices[i];
+}
+
+/*
+	@param 	pID 	The ID of the polygon of interest
+	@return 		Any edge of the polygon selected uniformly at random by its length
+*/
+TEdge *Triangulation::getRandomEdgeWeighted(const unsigned int pID) const{
+
+	if(pID == 0)
+		return (*outerPolygon).getRandomEdgeWeighted();
+	else if(pID > 0 && pID <= Settings::nrInnerPolygons)
+		return (*innerPolygons[pID - 1]).getRandomEdgeWeighted();
+	else
+		return NULL;
 }
 
 
@@ -504,6 +536,15 @@ bool Triangulation::check() const{
 		checkSimplicity();
 
 	return ok;
+}
+
+/*
+	Checks the correctness of the SelectionTrees
+*/
+// TODO:
+// Include holes
+void Triangulation::checkST() const{
+	(*outerPolygon).checkST();
 }
 
 /*

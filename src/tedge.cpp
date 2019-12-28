@@ -40,7 +40,8 @@ unsigned long long TEdge::n = 0;
 	@param 	V1 	Second vertex defining the edge
 */
 TEdge::TEdge(Vertex * const V0, Vertex * const V1) :
-	T(NULL), v0(V0), v1(V1), t0(NULL), t1(NULL), type(EdgeType::TRIANGULATION), id(n) { 
+	T(NULL), v0(V0), v1(V1), t0(NULL), t1(NULL), type(EdgeType::TRIANGULATION), entry(NULL), 
+	id(n) { 
 	
 	// Register the new edge at its vertices
 	(*v0).addEdge(this);
@@ -70,7 +71,7 @@ TEdge::TEdge(Vertex * const V0, Vertex * const V1) :
 		important!
 */
 TEdge::TEdge(Vertex * const V0, Vertex * const V1, const EdgeType tp) :
-	T(NULL), v0(V0), v1(V1), t0(NULL), t1(NULL), type(tp), id(n) {
+	T(NULL), v0(V0), v1(V1), t0(NULL), t1(NULL), type(tp), entry(NULL), id(n) {
 	
 	// For polygon edges set the ordering in the polygon
 	if(type == EdgeType::POLYGON){
@@ -103,15 +104,35 @@ void TEdge::setTriangulation(Triangulation * const t){
 }
 
 /*
-	@param 	tp 	The new type of the edge
-*/
-void TEdge::setEdgeType(const EdgeType tp){
-	type = tp;
+	@param 	tp 		The new type of the edge
+	@param 	temp	Use true if the change is just temporary!
 
-	// For polygon edges set the ordering in the polygon
+	Note:
+		Do not change the type from polygon to something else, because this would
+		lead to a none polygon edge in the SelectionTree of the polygon!!!
+*/
+void TEdge::setEdgeType(const EdgeType tp, const bool temp){
+	
+	if(temp){
+		type = tp;
+		return;
+	}
+
+	if(type == EdgeType::POLYGON){
+		fprintf(stderr, "setEdgeType() for type not POLYGON not implemented!\n");
+		exit(15);
+	}
+
+	type = tp;
+	unsigned int pid;
+
+	// For polygon edges set the ordering in the polygon and add it to the polygon
 	if(tp == EdgeType::POLYGON){
 		(*v0).setToNext(this);
 		(*v1).setToPrev(this);
+
+		pid = (*v0).getPID();
+		(*T).addEdge(this, pid);
 	}
 }
 
@@ -137,6 +158,16 @@ void TEdge::setTriangle(Triangle * const t){
 		exit(5);
 	}	
 }
+
+/*
+	Connects a polygon edge with its entry in the SelectionTree of its polygon
+
+	@param 	ste 	The entry in the SelectionTree
+*/
+void TEdge::setSTEntry(STEntry *ste){
+	entry = ste;
+}
+
 
 
 /*
@@ -232,6 +263,13 @@ Vertex *TEdge::getOtherVertex(Vertex const * const v) const{
 		return v1;
 	else
 		return v0;
+}
+
+/*
+	@return 	The SelectionTree entry of the edge
+*/
+STEntry *TEdge::getSTEntry() const{
+	return entry;
 }
 
 

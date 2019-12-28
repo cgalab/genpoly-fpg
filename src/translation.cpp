@@ -682,7 +682,7 @@ bool Translation::flip(Triangle *t0, const bool singleFlip){
 
 	// New triangle vn0, vn1, vj0
 	e = new TEdge(vn0, vn1);
-	(*T).addEdge(e);
+	(*T).addEdge(e, 0);
 
 	e1 = (*vj0).getEdgeTo(vn0);
 	e2 = (*vj0).getEdgeTo(vn1);
@@ -690,7 +690,7 @@ bool Translation::flip(Triangle *t0, const bool singleFlip){
 	t0 = new Triangle(e, e1, e2, vn0, vn1, vj0);
 
 	// New triangle vn0, vn1, vj1
-	(*T).addEdge(e);
+	(*T).addEdge(e, 0);
 
 	e1 = (*vj1).getEdgeTo(vn0);
 	e2 = (*vj1).getEdgeTo(vn1);
@@ -1009,7 +1009,7 @@ bool Translation::undo(){
 
 			// Recreate the old edge
 			e = new TEdge(oldD0, oldD1);
-			(*T).addEdge(e);
+			(*T).addEdge(e, 0);
 
 			// And the old triangles
 			new Triangle(e, (*oldD0).getEdgeTo(newD0), (*oldD1).getEdgeTo(newD0), oldD0, oldD1, newD0);
@@ -1282,14 +1282,14 @@ enum Executed Translation::execute(){
 bool Translation::checkSimplicityOfTranslation() const{
 	bool simple;
 
-	(*prevOldE).setEdgeType(EdgeType::TRIANGULATION);
-	(*nextOldE).setEdgeType(EdgeType::TRIANGULATION);
+	(*prevOldE).setEdgeType(EdgeType::TRIANGULATION, true);
+	(*nextOldE).setEdgeType(EdgeType::TRIANGULATION, true);
 
 	simple = checkEdge(prevV, prevNewE);
 	simple = simple && checkEdge(nextV, nextNewE);
 
-	(*prevOldE).setEdgeType(EdgeType::POLYGON);
-	(*nextOldE).setEdgeType(EdgeType::POLYGON);
+	(*prevOldE).setEdgeType(EdgeType::POLYGON, true);
+	(*nextOldE).setEdgeType(EdgeType::POLYGON, true);
 
 	return simple;
 }
