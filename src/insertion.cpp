@@ -26,16 +26,32 @@
 	The contructor is given an vertex index. The insertion is done into the
 	edge between the vertex and its successor in the polygon
 
-	@param 	t 		The triagnulation the polygon lives in
+	@param 	T 		The triangulation the polygon lives in
 	@param 	pid 	The id of the polygon to insert in
 	@param 	index 	The index of the vertex
 */
 Insertion::Insertion(Triangulation * const t, const unsigned int pid, const int index) :
-	T(t), pID(pid), i(index) {
+	T(t), pID(pid) {
 
-	v0 = (*T).getVertex(i, pID);
+	v0 = (*T).getVertex(index, pID);
 	v1 = (*v0).getNext();
 	e = (*v0).getToNext();
+}
+
+/*
+	Contructor:
+	This constructor directly takes the edge into which the new vertex will
+	be inserted
+
+	@param 	T 		The triangulation the polygon lives in
+	@param 	pid 	The id of the polygon to insert in
+	@param 	e 	 	The edge to insert in
+*/
+Insertion::Insertion(Triangulation * const t, const unsigned int pid, TEdge *edge) :
+	T(t), pID(pid), e(edge){
+
+	v0 = (*e).getV0();
+	v1 = (*e).getV1();
 }
 
 

@@ -112,6 +112,7 @@ public:
 		int 			getActualNumberOfVertices(const unsigned int pID) const
 		Vertex*			getVertex(const int i, const unsigned int pID) const
 		Vertex* 		getVertex(const int i) const
+		TEdge*			getRandomEdgeWeighted(const unsigned int pID) const;
 
 		REMOVER:
 

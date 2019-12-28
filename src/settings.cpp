@@ -50,6 +50,7 @@ bool Settings::globalChecking = false;
 */
 int Settings::insertionTries = 100;
 double Settings::minLength = 0.0000001;
+bool Settings::weightedEdgeSelection = true;
 
 
 /*

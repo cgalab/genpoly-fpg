@@ -116,6 +116,9 @@ public:
 	// Minimal allowed edge length for insertions
 	static double minLength;
 
+	// Flag for weighted edge selection
+	static bool weightedEdgeSelection;
+
 
 	/*
 		Utilities

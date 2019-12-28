@@ -50,11 +50,6 @@ private:
 	unsigned int pID;
 
 	/*
-		The index of the vertex in the vertices vector of the triangulation
-	*/
-	const int i;
-
-	/*
 		The edge to insert in
 	*/
 	TEdge *e;
@@ -78,6 +73,7 @@ public:
 		CONSTRUCTORS:
 		
 				Insertion(Triangulation * const t, const unsigned int pid, const int index)
+				Insertion(Triangulation * const t, const unsigned int pid, TEdge *edge)
 
 		OTHERS:
 
@@ -96,11 +92,23 @@ public:
 		The contructor is given an vertex index. The insertion is done into the
 		edge between the vertex and its successor in the polygon
 
-		@param 	t 		The triagnulation the polygon lives in
+		@param 	T 		The triangulation the polygon lives in
 		@param 	pid 	The id of the polygon to insert in
 		@param 	index 	The index of the vertex
 	*/
 	Insertion(Triangulation * const t, const unsigned int pid, const int index);
+
+	/*
+		Contructor:
+		This constructor directly takes the edge into which the new vertex will
+		be inserted
+
+		@param 	T 		The triangulation the polygon lives in
+		@param 	pid 	The id of the polygon to insert in
+		@param 	e 	 	The edge to insert in
+	*/
+	Insertion(Triangulation * const t, const unsigned int pid, TEdge *edge);
+
 
 
 	/*

@@ -35,6 +35,7 @@ static struct option long_options[] = {
 		{ "enableglobalchecks"      , no_argument,  0, 'g'},
 		{ "verbose"                 , no_argument,  0, 'v'},
 		{ "enablestats"             , no_argument,  0, 't'},
+		{ "disableedgeselection"    , no_argument,  0, 'w'},
 		{ 0, 0, 0, 0}
 };
 
@@ -57,6 +58,7 @@ static struct option long_options[] = {
 	fprintf(f,"           --enableglobalchecks       (default off).\n");
 	fprintf(f,"           --verbose                  (default off).\n");
 	fprintf(f,"           --enablestats              (default off).\n");
+	fprintf(f,"           --disableedgeselection     \n");
 	fprintf(f,"\n");
 	fprintf(f,"  holesizes example:  --holesizes 3,6,7\n");
 	exit(err);
@@ -162,6 +164,10 @@ private:
 			}
 			case 't': {
 				enableStats = true;
+				break;
+			}
+			case 'w': {
+				weightedEdgeSelection = false;
 				break;
 			}
 			default:{

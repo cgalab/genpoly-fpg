@@ -116,6 +116,7 @@ void growPolygonBy(Triangulation * const T, const unsigned int pID, const int n)
 	bool ok;
 	int div;
 	int counter = 0;
+	TEdge *e = NULL;
 
 	div = 0.01 * n;
 	if(div == 0)
@@ -126,9 +127,15 @@ void growPolygonBy(Triangulation * const T, const unsigned int pID, const int n)
 		actualN = (*T).getActualNumberOfVertices(pID);
 
 		// Chose randomly an edge to insert in
-		index = (*Settings::generator).getRandomIndex(actualN);
+		if(Settings::weightedEdgeSelection){
+			e = (*T).getRandomEdgeWeighted(pID);
 
-		in = new Insertion(T, pID, index);
+			in = new Insertion(T, pID, e);
+		}else{
+			index = (*Settings::generator).getRandomIndex(actualN);
+
+			in = new Insertion(T, pID, index);
+		}
 
 		// Check whether the choosen edge fulfills the stability criteria for insertions
 		ok = (*in).checkStability();
