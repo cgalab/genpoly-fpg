@@ -55,8 +55,10 @@ TEdge *SelectionTree::getRandomEdge(){
 }
 
 void SelectionTree::check(){
-	if(root == NULL)
+	if(root == NULL){
+		fprintf(stderr, "This SelectionTree is empty!\n");
 		return;
+	}
 
 	fprintf(stderr, "Total number of elements: %d\n", (*root).getNrElementsTotal());
 

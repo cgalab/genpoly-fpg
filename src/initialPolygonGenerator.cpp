@@ -224,7 +224,7 @@ void generateInitialHoleTriangle(Triangulation * const T){
 	e0 = new TEdge(v0, v1, EdgeType::POLYGON);
 	e1 = new TEdge(v0, triangleV0);
 	e2 = new TEdge(v1, triangleV0);
-	(*T).addEdge(e0, 1);
+	(*T).addEdge(e0, 0);
 	(*T).addEdge(e1, 1);
 	(*T).addEdge(e2, 1);
 
@@ -239,7 +239,7 @@ void generateInitialHoleTriangle(Triangulation * const T){
 		e0 = new TEdge(v0, v1, EdgeType::POLYGON);
 		e1 = e2;
 		e2 = new TEdge(v1, triangleV0);
-		(*T).addEdge(e0, 1);
+		(*T).addEdge(e0, 0);
 		(*T).addEdge(e2, 1);
 
 		new Triangle(e0, e1, e2, v0, v1, triangleV0);
@@ -264,7 +264,7 @@ void generateInitialHoleTriangle(Triangulation * const T){
 		e0 = new TEdge(v0, v1, EdgeType::POLYGON);
 		e1 = e2;
 		e2 = new TEdge(v1, triangleV1);
-		(*T).addEdge(e0, 1);
+		(*T).addEdge(e0, 0);
 		(*T).addEdge(e2, 1);
 
 		new Triangle(e0, e1, e2, v0, v1, triangleV1);
@@ -289,7 +289,7 @@ void generateInitialHoleTriangle(Triangulation * const T){
 		e0 = new TEdge(v0, v1, EdgeType::POLYGON);
 		e1 = e2;
 		e2 = new TEdge(v1, triangleV2);
-		(*T).addEdge(e0, 1);
+		(*T).addEdge(e0, 0);
 		(*T).addEdge(e2, 1);
 
 		new Triangle(e0, e1, e2, v0, v1, triangleV2);
@@ -309,7 +309,7 @@ void generateInitialHoleTriangle(Triangulation * const T){
 	new Triangle(triangleE0, triangleE1, triangleE2, triangleV0, triangleV1, triangleV2);
 
 	e0 = new TEdge(v1, (*T).getVertex(0, 0), EdgeType::POLYGON);
-	(*T).addEdge(e0, 1);
+	(*T).addEdge(e0, 0);
 
 	new Triangle(e0, e2, start, v1, (*T).getVertex(0, 0), triangleV0);
 }

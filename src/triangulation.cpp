@@ -545,6 +545,9 @@ bool Triangulation::check() const{
 // Include holes
 void Triangulation::checkST() const{
 	(*outerPolygon).checkST();
+
+	for(auto const& i : innerPolygons)
+		(*i).checkST();
 }
 
 /*
