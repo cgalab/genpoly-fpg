@@ -22,20 +22,20 @@
 
 static const char* short_options = "hc:v::S:D";
 static struct option long_options[] = {
-		{ "help"               , no_argument      , 0, 'h'},
-		{ "nrofholes"          , required_argument, 0, 'n'},
-		{ "startsize"          , required_argument, 0, 'i'},
-		{ "seed"               , required_argument, 0, 's'},
-		{ "arithmetic"         , no_argument,       0, 'a'},
-		{ "holesizes"          , required_argument, 0, 'H'},
-		{ "outputformat"       , required_argument, 0, 'o'},
-		{ "noexecutioninfo"    , no_argument,       0, 'e'},
-		{ "numericalcorrectioninfo" , no_argument,  0, 'c'},
-		{ "disablelocalchecks"      , no_argument,  0, 'l'},
-		{ "enableglobalchecks"      , no_argument,  0, 'g'},
-		{ "verbose"                 , no_argument,  0, 'v'},
-		{ "enablestats"             , no_argument,  0, 't'},
-		{ "disableedgeselection"    , no_argument,  0, 'w'},
+		{ "help"                , no_argument      , 0, 'h'},
+		{ "nrofholes"           , required_argument, 0, 'n'},
+		{ "startsize"           , required_argument, 0, 'i'},
+		{ "seed"                , required_argument, 0, 's'},
+		{ "arithmetic"          , no_argument,       0, 'a'},
+		{ "holesizes"           , required_argument, 0, 'H'},
+		{ "outputformat"        , required_argument, 0, 'o'},
+		{ "noexecutioninfo"     , no_argument,       0, 'e'},
+		{ "numericalcorrectioninfo"  , no_argument,  0, 'c'},
+		{ "disablelocalchecks"       , no_argument,  0, 'l'},
+		{ "enableglobalchecks"       , no_argument,  0, 'g'},
+		{ "verbose"                  , no_argument,  0, 'v'},
+		{ "enablestats"              , no_argument,  0, 't'},
+		{ "disableweightedselection" , no_argument,  0, 'w'},
 		{ 0, 0, 0, 0}
 };
 
@@ -58,7 +58,7 @@ static struct option long_options[] = {
 	fprintf(f,"           --enableglobalchecks       (default off).\n");
 	fprintf(f,"           --verbose                  (default off).\n");
 	fprintf(f,"           --enablestats              (default off).\n");
-	fprintf(f,"           --disableedgeselection     \n");
+	fprintf(f,"           --disableweightedselection \n");
 	fprintf(f,"\n");
 	fprintf(f,"  holesizes example:  --holesizes 3,6,7\n");
 	exit(err);

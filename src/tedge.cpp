@@ -131,8 +131,7 @@ void TEdge::setEdgeType(const EdgeType tp, const bool temp){
 		(*v0).setToNext(this);
 		(*v1).setToPrev(this);
 
-		pid = (*v0).getPID();
-		(*T).addEdge(this, pid);
+		(*T).addEdge(this, (*v0).getPID());
 	}
 }
 

@@ -1327,8 +1327,10 @@ Translation::~Translation(){
 	struct Flip *f;
 
 	// Update the edge lengths in the SelectionTree
-	(*prevOldE).updateSTEntry();
-	(*nextOldE).updateSTEntry();
+	if(Settings::weightedEdgeSelection){
+		(*prevOldE).updateSTEntry();
+		(*nextOldE).updateSTEntry();
+	}
 
 	// Delete the flip stack
 	while(!FlipStack.empty()){

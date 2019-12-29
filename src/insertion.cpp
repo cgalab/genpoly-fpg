@@ -120,7 +120,8 @@ void Insertion::execute(){
 	other1 = (*t1).getOtherVertex(e);
 
 	// Get the STEntry of to replace the edge by one new edge in the SelectionTree
-	entry = (*e).getSTEntry();
+	if(Settings::weightedEdgeSelection)
+		entry = (*e).getSTEntry();
 
 	// Delete the edge and the old triangles with it
 	delete e;
@@ -135,7 +136,8 @@ void Insertion::execute(){
 	fromV0ToNew = new TEdge(v0, newV, EdgeType::POLYGON);
 	fromV1ToNew = new TEdge(newV, v1, EdgeType::POLYGON);
 	// Set one of the new polygon edges to the STEntry of the deleted edge
-	(*entry).replaceEdge(fromV0ToNew);
+	if(Settings::weightedEdgeSelection)
+		(*entry).replaceEdge(fromV0ToNew);
 	(*T).addEdge(fromV0ToNew, pID);
 	(*T).addEdge(fromV1ToNew, pID);
 

@@ -120,7 +120,7 @@ void Triangulation::addEdge(TEdge * const e , const unsigned int pID){
 	// Do not forget to register the triangulation at the edge
 	(*e).setTriangulation(this);
 
-	if((*e).getEdgeType() == EdgeType::POLYGON){
+	if(Settings::weightedEdgeSelection && (*e).getEdgeType() == EdgeType::POLYGON){
 
 		// Check whether the new edge has already been added to the polygon, i.e. that
 		// it already has an entry in the SelectionTree
