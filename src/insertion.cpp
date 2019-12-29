@@ -119,7 +119,7 @@ void Insertion::execute(){
 	other0 = (*t0).getOtherVertex(e);
 	other1 = (*t1).getOtherVertex(e);
 
-	// Get the STEntry of to replace the edge by one new edge in the SelectionTree
+	// Get the STEntry to replace the edge by one new edge in the SelectionTree
 	if(Settings::weightedEdgeSelection)
 		entry = (*e).getSTEntry();
 

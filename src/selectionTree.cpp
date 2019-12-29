@@ -17,8 +17,23 @@
 
 #include "selectionTree.h"
 
+/*
+	C ~ O ~ N ~ S ~ T ~ R ~ U ~ C ~ T ~ O ~ R ~ S
+*/
+
 SelectionTree::SelectionTree() : root(NULL) {}
 
+
+/*
+	S ~ E ~ T ~ T ~ E ~ R ~ S
+*/
+
+/*
+	The function insert() inserts an TEdge into the binary while making
+	sure that the binary stays balanced.
+
+	@param 	e 	A new TEdge which has to be inserted in the binary tree
+*/
 void SelectionTree::insert(TEdge * e){
 	STEntry *entry, *child;
 
@@ -37,6 +52,15 @@ void SelectionTree::insert(TEdge * e){
 	}
 }
 
+
+/*
+	G ~ E ~ T ~ T ~ E ~ R ~ S
+*/
+
+/*
+	The function getRandomEdge() selects an entry of the binary tree
+	uniformly at random weighted by the lengths of the TEdges
+*/
 TEdge *SelectionTree::getRandomEdge(){
 	STEntry *entry, *last;
 
@@ -54,7 +78,17 @@ TEdge *SelectionTree::getRandomEdge(){
 	return (*entry).getEdge();
 }
 
+
+/*
+	O ~ T ~ H ~ E ~ R ~ S
+*/
+
+/*
+	The function check() iterates through the whole binary tree to check
+	whether the TEdge of each not can still be found.
+*/
 void SelectionTree::check(){
+	
 	if(root == NULL){
 		fprintf(stderr, "This SelectionTree is empty!\n");
 		return;

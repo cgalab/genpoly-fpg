@@ -17,10 +17,6 @@
 #pragma once
 
 /*
-	Include standard libraries
-*/
-
-/*
 	Include my headers
 */
 #include "settings.h"
@@ -41,19 +37,62 @@ class TEdge;
 #include "stentry.h"
 #include "tedge.h"
 
+/*
+	SelectionTree provides a method for selecting an TEdge of a polygon uniform
+	at random weighted by the lengths of the TEdges. For that it utilizes an 
+	unordered binary tree containing all edges. The binary tree stays balanced
+	by containing the elements in each subtree.
+*/
 class SelectionTree{
 
 private:
+	
+	/*
+		The root entry of the binary tree
+	*/
 	STEntry *root;
 
 public:
 
+	/*
+		C ~ O ~ N ~ S ~ T ~ R ~ U ~ C ~ T ~ O ~ R ~ S
+	*/
+
 	SelectionTree();
 
+
+	/*
+		S ~ E ~ T ~ T ~ E ~ R ~ S
+	*/
+
+	/*
+		The function insert() inserts an TEdge into the binary while making
+		sure that the binary stays balanced.
+
+		@param 	e 	A new TEdge which has to be inserted in the binary tree
+	*/
 	void insert(TEdge *e);
 
+
+	/*
+		G ~ E ~ T ~ T ~ E ~ R ~ S
+	*/
+
+	/*
+		The function getRandomEdge() selects an entry of the binary tree
+		uniformly at random weighted by the lengths of the TEdges
+	*/
 	TEdge *getRandomEdge();
 
+
+	/*
+		O ~ T ~ H ~ E ~ R ~ S
+	*/
+
+	/*
+		The function check() iterates through the whole binary tree to check
+		whether the TEdge of each not can still be found.
+	*/
 	void check();
 };
 
