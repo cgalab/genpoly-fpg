@@ -60,14 +60,18 @@ void STEntry::addChild(STEntry *child){
 
 }
 
-STEntry *STEntry::getRandomChild(){
+STEntry *STEntry::getRandomChild(bool &itself){
 	double random = (*Settings::generator).getDoubleUniform(0, totalLength);
 
-	if(leftLength != 0 && random < leftLength)
+	itself = false;
+
+	if(nrElementsLeft != 0 && random < leftLength)
 		return leftChild;
 
-	if(rightLength != 0 && random < leftLength + rightLength)
+	if(nrElementsRight != 0 && random < leftLength + rightLength)
 		return rightChild;
+
+	itself= true;
 
 	return this;
 }
@@ -85,19 +89,19 @@ unsigned int STEntry::getNrElementsTotal(){
 }
 
 void STEntry::update(){
-	//fprintf(stderr, "here 1\n");
+
 	if(leftChild != NULL){
 		leftLength = (*leftChild).getTotalLength();
 		nrElementsLeft = (*leftChild).getNrElementsTotal();
 	}
-	//fprintf(stderr, "here 2\n");
+
 	if(rightChild != NULL){
 		rightLength = (*rightChild).getTotalLength();
 		nrElementsRight = (*rightChild).getNrElementsTotal();
 	}
-	//fprintf(stderr, "here 3\n");
+
 	entryLength = (*edge).length();
-	//fprintf(stderr, "here 4\n");
+
 	totalLength = entryLength + leftLength + rightLength;
 	nrElementsTotal = nrElementsLeft + nrElementsRight + 1;
 
