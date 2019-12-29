@@ -1316,13 +1316,19 @@ void Translation::checkSplit(){
 
 /*
 	Destructor:
-	Checks and potentially repairs the surrounding polygon of the moved vertex and deletes all
-	the remaining construction vertices and edges. It errors with exit code 6 if the surrounding
-	polygon check fails. It also deletes the flip stack.
-*/	
+	Checks the surrounding polygon of the moved vertex and deletes all the remaining construction
+	vertices and edges. It errors with exit code 6 if the surrounding polygon check fails. It also
+	deletes the flip stack.
+*/
+// TODO:
+// Does it still make sense to check the surrounding polyogn here?
 Translation::~Translation(){
 	bool ok;
 	struct Flip *f;
+
+	// Update the edge lengths in the SelectionTree
+	(*prevOldE).updateSTEntry();
+	(*nextOldE).updateSTEntry();
 
 	// Delete the flip stack
 	while(!FlipStack.empty()){

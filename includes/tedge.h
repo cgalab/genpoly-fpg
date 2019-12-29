@@ -159,6 +159,7 @@ public:
 		int 				nrAssignedTriangles() const
 		double 				getAngle(Vertex const * const v) const
 		bool 				isBetween(Vertex const * const v) const
+		void 				updateSTEntry() const
 	*/
 
 
@@ -384,6 +385,12 @@ void setEdgeType(const EdgeType tp, const bool temp);
 			necessary to check whether v lays between the longer edge of the ractangle.
 	*/
 	bool isBetween(Vertex const * const v) const;
+
+	/*
+		Updates the length in the STEntry of the edge which also updates the entries of
+		all ancestors in the SelectionTree
+	*/
+	void updateSTEntry() const;
 
 
 	/*

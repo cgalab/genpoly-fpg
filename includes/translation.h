@@ -498,9 +498,9 @@ public:
 
 	/*
 		Destructor:
-		Checks and potentially repairs the surrounding polygon of the moved vertex and
-		deletes all the remaining construction vertices and edges. It errors with exit
-		code 6 if the surrounding polygon check fails. It also deletes the flip stack.
+		Checks the surrounding polygon of the moved vertex and deletes all the remaining construction
+		vertices and edges. It errors with exit code 6 if the surrounding polygon check fails. It also
+		deletes the flip stack.
 	*/	
 	~Translation();
 };

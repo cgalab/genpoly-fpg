@@ -453,6 +453,15 @@ bool TEdge::isBetween(Vertex const * const v) const{
 }
 
 /*
+	Updates the length in the STEntry of the edge which also updates the entries of
+	all ancestors in the SelectionTree
+*/
+void TEdge::updateSTEntry() const{
+	(*entry).update();
+}
+
+
+/*
 	D ~ E ~ S ~ T ~ R ~ U ~ C ~ T ~ O ~ R
 */
 
