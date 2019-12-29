@@ -66,7 +66,7 @@ public:
 
 	void addChild(STEntry *child);
 
-	STEntry *getRandomChild(bool &itself);
+	STEntry *getRandomChild();
 
 	double getTotalLength();
 

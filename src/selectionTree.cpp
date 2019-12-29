@@ -38,16 +38,17 @@ void SelectionTree::insert(TEdge * e){
 }
 
 TEdge *SelectionTree::getRandomEdge(){
-	STEntry *entry;
-	bool itself = false;
+	STEntry *entry, *last;
 
 	if(root == NULL)
 		return NULL;
 
+	last = NULL;
 	entry = root;
 
-	while(!itself){
-		entry = (*entry).getRandomChild(itself);
+	while(last != entry){
+		last = entry;
+		entry = (*last).getRandomChild();
 	}
 
 	return (*entry).getEdge();

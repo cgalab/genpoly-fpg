@@ -60,18 +60,14 @@ void STEntry::addChild(STEntry *child){
 
 }
 
-STEntry *STEntry::getRandomChild(bool &itself){
+STEntry *STEntry::getRandomChild(){
 	double random = (*Settings::generator).getDoubleUniform(0, totalLength);
-
-	itself = false;
 
 	if(nrElementsLeft != 0 && random < leftLength)
 		return leftChild;
 
 	if(nrElementsRight != 0 && random < leftLength + rightLength)
 		return rightChild;
-
-	itself= true;
 
 	return this;
 }
