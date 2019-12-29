@@ -17,31 +17,48 @@
 
 #include "stentry.h"
 
-STEntry::STEntry(TEdge *e, STEntry *prt) : edge(e), parent(prt) {
+/*
+	C ~ O ~ N ~ S ~ T ~ R ~ U ~ C ~ T ~ O ~ R ~ S
+*/
+
+/*
+	Constructor:
+	Sets the parent entry int the Selection and computes the length of its
+	TEdge
+
+	@param 	e 	The TEdge this STEntry represents
+	@param 	prt	The parent entry in the SelectionTree
+*/
+STEntry::STEntry(TEdge *e, STEntry *prt) : edge(e), parent(prt), leftChild(NULL),
+	rightChild(NULL), leftLength(0), rightLength(0), nrElementsLeft(0), 
+	nrElementsRight(0), nrElementsTotal(1) {
+	
 	entryLength = (*edge).length();
-	leftLength = 0;
-	rightLength = 0;
 	totalLength = entryLength;
-
-	leftChild = NULL;
-	rightChild = NULL;
-
-	nrElementsLeft = 0;
-	nrElementsRight = 0;
-	nrElementsTotal = 1;
 
 	// Register the entry at the edge
 	(*e).setSTEntry(this);
 }
 
-STEntry *STEntry::getLighterSubtree(){
-	if(nrElementsLeft <= nrElementsRight)
-		return leftChild;
-	else
-		return rightChild;
-}
 
+/*
+	S ~ E ~ T ~ T ~ E ~ R ~ S
+*/
+
+/*
+	The function addChild() adds a new child entry to this STEntry. The new
+	child gets added left if there is no child already, otherwise it gets
+	added right. Afterwards the number of elements and the total length gets
+	updated for all ancestors.
+
+	@param 	child 	The new child entry
+
+	Note:
+		This function assumes, that there is still one child pointer unset,
+		so it overrides entries if all child pointers are set.
+*/
 void STEntry::addChild(STEntry *child){
+	
 	if(nrElementsLeft <= nrElementsRight){
 		leftChild = child;
 		nrElementsLeft = 1;
@@ -60,6 +77,50 @@ void STEntry::addChild(STEntry *child){
 
 }
 
+/*
+	The function replaceEdge() replaces the TEdge of this entry by the TEdge
+	e. Afterwards it updates the lengths of all ancestors.
+
+	@param 	e 	The new TEdge
+*/
+void STEntry::replaceEdge(TEdge *e){
+	
+	edge = e;
+
+	// Register the entry at the edge
+	(*edge).setSTEntry(this);
+
+	entryLength = (*edge).length();
+
+	totalLength = entryLength + leftLength + rightLength;
+
+	if(parent != NULL)
+		(*parent).update();
+}
+
+
+/*
+	G ~ E ~ T ~ T ~ E ~ R ~ S
+*/
+
+/*
+	@return 	The root of the subtree with less elements
+*/
+STEntry *STEntry::getLighterSubtree(){
+	
+	if(nrElementsLeft <= nrElementsRight)
+		return leftChild;
+	else
+		return rightChild;
+}
+
+/*
+	The function getRandomChild() randomly selects a child entry of this entry
+	with probabilities corresponding to the total length of the edges in it.
+	If it returns this entry again, the TEdge of this entry got selected.
+
+	@return 	The STEntry of the randomly selected TEdge
+*/
 STEntry *STEntry::getRandomChild(){
 	double random = (*Settings::generator).getDoubleUniform(0, totalLength);
 
@@ -72,18 +133,38 @@ STEntry *STEntry::getRandomChild(){
 	return this;
 }
 
+/*
+	@return 	The total length of all TEdges in the subtree with this entry
+				as root
+*/
 double STEntry::getTotalLength(){
 	return totalLength;
 }
 
+/*
+	@return 	The TEdge of this entry
+*/
 TEdge *STEntry::getEdge(){
 	return edge;
 }
 
+/*
+	@return 	The total number of elements of the subtree with this entry
+				as root
+*/
 unsigned int STEntry::getNrElementsTotal(){
 	return nrElementsTotal;
 }
 
+
+/*
+	O ~ T ~ H ~ E ~ R ~ S
+*/
+
+/*
+	The function update() updates the lengths and the numbers of elements of
+	this entry and calls update() for the parent entry.
+*/
 void STEntry::update(){
 
 	if(leftChild != NULL){
@@ -105,21 +186,12 @@ void STEntry::update(){
 		(*parent).update();
 }
 
-void STEntry::replaceEdge(TEdge *e){
-	edge = e;
-
-	// Register the entry at the edge
-	(*edge).setSTEntry(this);
-
-	entryLength = (*edge).length();
-
-	totalLength = entryLength + leftLength + rightLength;
-
-	if(parent != NULL)
-		(*parent).update();
-}
-
+/*
+	The function check() checks whether the edge of the entry is still there
+	and calls check() for all child entries.
+*/
 void STEntry::check(){
+	
 	// Just take a look whether the edge still exists
 	(*edge).length();
 
