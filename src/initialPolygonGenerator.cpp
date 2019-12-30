@@ -33,7 +33,7 @@
 */
 Triangulation *generateRegularPolygon(){
 	double alpha; // The angular distance between the vertices
-	int i;
+	unsigned int i;
 	Vertex *v;
 	Triangulation* T = new Triangulation();
 
@@ -51,7 +51,7 @@ Triangulation *generateRegularPolygon(){
 	else{
 		generateInitialHoleTriangle(T);
 
-		for(i = 1; i < (int)Settings::nrInnerPolygons; i++)
+		for(i = 1; i < Settings::nrInnerPolygons; i++)
 			splitHoleTriangle(T);
 	}
 
@@ -77,7 +77,7 @@ Triangulation *generateRegularPolygon(){
 				linked vertices of the start polygon
 */
 void initialTriangulationPseudoStar(Triangulation * const T){
-	int i;
+	unsigned int i;
 	Vertex *center, *v0, *v1;
 	TEdge *e0, *e1, *e2, *start;
 
@@ -131,7 +131,7 @@ void initialTriangulationPseudoStar(Triangulation * const T){
 	The suitable startindex for the box polygon function is 0!
 */
 void initialTriangulationZigZag(Triangulation * const T){
-	int i;
+	unsigned int i;
 	Vertex *v0 = NULL, *v1 = NULL, *v2 = NULL;
 	TEdge *e0 = NULL, *e1 = NULL, *e2 = NULL;
 
@@ -198,7 +198,7 @@ void initialTriangulationZigZag(Triangulation * const T){
 */
 void generateInitialHoleTriangle(Triangulation * const T){
 	double alpha;
-	int i;
+	unsigned int i;
 	Vertex *triangleV0, *triangleV1, *triangleV2;
 	Vertex *v0, *v1;
 	TEdge *e0, *e1, *e2;
@@ -470,9 +470,8 @@ void boxPolygon(Triangulation * const T, const int startIndex){
 	Vertex *rv0, *rv1, *rv2, *rv3;
 	TEdge *re0, *re1, *re2, *re3;
 	// End indices of one quadrant
-	int limit0, limit1, limit2;
-
-	int i;
+	unsigned int limit0, limit1, limit2;
+	unsigned int i;
 	TEdge *start, *prev, *next;
 	Vertex *v0, *v1;
 

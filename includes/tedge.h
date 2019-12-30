@@ -212,7 +212,7 @@ public:
 			Do not change the type from polygon to something else, because this would
 			lead to a none polygon edge in the SelectionTree of the polygon!!!
 	*/
-void setEdgeType(const EdgeType tp, const bool temp);
+	void setEdgeType(const EdgeType tp, const bool temp);
 
 	/*
 		The function setTriangle() registers a new triangle, which contains the edge, at the

@@ -164,7 +164,7 @@ void Insertion::translate() const{
 	bool overroll, simple = false;
 	double alpha, stddev, r, dx, dy;
 	Translation *trans;
-	int count = 0;
+	unsigned int count = 0;
 
 	// The new vertex is the last one in the vertices vector of the triangulation
 	index = (*T).getActualNumberOfVertices() - 1;

@@ -22,18 +22,18 @@
 	Polygon parameters
 */
 unsigned int Settings::nrInnerPolygons = 0;
-int Settings::outerSize = 0;
-std::vector<int> Settings::innerSizes;
+unsigned int Settings::outerSize = 0;
+std::vector<unsigned int> Settings::innerSizes;
 const std::string Settings::dummyFileName = "dummy.fpg";
 
 /*
 	Initial polygon
 */
-int Settings::initialSize = 10;
+unsigned int Settings::initialSize = 10;
 double Settings::radiusPolygon = 0.1;
 double Settings::radiusHole = 0.05;
 double Settings::boxSize = 3.0;
-int Settings::initialTranslationFactor = 1000;
+unsigned int Settings::initialTranslationFactor = 1000;
 int Settings::initialTranslationNumber = -1;
 
 
@@ -48,7 +48,7 @@ bool Settings::globalChecking = false;
 /*
 	Insertion parameters
 */
-int Settings::insertionTries = 100;
+unsigned int Settings::insertionTries = 100;
 double Settings::minLength = 0.0000001;
 bool Settings::weightedEdgeSelection = true;
 
@@ -109,22 +109,22 @@ void Settings::readConfigFile(char *filename){
         for (i = 0; i < strlen(token); i++)
             token[i] = (char) toupper(token[i]);
         if(!strcmp(token, "NROFHOLES")){
-        	if(!(token = strtok(0, delimiters)) || !sscanf(token, "%d", &nrInnerPolygons)){
-        		fprintf(stderr, "NrOfHoles: expected integer, got \"%s\"!\n", token);
+        	if(!(token = strtok(0, delimiters)) || !sscanf(token, "%u", &nrInnerPolygons)){
+        		fprintf(stderr, "NrOfHoles: expected unsigned integer, got \"%s\"!\n", token);
         		exit(13);
         	}
         }else if(!strcmp(token, "POLYGONSIZE")){
-        	if(!(token = strtok(0, delimiters)) || !sscanf(token, "%d", &outerSize)){
-        		fprintf(stderr, "PolygonSize: expected integer, got \"%s\"!\n", token);
+        	if(!(token = strtok(0, delimiters)) || !sscanf(token, "%u", &outerSize)){
+        		fprintf(stderr, "PolygonSize: expected unsigned integer, got \"%s\"!\n", token);
         		exit(13);
         	}
         }else if(!strcmp(token, "STARTSIZE")){
-        	if(!(token = strtok(0, delimiters)) || !sscanf(token, "%d", &initialSize)){
-        		fprintf(stderr, "StartSize: expected integer, got \"%s\"!\n", token);
+        	if(!(token = strtok(0, delimiters)) || !sscanf(token, "%u", &initialSize)){
+        		fprintf(stderr, "StartSize: expected unsgined integer, got \"%s\"!\n", token);
         		exit(13);
         	}
         }else if(!strcmp(token, "SEED")){
-        	if(!(token = strtok(0, delimiters)) || !sscanf(token, "%d", &seed)){
+        	if(!(token = strtok(0, delimiters)) || !sscanf(token, "%u", &seed)){
         		fprintf(stderr, "Seed: expected integer, got \"%s\"!\n", token);
         		exit(13);
         	}
@@ -249,7 +249,7 @@ void Settings::printSettings(){
 		fprintf(stderr, "Seed configuration: FIXED\n");
 	else
 		fprintf(stderr, "Seed configuration: RANDOM\n");
-	fprintf(stderr, "Seed: %llu\n", seed);
+	fprintf(stderr, "Seed: %u\n", seed);
 	if(localChecking)
 		fprintf(stderr, "Local checking: enabled\n");
 	else
@@ -355,7 +355,7 @@ void Settings::checkAndApplySettings(){
 
 	if(nrInnerPolygons != innerSizes.size()){
 		fprintf(stderr, "Conflicting number of holes:\n");
-		fprintf(stderr, "Given number: %d Given number of sizes: %d\n", nrInnerPolygons,
+		fprintf(stderr, "Given number: %u Given number of sizes: %lu\n", nrInnerPolygons,
 			innerSizes.size());
 		exit(14);
 	}

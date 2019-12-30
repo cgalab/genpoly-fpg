@@ -108,7 +108,8 @@ void Triangulation::changeVertex(const int i, const unsigned int fromP, const un
 /*
 	Adds a new edge to the edge map of the triangulation if printing the whole
 	triangulation is required. Polygon edges get add to the SelectionTree of its 
-	polygon.
+	polygon if, their STEntry is not already set. If the edge is already in the
+	edge map, the edge map won't get changed.
 
 	@param	e 		Edge to be added to the edge map
 	@param 	pID 	For polygon edges the ID of the polygon, for other edges no meaning

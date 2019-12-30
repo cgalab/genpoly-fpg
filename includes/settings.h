@@ -51,10 +51,10 @@ public:
 	static unsigned int nrInnerPolygons;
 
 	// Target size of the outer polygon
-	static int outerSize;
+	static unsigned int outerSize;
 
 	// Target sizes of the inner polygons
-	static std::vector<int> innerSizes;
+	static std::vector<unsigned int> innerSizes;
 
 
 	/*
@@ -62,7 +62,7 @@ public:
 	*/
 
 	// Size of the initial polygon
-	static int initialSize;
+	static unsigned int initialSize;
 
 	// Radius of the initial outer polygon
 	static double radiusPolygon;
@@ -74,7 +74,7 @@ public:
 	static double boxSize;
 
 	// Average number of translations per vertex of the initial polygon
-	static int initialTranslationFactor;
+	static unsigned int initialTranslationFactor;
 
 	// Number of translations to perform on the initial polygon
 	static int initialTranslationNumber;
@@ -111,7 +111,7 @@ public:
 	*/
 
 	// Number of tries to move an inserted vertex
-	static int insertionTries;
+	static unsigned int insertionTries;
 
 	// Minimal allowed edge length for insertions
 	static double minLength;

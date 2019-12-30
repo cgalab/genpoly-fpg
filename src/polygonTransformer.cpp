@@ -247,7 +247,7 @@ void strategyWithHoles0(Triangulation * const T){
 			
 			actualN = (*T).getActualNumberOfVertices(i);
 
-			if(Settings::innerSizes[i - 1] >= 2 * actualN)
+			if(Settings::innerSizes[i - 1] >= (unsigned int)(2 * actualN))
 				nrInsertions = actualN;
 			else
 				nrInsertions = Settings::innerSizes[i - 1] - actualN;
@@ -264,7 +264,7 @@ void strategyWithHoles0(Triangulation * const T){
 		// Double up the size of the outer polygon
 		actualN = (*T).getActualNumberOfVertices(0);
 
-		if(Settings::outerSize >= 2 * actualN)
+		if(Settings::outerSize >= (unsigned int)(2 * actualN))
 			nrInsertions = actualN;
 		else
 			nrInsertions = Settings::outerSize - actualN;

@@ -6,7 +6,7 @@ set(ENABLE_CLI "using command line parser instead of config file" OFF) # should 
 
 set( CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -Wall" )
 
-set( CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -W -Wfloat-equal -Wundef -Wpointer-arith" )
+set( CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -W -Wundef -Wpointer-arith" )
 set( CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -Wwrite-strings" )
 set( CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -Wredundant-decls -Wchar-subscripts -Wcomment -Wformat=2" )
 set( CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -Wwrite-strings -Wmissing-declarations -Wredundant-decls" )

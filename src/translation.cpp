@@ -315,8 +315,8 @@ bool Translation::checkEdge(Vertex * const fromV, TEdge * const newE) const{
 	EdgeType eType;
 	Triangle *nextT = NULL;
 	int count = 0;
-	int size;
-	int passedTriangles = 1;
+	unsigned int size;
+	unsigned int passedTriangles = 1;
 
 	Statistics::nrChecks++;
 	Statistics::nrTriangles++;
