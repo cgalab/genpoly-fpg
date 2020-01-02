@@ -1252,9 +1252,10 @@ enum Executed Translation::execute(){
 			// Abort if the event queue becomes unstable
 			if(!flip(t, false)){
 				undone = undo();
-				if(undone)
+				if(undone){
+					Statistics::undone++;
 					return Executed::UNDONE;
-				else{
+				}else{
 					if(!split)
 						Statistics::translationsPerf++;
 					return Executed::PARTIAL;

@@ -32,6 +32,7 @@ unsigned int Statistics::sinuosity = 0;
 unsigned long long Statistics::translationTries = 0;
 unsigned long long Statistics::translationsPerf = 0;
 unsigned long long Statistics::splits = 0;
+unsigned int Statistics::undone = 0;
 unsigned long long Statistics::nrChecks = 0;
 unsigned long long Statistics::nrSPTriangles = 0;
 unsigned int Statistics::maxSPTriangles = 0;
@@ -221,6 +222,7 @@ void Statistics::printStats(Triangulation const * const T){
 	fprintf(stderr, "Number of checked translations: %llu\n", translationTries);
 	fprintf(stderr, "Number of performed translation: %llu\n", translationsPerf);
 	fprintf(stderr, "Number of split translations: %llu\n", splits);
+	fprintf(stderr, "Number of undone translations: %u\n", undone);
 	fprintf(stderr, "Average number of SP triangles: %.2f\n",
 		(double)nrSPTriangles / (double) nrChecks);
 	fprintf(stderr, "Max number of SP triangles: %d\n", maxSPTriangles);

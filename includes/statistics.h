@@ -51,6 +51,12 @@ public:
 	static unsigned long long splits;
 
 	/*
+		Number of translation which had to be undone due to errors in the
+		triangulation found by the local checking
+	*/
+	static unsigned int undone;
+
+	/*
 		Counts how often checkEdge() gets called	
 	*/
 	static unsigned long long nrChecks;
