@@ -239,3 +239,49 @@ void Statistics::printStats(Triangulation const * const T){
 	fprintf(stderr, "Max outside twist: %.2f°\n", twistMax);
 	fprintf(stderr, "Overall max twist: %.2f°\n", maxTwist);
 }
+
+void Statistics::writeStatsFile(Triangulation const * const T){
+	ptree tree;
+	unsigned int i;
+	unsigned int nrOfHoles = (*T).getActualNrInnerPolygons();
+
+	ptree& stats = tree.add("statistics", "");
+
+	ptree& polygon = stats.add("polygon", "");
+	polygon.add("size", (*T).getActualNumberOfVertices(0));
+	polygon.add("nrofholes", nrOfHoles);
+
+	ptree& holeSizes = polygon.add("holesizes", "");
+	for(i = 1; i <= nrOfHoles; i++){
+		ptree& hole = holeSizes.add("hole", "");
+		hole.add("<xmlattr>.id", i);
+		hole.add("size", (*T).getActualNumberOfVertices(i));
+	}
+
+	polygon.add("startradius", Settings::radiusPolygon);
+	polygon.add("boxsize", Settings::boxSize);
+
+
+	ptree& trans = stats.add("translations", "");
+	trans.add("checked", translationTries);
+	trans.add("performed", translationsPerf);
+	trans.add("splits", splits);
+	trans.add("undone", undone);
+	trans.add("averagesp", (double)nrSPTriangles / (double) nrChecks);
+	trans.add("maxsp", maxSPTriangles);
+	trans.add("averagepassed", (double)nrTriangles / (double) nrChecks);
+	trans.add("maxpassed", maxSPTriangles);
+
+
+	ptree& shape = stats.add("shape", "");
+	shape.add("radialdev", radialDistDev);
+	shape.add("sinuosity", sinuosity);
+	shape.add("maxinsidetwist", twistMin);
+	shape.add("maxoutsidetwist", twistMax);
+	shape.add("maxtwist", maxTwist);
+
+
+	write_xml(Settings::statisticsFile, tree,
+        std::locale(),
+        xml_writer_make_settings<std::string>('\t', 1));
+}

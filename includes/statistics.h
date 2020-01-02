@@ -16,11 +16,27 @@
  */
 #pragma once
 
+/*
+	Include standard libraries
+*/
 #include <vector>
 #include <math.h>
+#include <boost/property_tree/ptree.hpp>
+#include <boost/property_tree/xml_parser.hpp>
 
+/*
+	Include my libraries
+*/
 #include "triangulation.h"
 #include "vertex.h"
+
+/*
+	Name spaces of the XML facilities
+*/
+using boost::property_tree::ptree;
+using boost::property_tree::write_xml;
+using boost::property_tree::xml_writer_settings;
+using boost::property_tree::xml_writer_make_settings;
 
 class Statistics{
 
@@ -91,4 +107,6 @@ public:
 	static void calculateSinuosity(Triangulation const * const T);
 
 	static void printStats(Triangulation const * const T);
+
+	static void writeStatsFile(Triangulation const * const T);
 };

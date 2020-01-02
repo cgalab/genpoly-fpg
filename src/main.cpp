@@ -100,7 +100,11 @@ int main(int argc, char *argv[]){
 		Statistics::calculateSinuosity(T);
 		Statistics::calculateRadialDistanceDeviation(T);
 
-		Statistics::printStats(T);
+		if(!Settings::mute)
+			Statistics::printStats(T);
+
+		if(Settings::statisticsFile != NULL)
+			Statistics::writeStatsFile(T);
 	}
 	
 	exit(0);

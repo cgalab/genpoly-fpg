@@ -39,6 +39,7 @@ endif()
 set_source_files_properties(src/predicates.cpp PROPERTIES COMPILE_FLAGS "-Wno-float-equal -Wno-missing-declarations")
 
 if( ENABLE_CLI )
+  message("-- Enable CLI")
 	add_definitions(-DENABLE_CLI)
 endif()
 

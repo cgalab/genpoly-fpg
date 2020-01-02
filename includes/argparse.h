@@ -30,6 +30,7 @@ static struct option long_options[] = {
 		{ "holesizes"           , required_argument, 0, 'H'},
 		{ "outputformat"        , required_argument, 0, 'o'},
 		{ "noexecutioninfo"     , no_argument,       0, 'e'},
+		{ "statsfile"           , required_argument, 0, 'T'},
 		{ "numericalcorrectioninfo"  , no_argument,  0, 'c'},
 		{ "disablelocalchecks"       , no_argument,  0, 'l'},
 		{ "enableglobalchecks"       , no_argument,  0, 'g'},
@@ -51,13 +52,13 @@ static struct option long_options[] = {
 	fprintf(f,"           --arithmetic               enable 'exact' arithmetic? (default off).\n");
 	fprintf(f,"           --holesizes <a,b,c,...>    define hole sizes.\n");
 	fprintf(f,"           --outputformat <format>    dat, line, or graphml (default graphml).\n");
-
 	fprintf(f,"           --noexecutioninfo          \n");
 	fprintf(f,"           --numericalcorrectioninfo  (default off).\n");
 	fprintf(f,"           --disablelocalchecks       \n");
 	fprintf(f,"           --enableglobalchecks       (default off).\n");
 	fprintf(f,"           --verbose                  (default off).\n");
 	fprintf(f,"           --enablestats              (default off).\n");
+	fprintf(f,"           --statsfile <string>       xml-file for statistics (default none)\n");
 	fprintf(f,"           --disableweightedselection \n");
 	fprintf(f,"\n");
 	fprintf(f,"  holesizes example:  --holesizes 3,6,7\n");
@@ -140,6 +141,11 @@ private:
 				} else {
 					Settings::outputFormat = OutputFormat::GRAPHML;
 				}
+				break;
+			}
+			case 'T': {
+				enableStats = true;
+				statisticsFile = optarg;
 				break;
 			}
 			case 'e': {
