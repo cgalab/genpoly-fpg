@@ -1,3 +1,0 @@
-seed: 1821297332
-size: 10
-holesize: 3

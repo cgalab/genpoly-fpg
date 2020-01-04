@@ -16,7 +16,6 @@ import tempfile
 import threading
 import time
 
-FPG = './fpg'
 TIMEOUT = 1000
 
 parser = argparse.ArgumentParser(description='generator for fpg')
@@ -87,7 +86,7 @@ def run_fpg(fpg, size, seed, name,args):
 
 def run_thread_range(args, thread_id):
     step_cnt = 0
-#    print("thread_id: ",thread_id, ",start: ", args.sizestart, ", maxsize: ", args.sizeend)
+    print("thread_id: ",thread_id, ",start: ", args.sizestart, ", maxsize: ", args.sizeend)
     current_size = 0
 
     single_range = (int)(args.sizeend-args.sizestart)/args.threads
@@ -112,7 +111,7 @@ thread_id = 0
 for _ in range(args.threads):
   worker = threading.Thread(target=handle_one, args=(args, q, thread_id))
   thread_id+=1
-#  worker.setDaemon(True)
+  worker.setDaemon(True)
   worker.start()
 
 q.join()
