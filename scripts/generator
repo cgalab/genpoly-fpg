@@ -59,12 +59,13 @@ def run_fpg(fpg, size, seed, name,args):
     print(filename)
     cmd = []
     cmd.append(fpg)
-    cmd.append(args.extra)
+    #cmd.append(args.extra)
     cmd.append(str(size))
     if seed > 0:
         cmd.extend(["--seed",str(seed)])
         filename+="-s"+str(seed)
     cmd.append(filename + ".graphml")
+    print(cmd)
     
     timeout = TIMEOUT
     try:
@@ -111,7 +112,7 @@ thread_id = 0
 for _ in range(args.threads):
   worker = threading.Thread(target=handle_one, args=(args, q, thread_id))
   thread_id+=1
-  worker.setDaemon(True)
+#  worker.setDaemon(True)
   worker.start()
 
 q.join()
