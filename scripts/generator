@@ -27,6 +27,7 @@ parser.add_argument('-s', '--seed', metavar='SEED', dest='seed', type=int, defau
 parser.add_argument('-o', '--output', metavar='OUT', dest='out', default='fpg-poly', help='output file name (exclude file ending)')
 parser.add_argument('-t', '--threads', metavar='THREADS', dest='threads', type=int, default=multiprocessing.cpu_count(), help='number of threads to start')
 parser.add_argument('fpg', type=str, help='fpg binary')
+parser.add_argument('extra', metavar='ARG', nargs='*', help='extra arguments to pass to FPG')
 args = parser.parse_args()
 
 def eprint(*args):
@@ -52,13 +53,14 @@ def limit_virtual_memory():
     MAX_VIRTUAL_MEMORY = 10 * 1024 * 1024 *1024 # 10 GB
     resource.setrlimit(resource.RLIMIT_AS, (MAX_VIRTUAL_MEMORY, resource.RLIM_INFINITY))
 
-def run_fpg(fpg, size, seed, name):
+def run_fpg(fpg, size, seed, name,args):
     if size < 10:
         return False
     filename = name + "-" + '{:010.0f}'.format(size)
     print(filename)
     cmd = []
     cmd.append(fpg)
+    cmd.append(args.extra)
     cmd.append(str(size))
     if seed > 0:
         cmd.extend(["--seed",str(seed)])
@@ -92,7 +94,7 @@ def run_thread_range(args, thread_id):
 
     while current_size < args.sizeend:
         current_size = args.sizestart + (single_range * thread_id) + (args.stepsize * step_cnt)
-        run_fpg(args.fpg, current_size, args.seed, args.out)
+        run_fpg(args.fpg, current_size, args.seed, args.out, args)
         step_cnt+=1
 
 
