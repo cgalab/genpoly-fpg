@@ -32,15 +32,15 @@ list of exit codes:
 code 	name						meaning
 1		Circle edge					An edge starts at the same vertex as it ends
 2		Vertex at PE end			A vertex lies exactly at a polygon edge after a translation
-3		PE flip 					The edge to be fliped at an event is a polygon edge
+3		PE flip 					The edge to be flipped at an event is a polygon edge
 4		Triangle overflow			A new triangle is assigned to an edge which already has two triangles
 5		Triangle redundance			A new triangle is assigned to an edge which already has the same 
 									triangle registered
-6		Surrounding polygon fail	The moving vertex is not anymore inside of its surrouding polygon
+6		Surrounding polygon fail	The moving vertex is not anymore inside of its surrounding polygon
 									at the end of a translation
-7		Vertex at PE start 			The moving vertex lies at a polygon edge at the begining of a translation
-8		temporarly empty
-9		Triangulation error			Some vertex has left its surrouding polygon but it hasn't been recognized
+7		Vertex at PE start 			The moving vertex lies at a polygon edge at the beginning of a translation
+8		temporarily empty
+9		Triangulation error			Some vertex has left its surrounding polygon but it hasn't been recognized
 									during the translation
 10		Vertex at PE end 			The surrounding polygon check recognizes a vertex exactly laying on a PE
 11 		Not simple					The check for simplicity found an intersection
