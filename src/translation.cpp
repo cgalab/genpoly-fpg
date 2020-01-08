@@ -1108,6 +1108,7 @@ bool Translation::checkOverroll(){
 	Triangle *dummy;
 	double areaOld, areaNew;
 	bool inside0, inside1;
+	TEdge *triangleEdge;
 
 	// At first we check whether the moving vertex passes by another polygon
 	// Note:
@@ -1158,7 +1159,8 @@ bool Translation::checkOverroll(){
 		areaNew = (*dummy).signedArea();
 		delete dummy;
 
-		if(signbit(areaOld) != signbit(areaNew))
+		// This already checks whether the vertex moves onto its opposing edge
+		if(signbit(areaOld) != signbit(areaNew) || fabs(areaNew) <= Settings::epsInt)
 			return true;
 
 	// Default Case:
