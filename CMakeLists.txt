@@ -2,7 +2,7 @@ cmake_minimum_required (VERSION 3.10)
 project (fpg)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
-set(ENABLE_CLI "using command line parser instead of config file" OFF) # should be enabled per default in the future
+OPTION(ENABLE_CLI "using command line parser instead of config file" ON) # switch to OFF if you want to use fpg with config files
 
 set( CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -Wall" )
 
