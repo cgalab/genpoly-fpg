@@ -31,14 +31,14 @@ By default FPG uses a command line interface, this can be changed to use a confi
 
 | options       | shortform | description   |
 | -------------:|----------:|:------------- |
-|  --help       | --h       | print help    |
+|  --help       |           | print help    |
 |  --verbose    | --v       | verbose mode, shows information about the computation |
 |  --nrofholes  |           | state the number of holes (default: 0)                |
 |  --startsize  |           | give the number of vertices of the start polygon (default: 10) |
 |  --seed       |           | set the seed for the random generator (default: random)        |	
-|  --arithmetic |           | enable 'exact' arithmetic (default: double)                    |
+|  --arithmetic | --a       | enable Shewchuk's 'exact' arithmetic                           |
 |  --holesizes  |           | give a list for the number of vertices of the holes            |
-|  --outputformat  |        | select between dat, line or graphml (default: graphml)         |
+|  --outputformat  | --o    | select between dat, line or graphml (default: graphml)         |
 |  --noexecutioninfo |      | disables the execution info, in case of verbose (default: on)  |
 |  --statsfile       |      | give a file to print in statistics of the generation and the polygon in XML format |
 |  --numericalcorrectioninfo  |  | enable information on numerical corrections (default: off)|
