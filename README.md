@@ -27,7 +27,7 @@ For the `RELEASE` version use `cmake -D CMAKE_BUILD_TYPE=Release ..`
 By default FPG uses a command line interface, this can be changed to use a configuration file instead with `cmake -D ENABLE_CLI=OFF ..`
 # Usage
 
-	./fpg <POLYGON_SIZE> <OUTPUT_FILE>
+	./fpg [--help] [--verbose] [--nrofholes <num>] [--startsize <num>] [--seed <num>] [--arithmetic] [--holesizes <num,num,...>] [--outputformat <format>] [--noexecutioninfo] [--statsfile <filename>] [--numericalcorrectioninfo] [--disablelocalchecks] [--enableglobalchecks] [--enablestats] [--disableweightedselection] <POLYGON_SIZE> [OUTPUT_FILE]
 
 | options       | shortform | description   |
 | -------------:|----------:|:------------- |
