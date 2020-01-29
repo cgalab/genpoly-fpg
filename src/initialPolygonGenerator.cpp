@@ -50,7 +50,6 @@ Triangulation *generateRegularPolygon(){
 		initialTriangulationZigZag(T);
 	else{
 		generateInitialHoleTriangle(T);
-
 		for(i = 1; i < Settings::nrInnerPolygons; i++)
 			splitHoleTriangle(T);
 	}
@@ -341,7 +340,7 @@ void splitHoleTriangle(Triangulation * const T){
 	// Get the actual number of inner polygons; we want to split the last one
 	n = (*T).getActualNrInnerPolygons();
 
-	// Get all vertices and edges of the choosen polygon
+	// Get all vertices and edges of the chosen polygon
 	v0 = (*T).getVertex(0, n);
 	v1 = (*T).getVertex(1, n);
 	v2 = (*T).getVertex(2, n);
@@ -386,14 +385,16 @@ void splitHoleTriangle(Triangulation * const T){
 
 	// Generate the third vertex for the first polygon
 	n2 = new Vertex(fabs(x0 - x1) / 4 + x1, (y1 + y2) / 2);
-	(*T).addVertex(n2, n);
+	(*T).addVertex(n2, n);	
 
 	// Generate the edges and the triangle of the first polygon
 	p1e0 = new TEdge(v1, n2, EdgeType::POLYGON);
 	p1e1 = new TEdge(n2, v2, EdgeType::POLYGON);
-	(*entry0).replaceEdge(p1e0);
+	if(Settings::weightedEdgeSelection)
+		(*entry0).replaceEdge(p1e0);
 	(*T).addEdge(p1e0, n);
-	(*entry1).replaceEdge(p1e1);
+	if(Settings::weightedEdgeSelection)
+		(*entry1).replaceEdge(p1e1);
 	(*T).addEdge(p1e1, n);
 	new Triangle(p1e0, p1e1, e1, v1, v2, n2);
 
