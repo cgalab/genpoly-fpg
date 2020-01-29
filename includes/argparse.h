@@ -20,7 +20,7 @@
 #include <getopt.h>
 #include <boost/algorithm/string.hpp>
 
-static const char* short_options = "hc:v::S:D";
+static const char* short_options = "hn:i:s:aH:o:eT:clgvtw";
 static struct option long_options[] = {
 		{ "help"                , no_argument      , 0, 'h'},
 		{ "nrofholes"           , required_argument, 0, 'n'},

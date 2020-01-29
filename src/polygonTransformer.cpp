@@ -19,9 +19,9 @@
 
 
 /*
-	The function transformPolygonByMoves() transforms a polygon by randomly chosing a
+	The function transformPolygonByMoves() transforms a polygon by randomly choosing a
 	vertex and a direction to move and then randomly computing a distance to shift in
-	the choosen direction which with the constraint that the movement should be
+	the chosen direction which with the constraint that the movement should be
 	applicable with reasonable effort. This is done iterations times.
 
 	@param 	T 			The triangulation the polygon lives in
@@ -31,7 +31,7 @@
 	Note:
 		- The number of really performed moves is most likely less then the number of moves
 			which should be tried
-		- For polygons with holes the vertex also is reandomly choosen, i.e. it can be from
+		- For polygons with holes the vertex also is randomly chosen, i.e. it can be from
 			the outer polygon as well as of one of the inner polygons
 */
 int transformPolygonByMoves(Triangulation * const T, const int iterations){
@@ -137,7 +137,7 @@ void growPolygonBy(Triangulation * const T, const unsigned int pID, const int n)
 			in = new Insertion(T, pID, index);
 		}
 
-		// Check whether the choosen edge fulfills the stability criteria for insertions
+		// Check whether the chosen edge fulfills the stability criteria for insertions
 		ok = (*in).checkStability();
 
 		// Recognized when it is hard to find a suitable edge to insert in

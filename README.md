@@ -31,21 +31,22 @@ By default FPG uses a command line interface, this can be changed to use a confi
 
 | options       | shortform | description   |
 | -------------:|----------:|:------------- |
-|  --help       |           | print help    |
-|  --verbose    | --v       | verbose mode, shows information about the computation |
-|  --nrofholes  |           | state the number of holes (default: 0)                |
-|  --startsize  |           | give the number of vertices of the start polygon (default: 10) |
-|  --seed       |           | set the seed for the random generator (default: random)        |	
-|  --arithmetic | --a       | enable Shewchuk's 'exact' arithmetic                           |
-|  --holesizes  |           | give a list for the number of vertices of the holes            |
-|  --outputformat  | --o    | select between dat, line or graphml (default: graphml)         |
-|  --noexecutioninfo |      | disables the execution info, in case of verbose (default: on)  |
-|  --statsfile       |      | give a file to print in statistics of the generation and the polygon in XML format |
-|  --numericalcorrectioninfo  |  | enable information on numerical corrections (default: off)|
-|  --disablelocalchecks  |       | disables the local checking and error correction after each translation       |
-|  --enableglobalchecks  |       | enables the global checking after each stage              |
-|  --enablestats   |         | enables the computation of statistics, in case of verbose the stats are printed to command line       |
-|  --disableweightedselection |  | disables the weighted edge selection for inserting new vertices |
+|  --help       | -h        | print help    |
+|  --verbose    | -v        | verbose mode, shows information about the computation |
+|  --nrofholes  | -n        | state the number of holes (default: 0)                |
+|  --startsize  | -i        | give the number of vertices of the start polygon (default: 10) |
+|  --seed       | -s        | set the seed for the random generator (default: random)        |
+|  --arithmetic | -a        | enable Shewchuk's 'exact' arithmetic                           |
+|  --holesizes  | -H        | give a list for the number of vertices of the holes            |
+|  --outputformat  | -o     | select between dat, line or graphml (default: graphml)         |
+|  --noexecutioninfo | -e   | disables the execution info, in case of verbose (default: on)  |
+|  --enablestats   | -t     | enables the computation of statistics, in case of verbose the stats are printed to command line       |
+|  --statsfile       | -T   | give a file to print in statistics of the generation and the polygon in XML format |
+|  --numericalcorrectioninfo  | -c | enable information on numerical corrections (default: off)|
+|  --disablelocalchecks  | -l    | disables the local checking and error correction after each translation       |
+|  --enableglobalchecks  | -g    | enables the global checking after each stage              |
+|  --verbose    | -v        | enables printing of information to the command line (default: off)     |
+|  --disableweightedselection | -w | disables the weighted edge selection for inserting new vertices |
 
 # License
 
