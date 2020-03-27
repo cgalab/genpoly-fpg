@@ -36,7 +36,7 @@ code 	name						meaning
 2		Vertex at PE end			A vertex lies exactly at a polygon edge after a translation
 3		PE flip 					The edge to be flipped at an event is a polygon edge
 4		Triangle overflow			A new triangle is assigned to an edge which already has two triangles
-5		Triangle redundance			A new triangle is assigned to an edge which already has the same 
+5		Triangle redundancy			A new triangle is assigned to an edge which already has the same 
 									triangle registered
 6		Surrounding polygon fail	The moving vertex is not anymore inside of its surrounding polygon
 									at the end of a translation
