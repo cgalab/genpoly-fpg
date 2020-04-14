@@ -163,7 +163,7 @@ bool Translation::generateInitialQueue(){
 	vertices.
 	Therefore it generates a dummy vertex with the same y-coordinate as v and a x-coordinate which
 	is the maximum x-coordinate of all vertices of the quadrilateral plus 10. So the dummy vertex
-	lays definitelly lays outside of the qudrilateral. Then it checks how often the edge between v
+	lays definitely lays outside of the quadrilateral. Then it checks how often the edge between v
 	and the dummy vertex intersects the edges of the quadrilateral. If the number of intersections
 	is odd, then v must lay inside of the quadrilateral.
 
@@ -237,7 +237,7 @@ bool Translation::insideQuadrilateral(Vertex * const v) const{
 
 	// If there was any intersection of type vertex return false, so the translation gets
 	// refused. The point is, for an vertex intersection we can not say anything for sure
-	// espacially as the dummeEdge could just intersect with any point of the quadrilateral.
+	// especially as the dummeEdge could just intersect with any point of the quadrilateral.
 	if(vertexInt)
 		return false;
 
@@ -251,7 +251,7 @@ bool Translation::insideQuadrilateral(Vertex * const v) const{
 	The function insideTriangle() checks whether the vertex toCheck is inside the triangle
 	formed by the vertices v0, v1 and v2.
 
-	@param	v0 			First veretx of the triangle
+	@param	v0 			First vertex of the triangle
 	@param 	v1 			Second vertex of the triangle
 	@param 	v2 			Third vertex of the triangle
 	@param 	toCheck 	The vertex for which should be checked whether it lays inside the
@@ -300,7 +300,7 @@ bool Translation::insideTriangle(Vertex * const v0, Vertex * const v1, Vertex * 
 			edge even if the edge we checked was no polygon edge, because a new polygon edge
 			obviously is not allowed to go through a vertex.
 		- As we had the case that a new edge numerically intersected all three edges of the same
-			triangle or multiple edges of the surrounding polygon we do not stopp at the first 
+			triangle or multiple edges of the surrounding polygon we do not stop at the first 
 			intersection we find, but we count all intersections. If we find more then one, the
 			function returns false. But this should now really happen nowhere as the epsilon
 			in checkIntersection() should lead to getting all these cases as intersections of
@@ -376,7 +376,7 @@ bool Translation::checkEdge(Vertex * const fromV, TEdge * const newE) const{
 		iType0 = checkIntersection(newE, surEdges[0], false);
 		iType1 = checkIntersection(newE, surEdges[1], false);
 
-		// The new edge does not interesect any further edges
+		// The new edge does not intersect any further edges
 		if(iType0 == IntersectionType::NONE && iType1 == IntersectionType::NONE)
 			return true;
 
@@ -644,7 +644,7 @@ bool Translation::flip(Triangle *t0, const bool singleFlip){
 	// i.e. it doesn't contain the moving vertex
 	bool oppositeFlip = false;
 	double x, y;
-	// Indicates whether a new triangle has been inserted into the eventqueue
+	// Indicates whether a new triangle has been inserted into the event queue
 	bool insertion = false; 
 	Vertex *common, *opposite;
 
@@ -666,7 +666,7 @@ bool Translation::flip(Triangle *t0, const bool singleFlip){
 	if(!(*e).contains(original))
 		oppositeFlip = true;
 
-	// Remove the other triangle from the eventqueue if it is enqueued
+	// Remove the other triangle from the event queue if it is enqueued
 	t1 =(*e).getOtherTriangle(t0);
 	if((*t1).isEnqueued())
 		(*Q).remove(t1);
@@ -703,7 +703,7 @@ bool Translation::flip(Triangle *t0, const bool singleFlip){
 		if(Settings::localChecking)
 			FlipStack.push(new Flip(vj0, vj1, vn0, vn1));
 
-		// Reset coordinates temporarely to original position for the calcalation of the event time
+		// Reset coordinates temporarily to original position for the calculation of the event time
 		x = (*original).getX();
 		y = (*original).getY();
 		(*original).setPosition((*oldV).getX(), (*oldV).getY());
@@ -1098,7 +1098,7 @@ Translation::Translation(Triangulation *Tr, int i, double dX, double dY) :
 				polygon, otherwise false
 
 	Note:
-		For more information on how to check which cases can be solved by splitted translations
+		For more information on how to check which cases can be solved by split translations
 		take a look at my Master Thesis
 */
 bool Translation::checkOverroll(){
@@ -1125,6 +1125,8 @@ bool Translation::checkOverroll(){
 		inside0 = insideTriangle(oldV, newV, prevV, randomV);
 		inside1 = insideTriangle(oldV, newV, nextV, randomV);
 
+		// TODO:
+		// is this really correct and not the wrong way around?
 		if(inside0 && inside1){
 			split = true;
 			continue;
@@ -1136,7 +1138,7 @@ bool Translation::checkOverroll(){
 
 	// Now we check whether the polygon rolls over another polygon or itself
 
-	// Check whether the quadrilateral of the choosen Vertex P, its translated version P' and the
+	// Check whether the quadrilateral of the chosen Vertex P, its translated version P' and the
 	// two neighbors M and N is simple, otherwise there can not be any overroll
 	overroll = !(checkIntersection(prevOldE, nextNewE, false) != IntersectionType::NONE || checkIntersection(nextOldE, prevNewE, false) != IntersectionType::NONE);
 

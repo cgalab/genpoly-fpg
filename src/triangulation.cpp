@@ -348,7 +348,6 @@ void Triangulation::writeTriangulation(const char *filename) const{
 
 	Note:
 		- Graphml: https://de.wikipedia.org/wiki/GraphML
-		- Works here: http://graphonline.ru/en/
 */
 void Triangulation::writePolygon(const char *filename) const{
 	FILE *f;
