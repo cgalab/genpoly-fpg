@@ -83,8 +83,6 @@ int main(int argc, char *argv[]){
 
 	if(Settings::nrInnerPolygons == 0)
 		strategyNoHoles0(T);
-	else if(Settings::nrInnerPolygons == 1)
-		strategyWithHoles0(T);
 	else
 		strategyWithHoles0(T);
 
@@ -101,6 +99,7 @@ int main(int argc, char *argv[]){
 		Statistics::calculateMaxTwist(T);
 		Statistics::calculateSinuosity(T);
 		Statistics::calculateRadialDistanceDeviation(T);
+		Statistics::calculateTwistNumber(T);
 
 		if(!Settings::mute)
 			Statistics::printStats(T);

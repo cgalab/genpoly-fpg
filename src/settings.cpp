@@ -29,11 +29,11 @@ const std::string Settings::dummyFileName = "dummy.fpg";
 /*
 	Initial polygon
 */
-unsigned int Settings::initialSize = 10;
+unsigned int Settings::initialSize = 20;
 double Settings::radiusPolygon = 0.1;
 double Settings::radiusHole = 0.05;
 double Settings::boxSize = 3.0;
-unsigned int Settings::initialTranslationFactor = 1000;
+unsigned int Settings::initialTranslationFactor = 100;
 int Settings::initialTranslationNumber = -1;
 
 
@@ -41,9 +41,11 @@ int Settings::initialTranslationNumber = -1;
 	Translation parameters
 */
 Arithmetics Settings::arithmetics = Arithmetics::DOUBLE;
+double Settings::distMax = -1;
+int Settings::stddevDiv = 3;
 bool Settings::localChecking = true;
 bool Settings::globalChecking = false;
-
+unsigned int Settings::additionalTrans = 1;
 
 /*
 	Insertion parameters
@@ -81,6 +83,8 @@ char* Settings::polygonFile = (char*)"polygon.dat";
 bool Settings::triangulationOutputRequired = false;
 char* Settings::triangulationFile = NULL;
 char* Settings::statisticsFile = NULL;
+
+double Settings::timing = 0;
 
 
 void Settings::readConfigFile(char *filename){

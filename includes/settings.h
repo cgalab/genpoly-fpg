@@ -99,11 +99,20 @@ public:
 	// out of its surrounding polygon (just with double arithmetics)
 	static constexpr double minDetInsertion = 0.000000000001; // 10⁻¹²
 
+	//
+	static double distMax;
+
+	//
+	static int stddevDiv;
+
 	// Enable local correctness checking after aborted translations
 	static bool localChecking;
 
 	// Enable global correctness checking between stages
 	static bool globalChecking;
+
+	// Factor for additional translations
+	static unsigned int additionalTrans;
 
 
 	/*
@@ -212,6 +221,8 @@ public:
 	static bool simplicityCheck;
 
 	static const std::string dummyFileName;
+
+	static double timing;
 };
 
 #endif

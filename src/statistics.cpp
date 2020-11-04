@@ -24,6 +24,7 @@ double Statistics::radialDistDev = 0;
 double Statistics::twistMin = 0;
 double Statistics::twistMax = 0;
 double Statistics:: maxTwist = 0;
+unsigned int Statistics::twistNumber = 0;
 unsigned int Statistics::sinuosity = 0;
 
 /*
@@ -100,21 +101,19 @@ void Statistics::calculateRadialDistanceDeviation(Triangulation const * const T)
 	double sum = 0;
 	double radius = Settings::radiusPolygon;
 	double dist;
-	Vertex *start, *v;
+	unsigned int i;
+	unsigned int n = (*T).getActualNumberOfVertices();
+	Vertex *v;
 
-	start = (*T).getVertex(0, 0);
-	v = start;
+	for(i = 0; i < n; i++){
+		v = (*T).getVertex(i);
 
-	do{
 		dist = (*v).getDistanceToOrigin();
 
 		sum = sum + pow(dist - radius, 2);
+	}
 
-		v = (*v).getNext();
-
-	}while((*v).getID() != (*start).getID());
-
-	sum = sum / ((*T).getActualNumberOfVertices(0) - 1);
+	sum = sum / n;
 
 	sum = sqrt(sum);
 
@@ -193,6 +192,41 @@ void Statistics::calculateSinuosity(Triangulation const * const T){
 	sinuosity = n;
 }
 
+void Statistics::calculateTwistNumber(Triangulation const * const T){
+	double t;
+	double alpha, beta;
+	Vertex *start, *v;
+	unsigned int count = 0;
+	unsigned int n = (*T).getActualNrInnerPolygons();
+	unsigned int i;
+
+	for(i = 0; i <= n; i++){
+		
+		start = (*T).getVertex(i, 0);
+		v = start;
+
+		t = 0;
+		do{
+			v = (*v).getNext();
+
+			alpha = (*v).getInsideAngle();
+			beta = alpha - M_PI;
+
+			t = t + beta;
+
+			if(t <= -M_PI){
+				count++;
+				t = t + M_PI;
+			} else if(t >= M_PI){
+				count++;
+				t = t - M_PI;
+			}
+		}while((*v).getID() != (*start).getID());
+
+		twistNumber = (((count - 1) / 2) + 1) * 2;
+	}
+}
+
 void Statistics::printStats(Triangulation const * const T){
 	unsigned int i;
 	unsigned int nrOfHoles;
@@ -238,6 +272,7 @@ void Statistics::printStats(Triangulation const * const T){
 	fprintf(stderr, "Max inside twist: %.2f°\n", twistMin);
 	fprintf(stderr, "Max outside twist: %.2f°\n", twistMax);
 	fprintf(stderr, "Overall max twist: %.2f°\n", maxTwist);
+	fprintf(stderr, "Number of twists: %u\n", twistNumber);
 }
 
 void Statistics::writeStatsFile(Triangulation const * const T){
@@ -271,6 +306,7 @@ void Statistics::writeStatsFile(Triangulation const * const T){
 	trans.add("maxsp", maxSPTriangles);
 	trans.add("averagepassed", (double)nrTriangles / (double) nrChecks);
 	trans.add("maxpassed", maxSPTriangles);
+	trans.add("timing", Settings::timing);
 
 
 	ptree& shape = stats.add("shape", "");
@@ -279,6 +315,7 @@ void Statistics::writeStatsFile(Triangulation const * const T){
 	shape.add("maxinsidetwist", twistMin);
 	shape.add("maxoutsidetwist", twistMax);
 	shape.add("maxtwist", maxTwist);
+	shape.add("twistnumber", twistNumber);
 
 
 	write_xml(Settings::statisticsFile, tree,

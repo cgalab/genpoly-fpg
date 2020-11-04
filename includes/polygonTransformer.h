@@ -78,4 +78,10 @@ void strategyNoHoles0(Triangulation * const T);
 /*
 
 */
+void strategyNoHoles1(Triangulation * const T);
+
+
+/*
+
+*/
 void strategyWithHoles0(Triangulation * const T);

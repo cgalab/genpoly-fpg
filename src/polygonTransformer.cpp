@@ -62,7 +62,7 @@ int transformPolygonByMoves(Triangulation * const T, const int iterations){
 		stddev = (*v).getDirectedEdgeLength(alpha);
 
 		// Generate a random distance
-		r = (*Settings::generator).getDoubleNormal(stddev / 2, stddev / 6);
+		r = (*Settings::generator).getDoubleNormal(stddev / 2, stddev / Settings::stddevDiv);
 
 		// Split the translation into x- and y-components
 		dx = r * cos(alpha);
@@ -201,16 +201,68 @@ void strategyNoHoles0(Triangulation * const T){
 		exit(9);
 	}
 
-	performed = transformPolygonByMoves(T, Settings::outerSize);
+	if(Settings::additionalTrans > 0){
+		performed = transformPolygonByMoves(T, Settings::additionalTrans);
+
+		if(Settings::executionInfo)
+			fprintf(stderr, "Transformed polygon with %d of %d translations in %f seconds\n\n", performed,
+				Settings::additionalTrans, (*Settings::timer).elapsedTime());
+
+		if(!(*T).check()){
+			fprintf(stderr, "Triangulation error: something is wrong in the triangulation at the end\n");
+			exit(9);
+		}
+	}
+
+	Settings::timing = (*Settings::timer).elapsedTime();
+}
+
+/*
+	unused!
+	always doubles up the number of vertices
+*/
+void strategyNoHoles1(Triangulation * const T){
+	int performed;
+	int left;
+	int grow;
+
+	performed = transformPolygonByMoves(T, Settings::initialTranslationNumber);
 
 	if(Settings::executionInfo)
-		fprintf(stderr, "Transformed polygon with %d of %d translations in %f seconds\n\n", performed,
-			Settings::outerSize, (*Settings::timer).elapsedTime());
+		fprintf(stderr, "Transformed initial polygon with %d of %d translations in %f \
+			seconds\n\n", performed, Settings::initialTranslationNumber,
+			(*Settings::timer).elapsedTime());
 
 	if(!(*T).check()){
-		fprintf(stderr, "Triangulation error: something is wrong in the triangulation at the end\n");
+		fprintf(stderr, "Triangulation error: something is wrong in the triangulation at the \
+			end of transforming the initial polygon\n");
 		exit(9);
 	}
+
+	
+	left = Settings::outerSize - Settings::initialSize;
+	while(left > 0){
+		grow = (*T).getActualNumberOfVertices(0);
+
+		if(grow > left)
+			grow = left;
+
+		growPolygonBy(T, 0, grow);
+		left = left - grow;
+
+		if(Settings::executionInfo)
+		fprintf(stderr, "Grew polygon to %d vertices afters %f seconds \n\n",
+			(*T).getActualNumberOfVertices(0), (*Settings::timer).elapsedTime());
+
+		grow = (*T).getActualNumberOfVertices(0);
+		performed = transformPolygonByMoves(T, grow);
+
+		if(Settings::executionInfo)
+			fprintf(stderr, "Transformed initial polygon with %d of %d translations in %f \
+				seconds\n\n", performed, grow, (*Settings::timer).elapsedTime());
+	}
+
+	Settings::timing = (*Settings::timer).elapsedTime();
 }
 
 
@@ -236,8 +288,11 @@ void strategyWithHoles0(Triangulation * const T){
 	}
 
 	performed = 1;
+
 	// TODO:
 	// What the hell is this k doing?
+	// Ok....maybe it is an insurance in case no further insertions can be executed such that
+	// the program would run forever?!
 	k = 0;
 	while(performed != 0 && k < 20){
 		performed = 0;
@@ -285,4 +340,6 @@ void strategyWithHoles0(Triangulation * const T){
 			growing the initial polygon\n");
 		exit(9);
 	}
+
+	Settings::timing = (*Settings::timer).elapsedTime();
 }
