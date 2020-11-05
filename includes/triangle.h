@@ -167,6 +167,7 @@ public:
 		double 					calculateCollapseTime(Vertex * const moving, const double dx,
 								const double dy) const
 		double 					signedArea() const
+
 	*/
 
 

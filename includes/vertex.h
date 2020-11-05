@@ -612,4 +612,21 @@ public:
 	~Vertex();
 };
 
+
+/*
+
+*/
+static bool operator <(const Vertex& v0, const Vertex& v1){
+
+	if(v0.getX() < v1.getX())
+		return true;
+	else if(v0.getX() == v1.getX())
+		if(v0.getY() < v1.getY())
+			return true;
+		else
+			return false;
+	else
+		return false;
+}
+
 #endif

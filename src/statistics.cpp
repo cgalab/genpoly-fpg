@@ -25,7 +25,7 @@ double Statistics::twistMin = 0;
 double Statistics::twistMax = 0;
 double Statistics:: maxTwist = 0;
 unsigned int Statistics::twistNumber = 0;
-unsigned int Statistics::sinuosity = 0;
+unsigned int Statistics::directionChanges = 0;
 
 /*
 	Initialise global variables
@@ -39,6 +39,7 @@ unsigned long long Statistics::nrSPTriangles = 0;
 unsigned int Statistics::maxSPTriangles = 0;
 unsigned long long Statistics::nrTriangles = 0;
 unsigned int Statistics::maxTriangles = 0;
+
 
 /*
 	The function calculateDistanceDistribution() calculates the distance distribution
@@ -157,7 +158,7 @@ void Statistics::calculateMaxTwist(Triangulation const * const T){
 	maxTwist = fabs(min) + fabs(max);
 }
 
-void Statistics::calculateSinuosity(Triangulation const * const T){
+void Statistics::calculateDirectionChanges(Triangulation const * const T){
 	int n = 0;
 	double angle;
 	Vertex *start, *v;
@@ -189,7 +190,7 @@ void Statistics::calculateSinuosity(Triangulation const * const T){
 		}
 	}while((*v).getID() != (*start).getID());
 
-	sinuosity = n;
+	directionChanges = n;
 }
 
 void Statistics::calculateTwistNumber(Triangulation const * const T){
@@ -268,11 +269,11 @@ void Statistics::printStats(Triangulation const * const T){
 
 	fprintf(stderr, "Shape:\n");
 	fprintf(stderr, "Radial deviation from the start polygon: %.2f\n", radialDistDev);
-	fprintf(stderr, "Sinuosity: %d\n", sinuosity);
+	fprintf(stderr, "Number of direction changes: %d\n", directionChanges);
 	fprintf(stderr, "Max inside twist: %.2f°\n", twistMin);
 	fprintf(stderr, "Max outside twist: %.2f°\n", twistMax);
 	fprintf(stderr, "Overall max twist: %.2f°\n", maxTwist);
-	fprintf(stderr, "Number of twists: %u\n", twistNumber);
+	fprintf(stderr, "Number of twists by pi: %u\n", twistNumber);
 }
 
 void Statistics::writeStatsFile(Triangulation const * const T){
@@ -311,7 +312,7 @@ void Statistics::writeStatsFile(Triangulation const * const T){
 
 	ptree& shape = stats.add("shape", "");
 	shape.add("radialdev", radialDistDev);
-	shape.add("sinuosity", sinuosity);
+	shape.add("dir_change", directionChanges);
 	shape.add("maxinsidetwist", twistMin);
 	shape.add("maxoutsidetwist", twistMax);
 	shape.add("maxtwist", maxTwist);

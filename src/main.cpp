@@ -97,7 +97,7 @@ int main(int argc, char *argv[]){
 
 	if(Settings::enableStats){
 		Statistics::calculateMaxTwist(T);
-		Statistics::calculateSinuosity(T);
+		Statistics::calculateDirectionChanges(T);
 		Statistics::calculateRadialDistanceDeviation(T);
 		Statistics::calculateTwistNumber(T);
 

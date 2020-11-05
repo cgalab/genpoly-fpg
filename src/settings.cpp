@@ -45,7 +45,7 @@ double Settings::distMax = -1;
 int Settings::stddevDiv = 3;
 bool Settings::localChecking = true;
 bool Settings::globalChecking = false;
-unsigned int Settings::additionalTrans = 1;
+unsigned int Settings::additionalTrans = 0;
 
 /*
 	Insertion parameters

@@ -71,6 +71,25 @@ double Triangle::signedAreaExact() const{
 		- In fact this functions computes 2 times the signed area of the triangle.
 */
 double Triangle::signedAreaDouble() const{
+
+	if(*v0 < *v1 && *v0 < *v2){
+		if(*v1 < *v2)
+			return det(v0, v1, v2);
+		else
+			return - det(v0, v2, v1);
+	}else if(*v1 < *v0 && *v1 < *v2){
+		if(*v0 < *v2)
+			return- det(v1, v0, v2);
+		else
+			return det(v1, v2, v0);
+	}else{
+		if(*v0 < *v1)
+			return det(v2, v0, v1);
+		else
+			return - det(v2, v1, v0);
+	}
+}
+/*double Triangle::signedAreaDouble() const{
 	unsigned long long id0, id1, id2;
 	double area;
 
@@ -98,7 +117,7 @@ double Triangle::signedAreaDouble() const{
 	}
 
 	return area;
-}
+}*/
 
 /*
 	The function det() computes the determinant of three 2D vertices. It asserts that the

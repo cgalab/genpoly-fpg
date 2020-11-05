@@ -214,5 +214,6 @@ private:
 
 		if(outerSize == 0)   {outerSize = 20;}
 		if(initialSize == 0) {initialSize = 10;}
+		if(additionalTrans == 0) {additionalTrans = outerSize;}
 	}
 };

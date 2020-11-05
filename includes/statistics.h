@@ -47,7 +47,7 @@ private:
 	static double twistMax;
 	static double maxTwist;
 	static unsigned int twistNumber;
-	static unsigned int sinuosity;
+	static unsigned int directionChanges;
 	
 
 public:
@@ -105,7 +105,7 @@ public:
 
 	static void calculateMaxTwist(Triangulation const * const T);
 
-	static void calculateSinuosity(Triangulation const * const T);
+	static void calculateDirectionChanges(Triangulation const * const T);
 
 	static void calculateTwistNumber(Triangulation const * const T);
 
