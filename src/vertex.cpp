@@ -522,21 +522,6 @@ void Vertex::write(FILE * const f, double factor) const{
 	int n;
 	int text;
 
-	if(factor == 0){
-		n = (*T).getActualNumberOfVertices();
-		if(n < 100)
-			factor = 100.0 / (double)n;
-		else if(n < 5000)
-			factor = 10;
-		else
-			factor = 20;
-	}
-
-
-	/*if(P == NULL)
-		text = -1;
-	else
-		text = getPID();*/
 	fprintf(f, "<node id=\"%llu\">"
 	           "<data key=\"x\">%.16f</data>"
 	           "<data key=\"y\">%.16f</data>"

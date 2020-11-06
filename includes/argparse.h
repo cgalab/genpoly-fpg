@@ -20,7 +20,7 @@
 #include <getopt.h>
 #include <boost/algorithm/string.hpp>
 
-static const char* short_options = "hn:i:s:aH:o:eT:clgvtw";
+static const char* short_options = "hn:i:s:aH:o:eT:clgvtwp:";
 static struct option long_options[] = {
 		{ "help"                , no_argument      , 0, 'h'},
 		{ "nrofholes"           , required_argument, 0, 'n'},
@@ -37,6 +37,7 @@ static struct option long_options[] = {
 		{ "verbose"                  , no_argument,  0, 'v'},
 		{ "enablestats"              , no_argument,  0, 't'},
 		{ "disableweightedselection" , no_argument,  0, 'w'},
+		{ "printtriang"				 , required_argument, 0, 'p'},
 		{ 0, 0, 0, 0}
 };
 
@@ -59,6 +60,7 @@ static struct option long_options[] = {
 	fprintf(f,"           --verbose                  (default off).\n");
 	fprintf(f,"           --enablestats              (default off).\n");
 	fprintf(f,"           --statsfile <string>       xml-file for statistics (default none)\n");
+	fprintf(f,"           --printtriang <string>     print the triangulation into a graphml file\n");
 	fprintf(f,"           --disableweightedselection \n");
 	fprintf(f,"\n");
 	fprintf(f,"  holesizes example:  --holesizes 3,6,7\n");
@@ -146,6 +148,11 @@ private:
 			case 'T': {
 				enableStats = true;
 				statisticsFile = optarg;
+				break;
+			}
+			case 'p': {
+				triangulationFile = optarg;
+				triangulationOutputRequired = true;
 				break;
 			}
 			case 'e': {

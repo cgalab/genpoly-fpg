@@ -288,14 +288,12 @@ void Triangulation::removeEdge(TEdge * const e){
 
 	Note:
 		- This function just works, if the triangulation stores all edges
-		- Graphml: https://de.wikipedia.org/wiki/GraphML
-		- Works here: http://graphonline.ru/en/
-		- This crappy website is the reason why we need the scaling factor here
+		- Works properly with Gephi (scaling factor is required for that)
 */
 void Triangulation::writeTriangulation(const char *filename) const{
 	FILE *f;
 	TEdge *e;
-	int scale = 4000;
+	int scale = 1000;
 
 	if(Settings::executionInfo)
 		fprintf(stderr, "Write triangulation to .graphml file %s...", filename);
@@ -304,13 +302,19 @@ void Triangulation::writeTriangulation(const char *filename) const{
 
 	// Print the graphml header
 	fprintf(f, "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
-	fprintf(f, "<graphml>\n");
-	fprintf(f, "<graph id=\"Graph\" edgeDefault=\"undirected\">\n");
+	fprintf(f, "<graphml xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns=\"http://graphml.graphdrawing.org/xmlns\" xsi:schemaLocation=\"http://graphml.graphdrawing.org/xmlns http://graphml.graphdrawing.org/xmlns/1.0/graphml.xsd\">\n"
+	           "  <key attr.name=\"vertex-coordinate-x\" attr.type=\"string\" for=\"node\" id=\"x\"/>\n"
+	           "  <key attr.name=\"vertex-coordinate-y\" attr.type=\"string\" for=\"node\" id=\"y\"/>\n"
+	           "  <key attr.name=\"edge-weight\" attr.type=\"string\" for=\"edge\" id=\"w\">\n"
+	           "    <default>1.0</default>\n"
+	           "  </key>\n"
+	           "  <key attr.name=\"edge-weight-additive\" attr.type=\"string\" for=\"edge\" id=\"wa\">\n"
+	           "    <default>0.0</default>\n"
+	           "  </key>\n"
+	           "  <graph edgedefault=\"undirected\">\n");
 
-	// Print all nodes
-	fprintf(f, "<nodes>\n");
 
-	// Start with the bounding box
+	// Start with the nodes of the bounding box
 	if(Rectangle0 != NULL){
 		(*Rectangle0).write(f, scale);
 		(*Rectangle1).write(f, scale);
@@ -322,15 +326,12 @@ void Triangulation::writeTriangulation(const char *filename) const{
 	for(auto const& i : vertices){
 		if(i != NULL) (*i).write(f, scale);
 	}
-	fprintf(f, "</nodes>\n");
 
 	// Print all edges from the edge map
-	fprintf(f, "<edges>\n");
 	for(auto const& i : edges){
 		e = i.second;
 		(*e).write(f);
 	}
-	fprintf(f, "</edges>\n");
 
 	fprintf(f, "</graph>\n");
 	fprintf(f, "</graphml>\n");
@@ -352,7 +353,7 @@ void Triangulation::writeTriangulation(const char *filename) const{
 void Triangulation::writePolygon(const char *filename) const{
 	FILE *f;
 	TEdge *e;
-	int scale = 1000;
+	int scale = 1;
 	Vertex *v, *start;
 
 	if(Settings::executionInfo)

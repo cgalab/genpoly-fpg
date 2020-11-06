@@ -120,10 +120,11 @@ public:
 		void 			removeEdge(TEdge * const e)
 
 		PRINTER:
-
+		
 		void 			writeTriangulation(const char *filename) const
 		void 			writePolygon(const char *filename) const
 		void 			writePolygonToDat(const char *filename) const
+		void 			writePolygonToLine(const char *filename) const
 
 		OTHERS:
 
@@ -283,16 +284,13 @@ public:
 	*/
 
 	/*
-		The function writeTriangulation() writes the whole triangulation in .graphml style into
-		a file
+		The function writeTriangulation() writes the whole triangulation in .graphml style into a file
 
 		@param	filename	The name of the .graphml file
 
 		Note:
 			- This function just works, if the triangulation stores all edges
-			- Graphml: https://de.wikipedia.org/wiki/GraphML
-			- Works here: http://graphonline.ru/en/
-			- This crappy website is the reason why we need the scaling factor here
+			- Works properly with Gephi (scaling factor is required for that)
 	*/
 	void writeTriangulation(const char *filename) const;
 
