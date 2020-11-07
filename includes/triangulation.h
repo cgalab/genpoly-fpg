@@ -85,6 +85,7 @@ private:
 	*/
 	int N;
 
+
 public:
 	
 	/*
@@ -106,7 +107,7 @@ public:
 
 		GETTER:
 		
-		unsgined int 	getActualNrInnerPolygons() const
+		unsigned int 	getActualNrInnerPolygons() const
 		int 			getTargetNumberOfVertices() const
 		int 			getActualNumberOfVertices() const
 		int 			getActualNumberOfVertices(const unsigned int pID) const

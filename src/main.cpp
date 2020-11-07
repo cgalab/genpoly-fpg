@@ -24,9 +24,7 @@
 #include "polygonTransformer.h"
 #include "settings.h"
 #include "statistics.h"
-#ifdef ENABLE_CLI
 #include "argparse.h"
-#endif
 
 
 /*
@@ -56,19 +54,8 @@ code 	name						meaning
 int main(int argc, char *argv[]){
 	Triangulation* T;
 
-#ifdef ENABLE_CLI
 	Parser parse(argc, argv);
 	Settings::checkAndApplySettings();
-#else
-	if(argc != 2){
-		fprintf(stderr, "Usage: fpg <CONFIG FILE>\n");
-		Settings::printDummyFile();
-		exit(14);
-	}else{
-		Settings::readConfigFile(argv[1]);
-		Settings::checkAndApplySettings();	
-	}
-#endif
 
 	if(!Settings::mute)
 			Settings::printSettings();

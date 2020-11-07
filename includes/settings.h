@@ -184,34 +184,14 @@ public:
 
 	// Filename for statistics file
 	static char *statisticsFile;
-
-
-
-
-
-	// Function for reading the configuration file
-	static void readConfigFile(char *filename);
+	
 
 	// Function for printing the settings
 	static void printSettings();
 
-	// cast string to char*
-	static char* stringToChar(std::string str);
-
-	// Reads booleans
-	static bool readBoolean(bool &found);
-
-	// Read arithmetic type
-	static Arithmetics readArithmeticType(bool &found);
-
 	// Checks whether all necessary settings are given
 	static void checkAndApplySettings();
 
-	// Get hole sizes
-	static void readHoleSizes(bool &found);
-
-	//Print a dummy configuration file
-	static void printDummyFile();
 
 	/*
 		Check
