@@ -167,16 +167,6 @@ unsigned int STEntry::getNrElementsTotal(){
 */
 void STEntry::update(){
 
-	if(leftChild != NULL){
-		leftLength = (*leftChild).getTotalLength();
-		nrElementsLeft = (*leftChild).getNrElementsTotal();
-	}
-
-	if(rightChild != NULL){
-		rightLength = (*rightChild).getTotalLength();
-		nrElementsRight = (*rightChild).getNrElementsTotal();
-	}
-
 	entryLength = (*edge).length();
 
 	totalLength = entryLength + leftLength + rightLength;
