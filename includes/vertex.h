@@ -151,6 +151,19 @@ private:
 
 public:
 
+	bool operator <(const Vertex& v){
+
+		if(x < v.x)
+			return true;
+		else if(x == v.x)
+			if(y < v.y)
+				return true;
+			else
+				return false;
+		else
+			return false;
+	}
+
 	/*
 		LIST OF PUBLIC MEMBER FUNCTIONS
 
@@ -616,7 +629,7 @@ public:
 /*
 
 */
-static bool operator <(const Vertex& v0, const Vertex& v1){
+/*static bool operator <(const Vertex& v0, const Vertex& v1){
 
 	if(v0.getX() < v1.getX())
 		return true;
@@ -627,6 +640,6 @@ static bool operator <(const Vertex& v0, const Vertex& v1){
 			return false;
 	else
 		return false;
-}
+}*/
 
 #endif
