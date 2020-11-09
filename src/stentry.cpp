@@ -170,7 +170,7 @@ void STEntry::update(){
 	entryLength = (*edge).length();
 
 	totalLength = entryLength + leftLength + rightLength;
-	nrElementsTotal = nrElementsLeft + nrElementsRight + 1;
+	//nrElementsTotal = nrElementsLeft + nrElementsRight + 1;
 
 	if(parent != NULL)
 		(*parent).update();
