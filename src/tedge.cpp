@@ -163,7 +163,7 @@ void TEdge::setTriangle(Triangle * const t){
 
 	@param 	ste 	The entry in the SelectionTree
 */
-void TEdge::setSTEntry(STEntry *ste){
+void TEdge::setSTEntry(STEntry<TEdge*> *ste){
 	entry = ste;
 }
 
@@ -267,8 +267,17 @@ Vertex *TEdge::getOtherVertex(Vertex const * const v) const{
 /*
 	@return 	The SelectionTree entry of the edge
 */
-STEntry *TEdge::getSTEntry() const{
+STEntry<TEdge*> *TEdge::getSTEntry() const{
 	return entry;
+}
+
+/*
+	Computes the weight for the SelectionTree which is the length of the edge.
+
+	@return 	The length of the edge
+*/
+double TEdge::getWeight() const{
+ return length();
 }
 
 
@@ -476,6 +485,9 @@ void TEdge::updateSTEntry() const{
 TEdge::~TEdge(){
 	(*v0).removeEdge(this);
 	(*v1).removeEdge(this);
+
+	if(entry != NULL)
+		(*entry).removeObject();
 
 	if(T != NULL) (*T).removeEdge(this);
 

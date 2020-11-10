@@ -57,7 +57,7 @@ Triangulation *generateRegularPolygon(){
 	// Box the polygon by a square and triangulate the area between the square and the polygon
 	boxPolygon(T, 0);
 
-	return T; 	
+	return T;
 }
 
 
@@ -335,7 +335,6 @@ void splitHoleTriangle(Triangulation * const T){
 	TEdge *p1e0, *p1e1;
 	TEdge *p2e0, *p2e1, *p2e2;
 	TEdge *h0, *h1, *h2;
-	STEntry *entry0, *entry1;
 
 	// Get the actual number of inner polygons; we want to split the last one
 	n = (*T).getActualNrInnerPolygons();
@@ -359,14 +358,10 @@ void splitHoleTriangle(Triangulation * const T){
 	store0 = (*t0).getOtherVertex(e0);
 	store1 = (*t1).getOtherVertex(e2);
 
-	// Get the STEntries of the obsolete edges of the polygon, to replace the edges
-	// later by new ones
-	entry0 = (*e0).getSTEntry();
-	entry1 = (*e2).getSTEntry();
-
 	// Delete the edges containing v0
 	delete e0;
 	delete e2;
+
 
 	// Get the coordinates of the triangle's vertices
 	x0 = (*v0).getX();
@@ -390,11 +385,7 @@ void splitHoleTriangle(Triangulation * const T){
 	// Generate the edges and the triangle of the first polygon
 	p1e0 = new TEdge(v1, n2, EdgeType::POLYGON);
 	p1e1 = new TEdge(n2, v2, EdgeType::POLYGON);
-	if(Settings::weightedEdgeSelection)
-		(*entry0).replaceEdge(p1e0);
 	(*T).addEdge(p1e0, n);
-	if(Settings::weightedEdgeSelection)
-		(*entry1).replaceEdge(p1e1);
 	(*T).addEdge(p1e1, n);
 	new Triangle(p1e0, p1e1, e1, v1, v2, n2);
 

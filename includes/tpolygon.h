@@ -21,6 +21,7 @@
 */
 #include <vector>
 #include <ostream>
+#include <cassert>
 
 
 /*
@@ -37,7 +38,7 @@
 */
 class Triangulation;
 class Vertex;
-class SelectionTree;
+template<class T> class SelectionTree;
 
 #include "triangulation.h"
 #include "vertex.h"
@@ -60,7 +61,7 @@ private:
 	/*
 		A binary tree containing all edges of the polygon for weighted random selection
 	*/
-	SelectionTree *tree;
+	SelectionTree<TEdge*> *tree;
 
 	/*
 		The ID of the polygon

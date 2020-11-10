@@ -122,12 +122,6 @@ void Triangulation::addEdge(TEdge * const e , const unsigned int pID){
 	(*e).setTriangulation(this);
 
 	if(Settings::weightedEdgeSelection && (*e).getEdgeType() == EdgeType::POLYGON){
-
-		// Check whether the new edge has already been added to the polygon, i.e. that
-		// it already has an entry in the SelectionTree
-		if((*e).getSTEntry() != NULL)
-			return;
-
 		if(pID == 0)
 			(*outerPolygon).addEdge(e);
 		else if(pID > 0 && pID <= Settings::nrInnerPolygons)

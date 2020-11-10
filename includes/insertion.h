@@ -19,13 +19,14 @@
 /*
 	Include my headers	
 */
+
 #include "vertex.h"
 #include "triangulation.h"
 #include "tedge.h"
 #include "triangle.h"
 #include "translation.h"
 #include "settings.h"
-#include "stentry.h"
+
 
 /*
 	Define the class Insertion:

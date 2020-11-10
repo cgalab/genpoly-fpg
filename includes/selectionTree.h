@@ -1,5 +1,5 @@
 /* 
- * Copyright 2019 Philipp Mayer - pmayer@cs.sbg.ac.at
+ * Copyright 2020 Philipp Mayer - pmayer@cs.sbg.ac.at
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,10 +17,14 @@
 #pragma once
 
 /*
+	Include standard libraries
+*/
+#include <queue>
+
+/*
 	Include my headers
 */
 #include "settings.h"
-
 
 /*
 	Define the class SelectionTree
@@ -29,13 +33,12 @@
 #define __SELECTIONTREE_H_
 
 /*
-	Define and include headers to the entites contained by SelectionTrees
+	Define and include headers to the entities contained by SelectionTrees
 */
-class STEntry;
-class TEdge;
+template<class T> class STEntry;
 
 #include "stentry.h"
-#include "tedge.h"
+
 
 /*
 	SelectionTree provides a method for selecting an TEdge of a polygon uniform
@@ -43,14 +46,24 @@ class TEdge;
 	unordered binary tree containing all edges. The binary tree stays balanced
 	by containing the elements in each subtree.
 */
-class SelectionTree{
+template<class T> class SelectionTree{
 
 private:
 	
 	/*
 		The root entry of the binary tree
 	*/
-	STEntry *root;
+	STEntry<T> *root;
+
+	/*
+		A queue which keeps track of the empty nodes of the SelectionTree
+	*/
+	std::queue<STEntry<T>*> emptyNodes;
+
+	/*
+		Flag whether the select should be weighted or not
+	*/
+	bool weighted;
 
 public:
 
@@ -58,7 +71,11 @@ public:
 		C ~ O ~ N ~ S ~ T ~ R ~ U ~ C ~ T ~ O ~ R ~ S
 	*/
 
-	SelectionTree();
+	SelectionTree<T>(bool w) : root(NULL) {
+
+		weighted = w;
+	}
+
 
 
 	/*
@@ -66,12 +83,45 @@ public:
 	*/
 
 	/*
-		The function insert() inserts an TEdge into the binary while making
-		sure that the binary stays balanced.
+		The function insert() inserts an object into the binary tree while making
+		sure that the binary tree stays balanced. If there are empty nodes available,
+		these nodes are used first.
 
-		@param 	e 	A new TEdge which has to be inserted in the binary tree
+		@param 	e 	A new object which has to be inserted in the binary tree
 	*/
-	void insert(TEdge *e);
+	void insert(T e){
+		STEntry<T> *entry, *child;
+
+		// First check whether there is any empty node and use it in case
+		if(!emptyNodes.empty()){
+			entry = emptyNodes.front();
+			emptyNodes.pop();
+
+			(*entry).setObject(e);
+		}else{
+
+			if(root == NULL)
+				root = new STEntry<T>(e, NULL, this);
+			else{
+				entry = root;
+				child = root;
+
+				while(child != NULL){
+					entry = child;
+					child = (*entry).getLighterSubtree();
+				}
+
+				(*entry).addChild(new STEntry<T>(e, entry, this));
+			}
+		}
+	}
+
+	/*
+		Adds a node which element has been removed to the queue for empty nodes.
+	*/
+	void addNodeToQueue(STEntry<T> *node){
+		emptyNodes.push(node);
+	}
 
 
 	/*
@@ -79,10 +129,34 @@ public:
 	*/
 
 	/*
-		The function getRandomEdge() selects an entry of the binary tree
-		uniformly at random weighted by the lengths of the TEdges
+		The function getRandomObject() selects an entry of the binary tree
+		uniformly at random weighted by the objects' weights.
+
+		@return 	The randomly selected object
 	*/
-	TEdge *getRandomEdge();
+	T getRandomObject(){
+		STEntry<T> *entry, *last;
+
+		if(root == NULL)
+			return NULL;
+
+		last = NULL;
+		entry = root;
+
+		while(last != entry){
+			last = entry;
+			entry = (*last).getRandomChild();
+		}
+
+		return (*entry).getObject();
+	}
+
+	/*
+		@return 	True if the SelectionTree is weighted, otherwise false
+	*/
+	bool isWeighted(){
+		return weighted;
+	}
 
 
 	/*
@@ -91,9 +165,19 @@ public:
 
 	/*
 		The function check() iterates through the whole binary tree to check
-		whether the TEdge of each not can still be found.
+		whether the object of each node can still be found.
 	*/
-	void check();
+	void check(){
+	
+		if(root == NULL){
+			fprintf(stderr, "This SelectionTree is empty!\n");
+			return;
+		}
+
+		fprintf(stderr, "Total number of elements: %d\n", (*root).getNrElementsTotal());
+
+		(*root).check();
+	}
 };
 
 #endif

@@ -49,17 +49,18 @@ enum class IntersectionType {NONE, EDGE, VERTEX};
 #define __TEDGE_H_
 
 /*
-	Define and include headers to the entites used in TEdge
+	Define and include headers to the entities used in TEdge
 */
 class Triangulation;
 class Triangle;
 class Vertex;
-class STEntry;
+template<class T> class STEntry;
 
 #include "triangulation.h"
 #include "triangle.h"
 #include "vertex.h"
 #include "stentry.h"
+
 
 /*
 	Define the different edge types:
@@ -101,7 +102,7 @@ private:
 	/*
 		The entry in the SelectionTree for polygon edges
 	*/
-	STEntry *entry;
+	STEntry<TEdge*> *entry;
 
 	/*
 		The unique ID of the edge
@@ -142,6 +143,7 @@ public:
 		Triangle* 			getTriangleContaining(Vertex const * const v) const
 		Triangle* 			getOtherTriangle(Triangle const * const t) const
 		Vertex* 			getOtherVertex(Vertex const * const v) const
+		double 				getWeight() const
 
 		REMOVER:
 
@@ -230,7 +232,7 @@ public:
 
 		@param 	ste 	The entry in the SelectionTree
 	*/
-	void setSTEntry(STEntry *ste);
+	void setSTEntry(STEntry<TEdge*> *ste);
 
 	
 	/*
@@ -305,7 +307,14 @@ public:
 	/*
 		@return 	The SelectionTree entry of the edge
 	*/
-	STEntry *getSTEntry() const;
+	STEntry<TEdge*> *getSTEntry() const;
+
+	/*
+		Computes the weight for the SelectionTree which is the length of the edge.
+
+		@return 	The length of the edge
+	*/
+	double getWeight() const;
 
 
 	/*

@@ -102,7 +102,6 @@ void Insertion::execute(){
 	TEdge *fromV0ToOther0, *fromV0ToOther1, *fromV1ToOther0, *fromV1ToOther1;
 	TEdge *fromV0ToNew, *fromV1ToNew;
 	TEdge *fromNewToOther0, *fromNewToOther1;
-	STEntry *entry;
 
 	// Calculate the coordinates of the new vertex
 	x = (*v0).getX() + ((*v1).getX() - (*v0).getX()) / 2;
@@ -119,10 +118,6 @@ void Insertion::execute(){
 	other0 = (*t0).getOtherVertex(e);
 	other1 = (*t1).getOtherVertex(e);
 
-	// Get the STEntry to replace the edge by one new edge in the SelectionTree
-	if(Settings::weightedEdgeSelection)
-		entry = (*e).getSTEntry();
-
 	// Delete the edge and the old triangles with it
 	delete e;
 
@@ -135,9 +130,6 @@ void Insertion::execute(){
 	// Generate the edges between the new vertex and the other four vertices
 	fromV0ToNew = new TEdge(v0, newV, EdgeType::POLYGON);
 	fromV1ToNew = new TEdge(newV, v1, EdgeType::POLYGON);
-	// Set one of the new polygon edges to the STEntry of the deleted edge
-	if(Settings::weightedEdgeSelection)
-		(*entry).replaceEdge(fromV0ToNew);
 	(*T).addEdge(fromV0ToNew, pID);
 	(*T).addEdge(fromV1ToNew, pID);
 

@@ -17,7 +17,6 @@
 
 #include "tpolygon.h"
 
-#include <cassert>
 
 /*
 	S ~ T ~ A ~ T ~ I ~ C 	V ~ A ~ R ~ I ~ A ~ B ~ L ~ E ~ S
@@ -41,7 +40,7 @@ unsigned int TPolygon::N = 0;
 	@param 	n 	The target number of vertices of the new polygon
 */
 TPolygon::TPolygon(Triangulation const * const t, const int n) :
-	T(t), tree(new SelectionTree), id(N) {
+	T(t), tree(new SelectionTree<TEdge*>(true)), id(N) {
 
 	vertices.reserve(n);
 
@@ -98,15 +97,6 @@ Vertex *TPolygon::getVertex(const int i) const{
 
 	n = vertices.size();
 
-	/*if(i < 0){
-		return vertices[n + i];
-	}else if(i >= n){
-		return vertices[i - n];
-	}else{
-		return vertices[i];
-	}
-	return NULL;*/
-
 	return vertices[i % n];
 }
 
@@ -121,7 +111,7 @@ int TPolygon::getActualPolygonSize() const{
 	@return 	Any edge of the polygon selected uniformly at random by its length
 */
 TEdge *TPolygon::getRandomEdgeWeighted() const{
-	return (*tree).getRandomEdge();
+	return (*tree).getRandomObject();
 }
 
 
