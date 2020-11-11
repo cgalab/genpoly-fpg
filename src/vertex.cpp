@@ -854,20 +854,14 @@ Vertex::~Vertex(){
 	int nEdges = edges.size();
 	int nTriangles = triangles.size();
 	int i;
-	TEdge *edgeArray[nEdges];
-	std::copy(edges.begin(), edges.end(), edgeArray);
-	Triangle *triangleArray[nTriangles];
-	std::copy(triangles.begin(), triangles.end(), triangleArray);
 
-	for(i = 0; i < nTriangles; i++){
-		delete triangleArray[i];
+	if(nEdges != 0 || nTriangles != 0){
+		fprintf(stderr, "Vertex deletion error: the deleted vertex was still part of an edge or triangle!\n");
+		exit(8);
 	}
 
-	for(i = 0; i < nEdges; i++){
-		delete edgeArray[i];
-	}
-
-	if(T != NULL) (*T).removeVertex(id);
+	if(T != NULL)
+		(*T).removeVertex(id);
 
 	deleted++;
 }

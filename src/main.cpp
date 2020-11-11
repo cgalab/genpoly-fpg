@@ -1,5 +1,5 @@
 /* 
- * Copyright 2019 Philipp Mayer - pmayer@cs.sbg.ac.at
+ * Copyright 2020 Philipp Mayer - pmayer@cs.sbg.ac.at
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -39,7 +39,7 @@ code 	name						meaning
 6		Surrounding polygon fail	The moving vertex is not anymore inside of its surrounding polygon
 									at the end of a translation
 7		Vertex at PE start 			The moving vertex lies at a polygon edge at the beginning of a translation
-8		temporarily empty
+8		Vertex deletion error 		A deleted vertex was still part of an edge or triangle
 9		Triangulation error			Some vertex has left its surrounding polygon but it hasn't been recognized
 									during the translation
 10		Vertex at PE end 			The surrounding polygon check recognizes a vertex exactly laying on a PE

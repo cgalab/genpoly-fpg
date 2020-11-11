@@ -285,6 +285,8 @@ public:
 		// Just take a look whether the element still exists
 		(*element).getWeight();
 
+		printf("Number of elements in the subtrees: %d (left)  %d (right)\n", nrElementsLeft, nrElementsRight);
+
 		if(leftChild != NULL)
 			(*leftChild).check();
 

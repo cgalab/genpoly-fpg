@@ -1362,8 +1362,10 @@ Translation::~Translation(){
 
 		exit(6);
 	}
-
+	
 	delete transPath;
+	delete prevNewE;
+	delete nextNewE;
 	delete oldV;
 	delete newV;
 }

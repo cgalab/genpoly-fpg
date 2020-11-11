@@ -68,7 +68,7 @@ private:
 
 public:
 
-		/*
+	/*
 		LIST OF PUBLIC MEMBER FUNCTIONS
 
 		CONSTRUCTORS:
