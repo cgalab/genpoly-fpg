@@ -96,9 +96,9 @@ private:
 		The vertex to be translated, a copy at the start position and a copy at the
 		target position
 	*/
-	Vertex * original;
-	Vertex * oldV;
-	Vertex * newV;
+	Vertex *original;
+	Vertex *oldV;
+	Vertex *newV;
 
 	/*
 		The neighboring vertices in the polygon
