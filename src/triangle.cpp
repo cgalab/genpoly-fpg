@@ -89,35 +89,6 @@ double Triangle::signedAreaDouble() const{
 			return - det(v2, v1, v0);
 	}
 }
-/*double Triangle::signedAreaDouble() const{
-	unsigned long long id0, id1, id2;
-	double area;
-
-	id0 = (*v0).getRID();
-	id1 = (*v1).getRID();
-	id2 = (*v2).getRID();
-
-	// If the vertices are not order by ID, reorder them and take this into account for the
-	// sign
-	if(id0 < id1 && id0 < id2){
-		if(id1 < id2)
-			area = det(v0, v1, v2);
-		else
-			area = - det(v0, v2, v1);
-	}else if(id1 < id0 && id1 < id2){
-		if(id0 < id2)
-			area = - det(v1, v0, v2);
-		else
-			area = det(v1, v2, v0);
-	}else{
-		if(id0 < id1)
-			area = det(v2, v0, v1);
-		else
-			area = - det(v2, v1, v0);
-	}
-
-	return area;
-}*/
 
 /*
 	The function det() computes the determinant of three 2D vertices. It asserts that the

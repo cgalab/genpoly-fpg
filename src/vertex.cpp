@@ -37,18 +37,6 @@ unsigned long long Vertex::deleted = 0;
 */
 
 /*
-	Sets the reserveID of the vertex
-
-	@param 	rid 	The new value for the reserveID
-
-	Note:
-		By default the reserveID is set to 2 * ID
-*/
-void Vertex::setRID(const unsigned long long rid){
-	reserveID = rid;
-}
-
-/*
 	The function getEnvironment() recursivelly inserts all adjacent edges and vertices into
 	maps. As key the IDs are used. This function is used for debug outputs.
 
@@ -81,22 +69,21 @@ void Vertex::getEnvironment(std::map<const unsigned long long, const TEdge*> &es
 
 /*
 	Constructor:
-	Sets the coordinates and the ID of the new vertex. Also it sets the reserveID to 2 * ID
-	and the property rectangleVertex to false, i.e. the new vertex is not part of the bounding
-	box.
+	Sets the coordinates and the ID of the new vertex. Also it sets the property rectangleVertex
+	to false, i.e. the new vertex is not part of the bounding box.
 
 	@param 	X 	The x coordinate of the vertex
 	@param 	Y 	The y coordinate of the vertex
 */
 Vertex::Vertex(const double X, const double Y) :
-	T(NULL), P(NULL), x(X), y(Y), toPrev(NULL), toNext(NULL), rectangleVertex(false), id(n), reserveID(2 * n) {
+	T(NULL), P(NULL), x(X), y(Y), toPrev(NULL), toNext(NULL), rectangleVertex(false), id(n) {
 
 	n++;
 }
 
 /*
 	Constructor:
-	Sets the coordinates and the ID of the new vertex. Also it sets the reserveID to 2 * ID.
+	Sets the coordinates and the ID of the new vertex.
 	The property rectangleVertex can be directly set here with the parameter RV.
 
 	@param 	X 	The x coordinate of the vertex
@@ -104,7 +91,7 @@ Vertex::Vertex(const double X, const double Y) :
 	@param 	RV 	Determines whether the new vertex is part of the bounding box
 */
 Vertex::Vertex(const double X, const double Y, const bool RV) :
-	T(NULL), P(NULL), x(X), y(Y), toPrev(NULL), toNext(NULL), rectangleVertex(RV), id(n), reserveID(2 * n) {
+	T(NULL), P(NULL), x(X), y(Y), toPrev(NULL), toNext(NULL), rectangleVertex(RV), id(n) {
 
 	n++;
 }
@@ -113,8 +100,6 @@ Vertex::Vertex(const double X, const double Y, const bool RV) :
 	The function getTranslated() is an implicit constructor which generates a new vertex
 	out of a already existing vertex and a translation vector. The position of the new
 	vertex is the position of the old vertex plus the translation vector.
-	The reserveID is set to 2 * ID of the original vertex if the translation vector is
-	zero, otherwise it is set to 2 * ID + 1 of the original vertex.
 	The property rectangleVertex is set to false.
 
 	@param 	dx 	X-component of the translation vector
@@ -123,9 +108,6 @@ Vertex::Vertex(const double X, const double Y, const bool RV) :
 */
 Vertex *Vertex::getTranslated(const double dx, const double dy) const{
 	Vertex *v = new Vertex(x + dx, y + dy);
-
-	if(dx != 0 || dy != 0)
-		(*v).setRID(2 * id + 1);
 	
 	return v;
 }
@@ -245,12 +227,6 @@ unsigned long long Vertex::getID() const{
 	return id;
 }
 
-/*
-	@return 	The reserve ID of the vertex
-*/
-unsigned long long Vertex::getRID() const{
-	return reserveID;
-}
 
 /*
 	The function getEdgeTo() searches the edges list for an edge to the vertex toV

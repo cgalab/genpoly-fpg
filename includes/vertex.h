@@ -101,16 +101,6 @@ private:
 	const unsigned long long id;
 
 	/*
-		The reserveID is used for computing determinants with double arithmetics, because
-		for copied vertices the ID can not be copied (otherwise it would violate the
-		uniqueness of IDs), but computing determinants with copied vertices should be done
-		in the same ordering as computing it with the original one. So the reserveID is
-		2 * ID for normal vertices and 2 * ID + 1 for copied vertices (here the ID of the
-		original vertex is used to compute the reserveID).
-	*/
-	unsigned long long reserveID;
-
-	/*
 		The number of already generated vertices
 	*/
 	static unsigned long long n;
@@ -124,16 +114,6 @@ private:
 	/*
 		P ~ R ~ I ~ V ~ A ~ T ~ E 	M ~ E ~ M ~ B ~ E ~ R 	F ~ U ~ N ~ C ~ T ~ I ~ O ~ N ~ S
 	*/
-
-	/*
-		Sets the reserveID of the vertex
-
-		@param 	rid 	The new value for the reserveID
-
-		Note:
-			By default the reserveID is set to 2 * ID
-	*/
-	void setRID(const unsigned long long rid);
 
 	/*
 		The function getEnvironment() recursivelly inserts all adjacent edges and vertices
@@ -189,7 +169,6 @@ public:
 		double 					getY() const
 		std::list<Triangle*> 	getTriangles() const
 		unsigned long long 		getID() const
-		unsigned long long 		getRID() const
 		TEdge* 					getEdgeTo(Vertex * const toV) const
 		std::vector<TEdge*> 	getSurroundingEdges() const
 		std::list<TEdge*> 		getPolygonEdges() const
@@ -235,9 +214,8 @@ public:
 
 	/*
 		Constructor:
-		Sets the coordinates and the ID of the new vertex. Also it sets the reserveID to
-		2 * ID and the property rectangleVertex to false, i.e. the new vertex is not part
-		of the bounding box.
+		Sets the coordinates and the ID of the new vertex. Also it sets and the property 
+		rectangleVertex to false, i.e. the new vertex is not part of the bounding box.
 
 		@param 	X 	The x coordinate of the vertex
 		@param 	Y 	The y coordinate of the vertex
@@ -246,8 +224,7 @@ public:
 
 	/*
 		Constructor:
-		Sets the coordinates and the ID of the new vertex. Also it sets the reserveID to
-		2 * ID.
+		Sets the coordinates and the ID of the new vertex.
 		The property rectangleVertex can be directly set here with the parameter RV.
 
 		@param 	X 	The x coordinate of the vertex
@@ -260,8 +237,6 @@ public:
 		The function getTranslated() is an implicit constructor which generates a new vertex
 		out of a already existing vertex and a translation vector. The position of the new
 		vertex is the position of the old vertex plus the translation vector.
-		The reserveID is set to 2 * ID of the original vertex if the translation vector is
-		zero, otherwise it is set to 2 * ID + 1 of the original vertex.
 		The property rectangleVertex is set to false.
 
 		@param 	dx 	X-component of the translation vector
@@ -361,11 +336,6 @@ public:
 		@return 	The ID of the vertex
 	*/
 	unsigned long long getID() const;
-
-	/*
-		@return 	The reserve ID of the vertex
-	*/
-	unsigned long long getRID() const;
 
 	/*
 		The function getEdgeTo() searches the edges list for an edge to the vertex toV
