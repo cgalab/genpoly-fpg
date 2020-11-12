@@ -164,7 +164,7 @@ void EventQueue::stabilizeConvex(struct Event* e0, struct Event* e1, TEdge* comm
 			e0 -> triangle = t1;
 			e1 -> triangle = t0;
 
-			if(Settings::correctionInfo)
+			if(Settings::feedback == FeedbackMode::VERBOSE)
 				fprintf(stderr, "Numerical correction: Order change for events with time diff: %.20f \n",
 					fabs(e0 -> collapseTime - e1 -> collapseTime));
 		}
@@ -183,7 +183,7 @@ void EventQueue::stabilizeConvex(struct Event* e0, struct Event* e1, TEdge* comm
 			e0 -> triangle = t1;
 			e1 -> triangle = t0;
 
-			if(Settings::correctionInfo)
+			if(Settings::feedback == FeedbackMode::VERBOSE)
 				fprintf(stderr, "Numerical correction: Order change for events with time diff: %.20f \n",
 					fabs(e0 -> collapseTime - e1 -> collapseTime));
 		}
@@ -256,7 +256,7 @@ void EventQueue::stabilizeNonConvex(struct Event *e0, struct Event *e1, TEdge *c
 			e0 -> triangle = t1;
 			e1 -> triangle = t0;
 
-			if(Settings::correctionInfo)
+			if(Settings::feedback == FeedbackMode::VERBOSE)
 				fprintf(stderr, "Numerical correction: Order change for events with time diff: %.20f \n",
 					fabs(e0 -> collapseTime - e1 -> collapseTime));
 		}
@@ -276,7 +276,7 @@ void EventQueue::stabilizeNonConvex(struct Event *e0, struct Event *e1, TEdge *c
 			e0 -> triangle = t1;
 			e1 -> triangle = t0;
 
-			if(Settings::correctionInfo)
+			if(Settings::feedback == FeedbackMode::VERBOSE)
 				fprintf(stderr, "Numerical correction: Order change for events with time diff: %.20f \n",
 					fabs(e0 -> collapseTime - e1 -> collapseTime));
 		}
@@ -415,7 +415,7 @@ bool EventQueue::makeStable(const bool initial){
 				}
 			}*/
 
-			if(Settings::correctionInfo){
+			if(Settings::feedback == FeedbackMode::VERBOSE){
 				if(initial)
 					fprintf(stderr, "Eventqueue: Two events at the same time -> refused translation\n");
 				else

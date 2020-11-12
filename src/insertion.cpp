@@ -196,6 +196,6 @@ void Insertion::translate() const{
 		count++;
 	}
 
-	if(Settings::correctionInfo && count == Settings::insertionTries)
+	if(Settings::feedback == FeedbackMode::VERBOSE && count == Settings::insertionTries)
 		fprintf(stderr, "Warning: Was not able to find a suitable translation after the insertion!\n");
 }

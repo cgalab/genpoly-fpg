@@ -57,14 +57,14 @@ int main(int argc, char *argv[]){
 	Parser parse(argc, argv);
 	Settings::checkAndApplySettings();
 
-	if(!Settings::mute)
+	if(Settings::feedback != FeedbackMode::MUTE)
 			Settings::printSettings();
 
 	T = generateRegularPolygon();
 
 	(*T).check();
 
-	if(Settings::executionInfo)
+	if(Settings::feedback != FeedbackMode::MUTE)
 		fprintf(stderr, "Initial polygon with %d vertices in regular shape computed after %f seconds\n",
 			Settings::initialSize, (*Settings::timer).elapsedTime());
 
@@ -88,7 +88,7 @@ int main(int argc, char *argv[]){
 		Statistics::calculateRadialDistanceDeviation(T);
 		Statistics::calculateTwistNumber(T);
 
-		if(!Settings::mute)
+		if(Settings::feedback != FeedbackMode::MUTE)
 			Statistics::printStats(T);
 
 		if(Settings::statisticsFile != NULL)

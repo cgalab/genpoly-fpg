@@ -171,9 +171,9 @@ private:
 
 	/*
 		Private Constructor:
-		Generates a new translation of any type, whereas the publiuc constructor is just
+		Generates a new translation of any type, whereas the public constructor is just
 		capable of generating translations of type DEFAULT. Greps the moving vertex and its
-		neighbors from the triangulations vertices list and initalize the translation path.
+		neighbors from the triangulations vertices list and initialize the translation path.
 
 		@param 	Tr 		The triangulation the moving vertex lives in
 		@param 	i 		The index of the moving vertex in the triangulation
@@ -200,7 +200,7 @@ private:
 
 		Note:
 			This function also checks whether any of the triangles is zero and tries to repair
-			it. If it finds something not repairable it erros with exit code 7.
+			it. If it finds something not repairable it errors with exit code 7.
 	*/
 	bool generateInitialQueue();
 
@@ -210,7 +210,7 @@ private:
 		vertices.
 		Therefore it generates a dummy vertex with the same y-coordinate as v and a x-coordinate which
 		is the maximum x-coordinate of all vertices of the quadrilateral plus 10. So the dummy vertex
-		lays definitelly lays outside of the qudrilateral. Then it checks how often the edge between v
+		lays definitely lays outside of the quadrilateral. Then it checks how often the edge between v
 		and the dummy vertex intersects the edges of the quadrilateral. If the number of intersections
 		is odd, then v must lay inside of the quadrilateral.
 
@@ -230,7 +230,7 @@ private:
 		The function insideTriangle() checks whether the vertex toCheck is inside the triangle
 		formed by the vertices v0, v1 and v2.
 
-		@param	v0 			First veretx of the triangle
+		@param	v0 			First vertex of the triangle
 		@param 	v1 			Second vertex of the triangle
 		@param 	v2 			Third vertex of the triangle
 		@param 	toCheck 	The vertex for which should be checked whether it lays inside the
@@ -255,11 +255,11 @@ private:
 
 		Note:
 			- If the edge goes right through another vertex we also count it as intersecting
-				a polygonedge even if the edge we checked was no polygon edge, because a
+				a polygon edge even if the edge we checked was no polygon edge, because a
 				new polygon edge obviously is not allowed to go through a vertex.
 			- As we had the case that a new edge numerically intersected all three edges of
 				the same triangle or multiple edges of the surrounding polygon we do not
-				stopp at the first intersection we find, but we count all intersections.
+				stop at the first intersection we find, but we count all intersections.
 				If we find more then one, the function returns false.
 			- Edges of the bounding box are treated as polygon edges
 	*/
@@ -273,7 +273,7 @@ private:
 
 		Note:
 			As the checkIntersection functions tries to keep vertices far from edges this
-			should never be the case besides such splitted translation where the vertex is
+			should never be the case besides such split translation where the vertex is
 			moved exactly to a triangulation edge on purpose.
 	*/
 	void repairEnd();
@@ -418,7 +418,7 @@ public:
 	/*
 		Constructor:
 		Generates a new Translation of type DEFAULT. Greps the moving vertex and its
-		neighbors from the triangulations vertices list and initalize the translation path.
+		neighbors from the triangulations vertices list and initialize the translation path.
 
 		@param 	Tr 		The triangulation the moving vertex lives in
 		@param 	i 		The index of the moving vertex in the triangulation
@@ -438,10 +438,10 @@ public:
 	/*
 		The function checkOverroll() checks whether the polygon would change its orientation by
 		this translation. This basically means that the moving vertex is shifted across the whole
-		polygon which corresponds to all other vertices and edges being inside of the qudrilateral
+		polygon which corresponds to all other vertices and edges being inside of the quadrilateral
 		formed by the oldV, the newV and their neighboring edges. Obviously if the quadrilateral is
 		not simple, this can not happen at all. If the quadrilateral is simple then it corresponds
-		to having one of the other vertices of the polygon inside the qudrilateral, because if
+		to having one of the other vertices of the polygon inside the quadrilateral, because if
 		one vertex is inside it follows all other vertices must be inside or at least one is outside
 		so it exist at least one edge intersecting the quadrilateral so the translation can not lead
 		to a simple polygon at all.
@@ -455,7 +455,7 @@ public:
 					polygon, otherwise false
 
 		Note:
-			For more information on how to check which cases can be solved by splitted translations
+			For more information on how to check which cases can be solved by split translations
 			take a look at my Master Thesis
 	*/
 	bool checkOverroll();

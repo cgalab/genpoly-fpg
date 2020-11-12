@@ -29,7 +29,7 @@
 #ifndef __SETTINGS_H_
 #define __SETTINGS_H_
 
-enum class FeedbackMode {LACONIC, EXECUTION, VERBOSE};
+enum class FeedbackMode {MUTE, DEFAULT, VERBOSE};
 enum class Arithmetics {EXACT, DOUBLE};
 
 enum class OutputFormat {DAT, LINE, GRAPHML};
@@ -158,17 +158,8 @@ public:
 	// Feedback mode
 	static FeedbackMode feedback;
 
-	// Flag whether execution info should be printed
-	static bool executionInfo;
-
-	// Flag whether info an numerical correction should be printed
-	static bool correctionInfo;
-
 	// Flag to enable statistics on the polygon and its generation
 	static bool enableStats;
-
-	// Flag to mute all command line output
-	static bool mute;
 
 	// Filename for polygon output file
 	static char *polygonFile;

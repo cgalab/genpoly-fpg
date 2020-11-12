@@ -92,7 +92,7 @@ int transformPolygonByMoves(Triangulation * const T, const int iterations){
 
 		delete trans;
 
-		if(i % div == 0 && Settings::executionInfo)
+		if(i % div == 0 && Settings::feedback != FeedbackMode::MUTE)
 			fprintf(stderr, "%f%% of %d translations performed after %f seconds \n", (double)i / (double)iterations * 100, iterations, (*Settings::timer).elapsedTime());
 	}
 
@@ -145,8 +145,8 @@ void growPolygonBy(Triangulation * const T, const unsigned int pID, const int n)
 			delete in;
 
 			counter++;
-			if(counter > 10000)
-				fprintf(stderr, "%d tries to find a suitable edge to insert in\n", counter);
+			if(counter > 10000 && Settings::feedback == FeedbackMode::VERBOSE)
+				fprintf(stderr, "Warning: %d unsuccessful tries to find a suitable edge to insert in\n", counter);
 			
 			continue;
 		}
@@ -163,7 +163,7 @@ void growPolygonBy(Triangulation * const T, const unsigned int pID, const int n)
 		// Just increase the iteration count if a vertex has really been inserted
 		i++;
 
-		if(i % div == 0 && Settings::executionInfo)
+		if(i % div == 0 && Settings::feedback != FeedbackMode::MUTE)
 			fprintf(stderr, "%f%% of %d insertions performed after %f seconds \n", (double)i / (double)n * 100,
 				n, (*Settings::timer).elapsedTime());
 	}
@@ -178,7 +178,7 @@ void strategyNoHoles0(Triangulation * const T){
 
 	performed = transformPolygonByMoves(T, Settings::initialTranslationNumber);
 
-	if(Settings::executionInfo)
+	if(Settings::feedback != FeedbackMode::MUTE)
 		fprintf(stderr, "Transformed initial polygon with %d of %d translations in %f \
 			seconds\n\n", performed, Settings::initialTranslationNumber,
 			(*Settings::timer).elapsedTime());
@@ -191,7 +191,7 @@ void strategyNoHoles0(Triangulation * const T){
 
 	growPolygonBy(T, 0, Settings::outerSize - Settings::initialSize);
 
-	if(Settings::executionInfo)
+	if(Settings::feedback != FeedbackMode::MUTE)
 		fprintf(stderr, "Grew initial polygon to %d vertices afters %f seconds \n\n",
 			Settings::outerSize, (*Settings::timer).elapsedTime());
 
@@ -204,7 +204,7 @@ void strategyNoHoles0(Triangulation * const T){
 	if(Settings::additionalTrans > 0){
 		performed = transformPolygonByMoves(T, Settings::additionalTrans);
 
-		if(Settings::executionInfo)
+		if(Settings::feedback != FeedbackMode::MUTE)
 			fprintf(stderr, "Transformed polygon with %d of %d translations in %f seconds\n\n", performed,
 				Settings::additionalTrans, (*Settings::timer).elapsedTime());
 
@@ -228,7 +228,7 @@ void strategyNoHoles1(Triangulation * const T){
 
 	performed = transformPolygonByMoves(T, Settings::initialTranslationNumber);
 
-	if(Settings::executionInfo)
+	if(Settings::feedback != FeedbackMode::MUTE)
 		fprintf(stderr, "Transformed initial polygon with %d of %d translations in %f \
 			seconds\n\n", performed, Settings::initialTranslationNumber,
 			(*Settings::timer).elapsedTime());
@@ -250,14 +250,14 @@ void strategyNoHoles1(Triangulation * const T){
 		growPolygonBy(T, 0, grow);
 		left = left - grow;
 
-		if(Settings::executionInfo)
+		if(Settings::feedback != FeedbackMode::MUTE)
 		fprintf(stderr, "Grew polygon to %d vertices afters %f seconds \n\n",
 			(*T).getActualNumberOfVertices(0), (*Settings::timer).elapsedTime());
 
 		grow = (*T).getActualNumberOfVertices(0);
 		performed = transformPolygonByMoves(T, grow);
 
-		if(Settings::executionInfo)
+		if(Settings::feedback != FeedbackMode::MUTE)
 			fprintf(stderr, "Transformed initial polygon with %d of %d translations in %f \
 				seconds\n\n", performed, grow, (*Settings::timer).elapsedTime());
 	}
@@ -277,7 +277,7 @@ void strategyWithHoles0(Triangulation * const T){
 
 	performed = transformPolygonByMoves(T, Settings::initialTranslationNumber);
 
-	if(Settings::executionInfo)
+	if(Settings::feedback != FeedbackMode::MUTE)
 		fprintf(stderr, "Transformed initial polygon with %d of %d translations in %f seconds\n\n",
 			performed, Settings::initialTranslationNumber, (*Settings::timer).elapsedTime());
 
@@ -311,7 +311,7 @@ void strategyWithHoles0(Triangulation * const T){
 
 			performed = performed + nrInsertions;
 
-			if(nrInsertions != 0 && Settings::executionInfo)
+			if(nrInsertions != 0 && Settings::feedback != FeedbackMode::MUTE)
 				fprintf(stderr, "Grew the inner polygon with ID %d by %d vertices to %d vertices\n\n",
 					i, nrInsertions, nrInsertions + actualN);
 		}
@@ -328,7 +328,7 @@ void strategyWithHoles0(Triangulation * const T){
 
 		performed = performed + nrInsertions;
 
-		if(nrInsertions != 0 && Settings::executionInfo)
+		if(nrInsertions != 0 && Settings::feedback != FeedbackMode::MUTE)
 			fprintf(stderr, "Grew outer polygon by %d vertices to %d vertices\n\n", nrInsertions,
 				nrInsertions + actualN);
 

@@ -72,11 +72,8 @@ RandomGenerator* Settings::generator = NULL;
 /*
 	Feedback settings
 */
-FeedbackMode Settings::feedback = FeedbackMode::EXECUTION;
-bool Settings::executionInfo = true;
-bool Settings::correctionInfo = false;
+FeedbackMode Settings::feedback = FeedbackMode::DEFAULT;
 bool Settings::enableStats = false;
-bool Settings::mute = false;
 OutputFormat Settings::outputFormat = OutputFormat::GRAPHML;
 bool Settings::simplicityCheck = false;
 char* Settings::polygonFile = (char*)"polygon.dat";
@@ -136,11 +133,11 @@ void Settings::printSettings(){
 		fprintf(stderr, "Triangulation file: %s\n", triangulationFile);
 	if(statisticsFile != NULL)
 		fprintf(stderr, "Statistics file: %s\n", statisticsFile);
-	if(executionInfo)
+	if(Settings::feedback != FeedbackMode::MUTE)
 		fprintf(stderr, "Print execution information: true\n");
 	else
 		fprintf(stderr, "Print execution information: false\n");
-	if(correctionInfo)
+	if(Settings::feedback == FeedbackMode::VERBOSE)
 		fprintf(stderr, "Print numerical correction information: true\n");
 	else
 		fprintf(stderr, "Print numerical correction information: false\n");
@@ -201,13 +198,8 @@ void Settings::checkAndApplySettings(){
 
 	// Apply settings
 
-	// Mute overrides all other command line output settings
-	if(mute){
-		executionInfo = false;
-		correctionInfo = false;
-
+	if(feedback == FeedbackMode::MUTE)
 		fprintf(stderr, "Command line muted!\n");
-	}
 
 	// Generate and start Timer
 	timer = new Timer();

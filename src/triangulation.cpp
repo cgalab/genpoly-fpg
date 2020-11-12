@@ -289,7 +289,7 @@ void Triangulation::writeTriangulation(const char *filename) const{
 	TEdge *e;
 	int scale = 1000;
 
-	if(Settings::executionInfo)
+	if(Settings::feedback != FeedbackMode::MUTE)
 		fprintf(stderr, "Write triangulation to .graphml file %s...", filename);
 
 	f = fopen(filename, "w");
@@ -332,7 +332,7 @@ void Triangulation::writeTriangulation(const char *filename) const{
 
 	fclose(f);
 
-	if(Settings::executionInfo)
+	if(Settings::feedback != FeedbackMode::MUTE)
 		fprintf(stderr, "successful\n");
 }
 
@@ -350,7 +350,7 @@ void Triangulation::writePolygon(const char *filename) const{
 	int scale = 1;
 	Vertex *v, *start;
 
-	if(Settings::executionInfo)
+	if(Settings::feedback != FeedbackMode::MUTE)
 		fprintf(stderr, "Write polygon to .graphml file %s...", filename);
 
 	f = fopen(filename, "w");
@@ -385,7 +385,7 @@ void Triangulation::writePolygon(const char *filename) const{
 
 	fclose(f);
 
-	if(Settings::executionInfo)
+	if(Settings::feedback != FeedbackMode::MUTE)
 		fprintf(stderr, "successful\n");
 }
 
@@ -400,7 +400,7 @@ void Triangulation::writePolygonToDat(const char *filename) const{
 	FILE *f;
 	int id = 0;
 
-	if(Settings::executionInfo)
+	if(Settings::feedback != FeedbackMode::MUTE)
 		fprintf(stderr, "Write polygon to .dat file %s...", filename);
 
 	f = fopen(filename, "w");
@@ -437,7 +437,7 @@ void Triangulation::writePolygonToDat(const char *filename) const{
 		id++;
 	}
 
-	if(Settings::executionInfo)
+	if(Settings::feedback != FeedbackMode::MUTE)
 		fprintf(stderr, "successful\n");
 }
 
@@ -536,8 +536,6 @@ bool Triangulation::check() const{
 /*
 	Checks the correctness of the SelectionTrees
 */
-// TODO:
-// Include holes
 void Triangulation::checkST() const{
 	(*outerPolygon).checkST();
 

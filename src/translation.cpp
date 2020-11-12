@@ -115,7 +115,7 @@ bool Translation::generateInitialQueue(){
 
 			// Otherwise we can do a flip, but will reject the translation because this flip will
 			// crash the iterator of this loop
-			if(Settings::correctionInfo)
+			if(Settings::feedback == FeedbackMode::VERBOSE)
 				fprintf(stderr, "Numerical correction: The moving vertex lays exactly on an edge before the translation -> security flip\n");
 
 			flip(i, true);
@@ -133,14 +133,14 @@ bool Translation::generateInitialQueue(){
 			t = (*i).calculateCollapseTime(original, dx, dy);
 
 			if(t < 0){
-				if(Settings::correctionInfo)
+				if(Settings::feedback == FeedbackMode::VERBOSE)
 					fprintf(stderr, "Numerical correction: Collapse time of collapsing triangle was %.20f \n", t);
 
 				t = 0;
 			}
 
 			if(t > 1){
-				if(Settings::correctionInfo)
+				if(Settings::feedback == FeedbackMode::VERBOSE)
 					fprintf(stderr, "Numerical correction: Collapse time of collapsing triangle was %.20f \n", t);
 
 				t = 1;
@@ -349,7 +349,7 @@ bool Translation::checkEdge(Vertex * const fromV, TEdge * const newE) const{
 		return true;
 	// Multiple intersections -> numerical error
 	}else if(count > 1){
-		if(Settings::correctionInfo)
+		if(Settings::feedback == FeedbackMode::VERBOSE)
 			fprintf(stderr, "CheckEdge: new edge intersects multiple edges of the surrounding polygon -> translation rejected due to numerical problem\n");
 		
 		return false;
@@ -388,7 +388,7 @@ bool Translation::checkEdge(Vertex * const fromV, TEdge * const newE) const{
 
 		// Check for numerical problems
 		if(iType0 != IntersectionType::NONE && iType1 != IntersectionType::NONE){
-			if(Settings::correctionInfo)
+			if(Settings::feedback == FeedbackMode::VERBOSE)
 				fprintf(stderr, "CheckEdge: new edge intersects multiple edges of the actual triangle -> translation rejected due to numerical problem\n");
 			
 			return false;
@@ -447,7 +447,7 @@ void Translation::repairEnd(){
 		area = (*i).signedArea();
 
 		if(area == 0){
-			if(type == TranslationType::DEFAULT && Settings::correctionInfo){
+			if(type == TranslationType::DEFAULT && Settings::feedback == FeedbackMode::VERBOSE){
 				fprintf(stderr, "Translation: Triangle area = 0 after translation...");
 			}
 
@@ -469,7 +469,7 @@ void Translation::repairEnd(){
 				}
 			}
 
-			if(type == TranslationType::DEFAULT && Settings::correctionInfo)
+			if(type == TranslationType::DEFAULT && Settings::feedback == FeedbackMode::VERBOSE)
 				fprintf(stderr, "corrected! \n");
 		}
 	}
@@ -988,7 +988,7 @@ bool Translation::undo(){
 
 	if(!ok){
 
-		if(Settings::correctionInfo)
+		if(Settings::feedback == FeedbackMode::VERBOSE)
 			fprintf(stderr, "Surrounding polygon check after abortion failed...");
 
 		// Undo all flips
@@ -1021,7 +1021,7 @@ bool Translation::undo(){
 		// Reset the vertex to the start position
 		(*original).setPosition((*oldV).getX(), (*oldV).getY());
 
-		if(Settings::correctionInfo)
+		if(Settings::feedback == FeedbackMode::VERBOSE)
 			fprintf(stderr, "translation undone!\n");
 
 		return true;
@@ -1358,7 +1358,7 @@ Translation::~Translation(){
 		(*newV).print();
 		fprintf(stderr, "translation vector: dx = %.20f dy = %.20f \n", dx, dy);
 
-		(*T).writeTriangulation("bug.graphml");
+		(*T).writeTriangulation("failure.graphml");
 
 		exit(6);
 	}

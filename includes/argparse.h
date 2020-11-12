@@ -20,7 +20,7 @@
 #include <getopt.h>
 #include <boost/algorithm/string.hpp>
 
-static const char* short_options = "hn:i:s:aH:o:eT:clgvtwp:";
+static const char* short_options = "hn:i:s:aH:o:T:lgvtwp:m";
 static struct option long_options[] = {
 		{ "help"                , no_argument      , 0, 'h'},
 		{ "nrofholes"           , required_argument, 0, 'n'},
@@ -29,12 +29,11 @@ static struct option long_options[] = {
 		{ "arithmetic"          , no_argument,       0, 'a'},
 		{ "holesizes"           , required_argument, 0, 'H'},
 		{ "outputformat"        , required_argument, 0, 'o'},
-		{ "noexecutioninfo"     , no_argument,       0, 'e'},
 		{ "statsfile"           , required_argument, 0, 'T'},
-		{ "numericalcorrectioninfo"  , no_argument,  0, 'c'},
 		{ "disablelocalchecks"       , no_argument,  0, 'l'},
 		{ "enableglobalchecks"       , no_argument,  0, 'g'},
 		{ "verbose"                  , no_argument,  0, 'v'},
+		{ "mute"                     , no_argument,  0, 'm'},
 		{ "enablestats"              , no_argument,  0, 't'},
 		{ "disableweightedselection" , no_argument,  0, 'w'},
 		{ "printtriang"				 , required_argument, 0, 'p'},
@@ -53,11 +52,10 @@ static struct option long_options[] = {
 	fprintf(f,"           --arithmetic               enable 'exact' arithmetic? (default off).\n");
 	fprintf(f,"           --holesizes <a,b,c,...>    define hole sizes.\n");
 	fprintf(f,"           --outputformat <format>    dat, line, or graphml (default graphml).\n");
-	fprintf(f,"           --noexecutioninfo          \n");
-	fprintf(f,"           --numericalcorrectioninfo  (default off).\n");
 	fprintf(f,"           --disablelocalchecks       \n");
 	fprintf(f,"           --enableglobalchecks       (default off).\n");
 	fprintf(f,"           --verbose                  (default off).\n");
+	fprintf(f,"           --mute                     (default off).\n");
 	fprintf(f,"           --enablestats              (default off).\n");
 	fprintf(f,"           --statsfile <string>       xml-file for statistics (default none)\n");
 	fprintf(f,"           --printtriang <string>     print the triangulation into a graphml file\n");
@@ -80,7 +78,7 @@ public:
 	Parser(int argc, char *argv[]) {
 		polygonFile = (char*)"/dev/stdout";
 		outputFormat = OutputFormat::GRAPHML;
-		mute = true;
+		feedback = FeedbackMode::DEFAULT;
 		argParse(argc,argv);
 	}
 
@@ -155,14 +153,6 @@ private:
 				triangulationOutputRequired = true;
 				break;
 			}
-			case 'e': {
-				executionInfo = false;
-				break;
-			}
-			case 'c': {
-				correctionInfo = true;
-				break;
-			}
 			case 'l': {
 				localChecking = false;
 				break;
@@ -172,10 +162,13 @@ private:
 				break;
 			}
 			case 'v': {
-				mute = false;
+				feedback = FeedbackMode::VERBOSE;
 				break;
 			}
-			case 't': {
+			case 'm': {
+				feedback = FeedbackMode::MUTE;
+				break;
+			}case 't': {
 				enableStats = true;
 				break;
 			}
