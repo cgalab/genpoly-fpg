@@ -1,5 +1,5 @@
 /* 
- * Copyright 2019 Philipp Mayer - pmayer@cs.sbg.ac.at
+ * Copyright 2020 Philipp Mayer - philmay1992@gmail.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,8 +22,8 @@
 */
 
 /*
-	Contructor:
-	The contructor is given an vertex index. The insertion is done into the
+	Constructor:
+	The constructor is given an vertex index. The insertion is done into the
 	edge between the vertex and its successor in the polygon
 
 	@param 	T 		The triangulation the polygon lives in
@@ -39,7 +39,7 @@ Insertion::Insertion(Triangulation * const t, const unsigned int pid, const int 
 }
 
 /*
-	Contructor:
+	Constructor:
 	This constructor directly takes the edge into which the new vertex will
 	be inserted
 
@@ -61,11 +61,11 @@ Insertion::Insertion(Triangulation * const t, const unsigned int pid, TEdge *edg
 
 /*
 	The function checkStability() checks whether the insertion can be done without
-	risking numerical problems. Therefore the choosen edge must have at least the
+	risking numerical problems. Therefore the chosen edge must have at least the
 	length Settings::minLength and, in case we use the double arithmetics, both
 	adjacent triangles' determinants must be at least Settings::minDetInsertion.
 
-	@return 	True if the chosen edge fulfils the criteria, otherwise false
+	@return 	True if the chosen edge fulfills the criteria, otherwise false
 */
 bool Insertion::checkStability() const{
 	double l = (*e).length();
@@ -90,9 +90,9 @@ bool Insertion::checkStability() const{
 }
 
 /*
-	The function execute() inserts a vertex at the middle of the choosen edge.
-	Therefore at first it deletes the choosen edge and its adjacent triangle,
-	then it inserts the new vertex, adds edges to the four surrouding vertices
+	The function execute() inserts a vertex at the middle of the chosen edge.
+	Therefore at first it deletes the chosen edge and its adjacent triangle,
+	then it inserts the new vertex, adds edges to the four surrounding vertices
 	and generate the new triangles for this quadrilateral.
 */
 void Insertion::execute(){
@@ -176,7 +176,7 @@ void Insertion::translate() const{
 
 		trans = new Translation(T, index, dx, dy);
 
-		// Check for a potential overroll
+		// Check for a potential orientation change
 		overroll = (*trans).checkOverroll();
 
 		if(!overroll){

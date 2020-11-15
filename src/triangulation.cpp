@@ -1,5 +1,5 @@
 /* 
- * Copyright 2019 Philipp Mayer - pmayer@cs.sbg.ac.at
+ * Copyright 2020 Philipp Mayer - philmay1992@gmail.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,7 +17,6 @@
 
 #include "triangulation.h"
 
-#include <fstream>
 /*
 	C ~ O ~ N ~ S ~ T ~ R ~ U ~ C ~ T ~ O ~ R ~ S
 */
@@ -343,6 +342,7 @@ void Triangulation::writeTriangulation(const char *filename) const{
 
 	Note:
 		- Graphml: https://de.wikipedia.org/wiki/GraphML
+		- Works properly with Gephi (scaling factor is required for that)
 */
 void Triangulation::writePolygon(const char *filename) const{
 	FILE *f;
@@ -445,7 +445,7 @@ void Triangulation::writePolygonToDat(const char *filename) const{
 /*
 	The function writePolygonToLine() writes all polygons to a .line file
 
-	@param 	filename 	The name of the .dat file
+	@param 	filename 	The name of the .line file
 */
 void Triangulation::writePolygonToLine(const char *filename) const {
 	std::ofstream os(filename);
@@ -468,7 +468,7 @@ void Triangulation::writePolygonToLine(const char *filename) const {
 
 /*
 	The function check() checks for errors in the triangulation. It checks the following
-	criterions:
+	criteria:
 		- Has each edge of the bounding box exactly one triangle assigned
 		- Has each other edge exactly two triangles assigned
 		- Has each edge to different vertices assigned
@@ -572,7 +572,8 @@ void Triangulation::stretch(const double factor){
 	any intersection it errors with exit code 11.
 
 	Note:
-		This function does not consider edges of other polygons!
+		- This function does not consider edges of other polygons!
+		- Should not be called for larger polygons, because it is highly inefficient.
 */
 // TODO:
 // This function finds maybe non-simplicities that do not really exist. We should check again

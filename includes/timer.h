@@ -1,5 +1,5 @@
 /* 
- * Copyright 2019 Philipp Mayer - pmayer@cs.sbg.ac.at
+ * Copyright 2020 Philipp Mayer - philmay1992@gmail.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,14 +37,14 @@ class Timer{
       struct timeval startTime;
 
       /*
-         The actual time at a measurement point
+         The recent time at a measurement point
       */
       struct timeval now;
 
    public:		
       
       /*
-         Starts a measurement by setting the startTime to the actual time
+         Starts a measurement by setting the startTime to the recent time
       */
       void start(){
          gettimeofday(&startTime, NULL);

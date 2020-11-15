@@ -1,5 +1,5 @@
 /* 
- * Copyright 2019 Philipp Mayer - pmayer@cs.sbg.ac.at
+ * Copyright 2020 Philipp Mayer - philmay1992@gmail.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -116,7 +116,7 @@ private:
 	*/
 
 	/*
-		The function getEnvironment() recursivelly inserts all adjacent edges and vertices
+		The function getEnvironment() recursively inserts all adjacent edges and vertices
 		into maps. As key the IDs are used. This function is used for debug outputs.
 
 		@param 	es 		The map of edges
@@ -305,7 +305,7 @@ public:
 		The function setToNext() sets the pointer for the polygon edge which connects the vertex
 		to its successor in the polygon.
 
-		@param 	e 	The edge to the succesor of the vertex in the polygon
+		@param 	e 	The edge to the successor of the vertex in the polygon
 
 		Note:
 			This function is automatically called when a new polygon edge is constructed.
@@ -378,7 +378,7 @@ public:
 
 	/*
 		The function getDirectedEdgeLength() finds the triangle incident to the vertex
-		in direction alpha (alpha = 0 corresponds to the positive x-driection) and
+		in direction alpha (alpha = 0 corresponds to the positive x-direction) and
 		computes the mean edge length of the edges of the triangle containing the
 		vertex. This value can be used as estimate for appropriate distribution
 		parameters.
@@ -425,7 +425,7 @@ public:
 		does not exist, it returns NULL
 
 		@param 	v0 	Second vertex contained by the searched triangle
-		@param 	v1 	Third vertex vontained by the searched triangle
+		@param 	v1 	Third vertex contained by the searched triangle
 		@return 	The searched triangle if it exists, otherwise NULL
 	*/
 	Triangle *getTriangleWith(Vertex const * const v0, Vertex const * const v1) const;
@@ -501,7 +501,7 @@ public:
 
 	/*
 		The function writeEnvironment() writes a local part of the triangulation around
-		the vertex to a -graphml file. It collects the data recursivelly by the function
+		the vertex to a -graphml file. It collects the data recursively by the function
 		getEnvironment().
 
 		@param 	depth 		The number of recursive steps to be done, basically a depth of n
@@ -558,7 +558,7 @@ public:
 		of its surrounding polygon. It errors with exit code 10 if a vertex lays exactly at
 		a polygon edge.
 
-		Defintion surrounding polygon:
+		Definition surrounding polygon:
 			Be T the set of triangles containing the vertex v. Be E the set of edges
 			contained by the triangles of T. Be E' the subset of E which only contains
 			those elements of E which do not contain v.
@@ -585,7 +585,7 @@ public:
 		Destructor:
 		The destructor also delete all triangles and edges which still contain the vertex by
 		calling their destructors. Therefore we need copies of the lists in form of arrays
-		because iterating over a list while deleting its elements is pretyy dangerous.
+		because iterating over a list while deleting its elements is pretty dangerous.
 
 		Note:
 			It is the best way to delete all edges and triangles containing the vertex

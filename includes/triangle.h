@@ -1,5 +1,5 @@
 /* 
- * Copyright 2019 Philipp Mayer - pmayer@cs.sbg.ac.at
+ * Copyright 2020 Philipp Mayer - philmay1992@gmail.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -38,7 +38,7 @@
 #define __TRIANGLE_H_
 
 /*
-	Define and include headers to the entites used in Triangle
+	Define and include headers to the entities used in Triangle
 */
 class TEdge;
 class Vertex;
@@ -87,7 +87,7 @@ private:
 	/*
 		The function signedAreaExact() computes an estimate of the signed area of the triangle
 		by using Shewchuks "Routines for Arbitrary Precision Floating-point Arithmetic and Fast
-		Robust Geometric Predicates". So in fact the sign of this signed area is absolutelly
+		Robust Geometric Predicates". So in fact the sign of this signed area is absolutely
 		trustworthy, whereas the exact value might still have numerical errors. Also 0 is
 		trustworthy.
 
@@ -135,8 +135,9 @@ public:
 
 		CONSTRUCTORS:
 
-		Triangle(TEdge *E0, TEdge *E1, TEdge *E2, Vertex *V0, Vertex *V1, Vertex *V2)
-		Triangle(Vertex *V0, Vertex *V1, Vertex *V2)
+								Triangle(TEdge *E0, TEdge *E1, TEdge *E2, Vertex *V0,
+								Vertex *V1, Vertex *V2)
+								Triangle(Vertex *V0, Vertex *V1, Vertex *V2)
 
 		GETTER:
 
@@ -231,7 +232,7 @@ public:
 		@return 		The vertex you want if the index is reasonable, otherwise NULL
 
 		Note:
-			This function is basically just useful if you want to enumarate all vertices of the
+			This function is basically just useful if you want to enumerate all vertices of the
 			triangle.
 	*/
 	Vertex *getVertex(const int index) const;
@@ -245,7 +246,7 @@ public:
 		@return 		The edge you want if the index is reasonable, otherwise NULL
 
 		Note:
-			This function is basically just useful if you want to enumarate all edges of the
+			This function is basically just useful if you want to enumerate all edges of the
 			triangle.
 	*/
 	TEdge *getEdge(const int index) const;
@@ -268,7 +269,7 @@ public:
 	/*
 		The function getEdgeContaining() gets one of the two edges of the triangle which contains
 		the vertex v (if the vertex v is part of the triangle, otherwise it returns NULL). Which
-		of the two edges you get just depends on the ordering of the edges given to the contructor.
+		of the two edges you get just depends on the ordering of the edges given to the constructor.
 
 		@param 	v 	The vertex which should be contained by the edge
 		@return 	Any edge contained by the triangle which contains v (NULL of v is not part of
@@ -281,7 +282,7 @@ public:
 		but contains the vertex v.
 
 		@param 	v 	The vertex the edge should contain
-		@param 	e 	The egde you do not want
+		@param 	e 	The edge you do not want
 		@return 	The edge you search for or NULL if such an edge does not exist (then something
 					is wrong)
 	*/
@@ -395,7 +396,7 @@ public:
 		@param 	moving 	The vertex to be translated
 		@param 	dx 		The x-component of the translation vector
 		@param 	dy 		The y-component of the translation vector
-		@return 		The time when the triangles araa gets zero during the translation
+		@return 		The time when the triangles area gets zero during the translation
 
 		Note:
 			This function also can give you collapse times not between 0 and 1! This means that

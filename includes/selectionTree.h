@@ -1,5 +1,5 @@
 /* 
- * Copyright 2020 Philipp Mayer - pmayer@cs.sbg.ac.at
+ * Copyright 2020 Philipp Mayer - philmay1992@gmail.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -41,10 +41,12 @@ template<class T> class STEntry;
 
 
 /*
-	SelectionTree provides a method for selecting an TEdge of a polygon uniform
-	at random weighted by the lengths of the TEdges. For that it utilizes an 
+	SelectionTree provides a method for selecting an object out of a set of objects
+	uniform at random weighted by a specific property of the objects. The object
+	class must implement the function getWeight(). For the selection it utilizes an 
 	unordered binary tree containing all edges. The binary tree stays balanced
-	by containing the elements in each subtree.
+	by containing the number of elements in each subtree. Removing one object of
+	the tree leads to an empty node which is filled with the next object inserted.
 */
 template<class T> class SelectionTree{
 
@@ -61,7 +63,7 @@ private:
 	std::queue<STEntry<T>*> emptyNodes;
 
 	/*
-		Flag whether the select should be weighted or not
+		Flag whether the selection should be weighted or not
 	*/
 	bool weighted;
 
@@ -71,11 +73,7 @@ public:
 		C ~ O ~ N ~ S ~ T ~ R ~ U ~ C ~ T ~ O ~ R ~ S
 	*/
 
-	SelectionTree<T>(bool w) : root(NULL) {
-
-		weighted = w;
-	}
-
+	SelectionTree<T>(bool w) : root(NULL), weighted(w) {}
 
 
 	/*
@@ -98,6 +96,7 @@ public:
 			emptyNodes.pop();
 
 			(*entry).setObject(e);
+		// Otherwise create a new entry
 		}else{
 
 			if(root == NULL)
@@ -130,9 +129,14 @@ public:
 
 	/*
 		The function getRandomObject() selects an entry of the binary tree
-		uniformly at random weighted by the objects' weights.
+		uniformly at random weighted by the objects' weights if weighted is enabled.
+		Otherwise it selects uniformly at random without weights.
 
 		@return 	The randomly selected object
+
+		Note:
+			- If the tree is unweighted, all weights are simply set to one. Thus,
+				the same function can be used to select an element randomly
 	*/
 	T getRandomObject(){
 		STEntry<T> *entry, *last;

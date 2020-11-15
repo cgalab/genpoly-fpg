@@ -1,5 +1,5 @@
 /* 
- * Copyright 2019 Philipp Mayer - pmayer@cs.sbg.ac.at
+ * Copyright 2020 Philipp Mayer - philmay1992@gmail.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -99,10 +99,8 @@ public:
 	// out of its surrounding polygon (just with double arithmetics)
 	static constexpr double minDetInsertion = 0.000000000001; // 10⁻¹²
 
-	//
-	static double distMax;
-
-	//
+	// While generating the length of the translation vectors, the measured space
+	// used as standard deviation of the distribution is divided by this number
 	static int stddevDiv;
 
 	// Enable local correctness checking after aborted translations
@@ -111,7 +109,7 @@ public:
 	// Enable global correctness checking between stages
 	static bool globalChecking;
 
-	// Factor for additional translations
+	// Number of additional translations after the growth
 	static unsigned int additionalTrans;
 
 
@@ -158,14 +156,11 @@ public:
 	// Feedback mode
 	static FeedbackMode feedback;
 
-	// Flag to enable statistics on the polygon and its generation
-	static bool enableStats;
+	// Output format for polygon file
+	static OutputFormat outputFormat;
 
 	// Filename for polygon output file
 	static char *polygonFile;
-
-	// Output format for polygon file
-	static OutputFormat outputFormat;
 
 	// A flag whether the triangulation is required
 	static bool triangulationOutputRequired;
@@ -173,8 +168,22 @@ public:
 	// Filename for triangulation file
 	static char *triangulationFile;
 
+	// Flag to enable statistics on the polygon and its generation
+	static bool enableStats;
+
 	// Filename for statistics file
 	static char *statisticsFile;
+
+
+	/*
+		Checking
+	*/
+
+	// Enable simplicity check
+	static bool simplicityCheck;
+
+	// Used for time measurements
+	static double timing;
 	
 
 	// Function for printing the settings
@@ -182,18 +191,6 @@ public:
 
 	// Checks whether all necessary settings are given
 	static void checkAndApplySettings();
-
-
-	/*
-		Check
-	*/
-
-	// Enable simplicity check
-	static bool simplicityCheck;
-
-	static const std::string dummyFileName;
-
-	static double timing;
 };
 
 #endif

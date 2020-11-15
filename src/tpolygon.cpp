@@ -1,5 +1,5 @@
 /* 
- * Copyright 2019 Philipp Mayer - pmayer@cs.sbg.ac.at
+ * Copyright 2020 Philipp Mayer - philmay1992@gmail.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,7 +33,7 @@ unsigned int TPolygon::N = 0;
 */
 
 /*
-	Contructor:
+	Constructor:
 	Already allocates memory for all vertices which will be inserted in the future.
 
 	@param 	t 	The triangulation the new polygon lives in
@@ -135,6 +135,10 @@ Vertex *TPolygon::removeVertex(const int i){
 
 
 /*
+	O ~ T ~ H ~ E ~ R ~ S
+*/
+
+/*
 	Write this polygon to os in line format.
 	@param  os      Output stream
 */
@@ -154,10 +158,6 @@ void TPolygon::writeToLine(std::ostream& os) const {
 	assert(cnt == num_v);
 	os << std::endl;
 }
-
-/*
-	O ~ T ~ H ~ E ~ R ~ S
-*/
 
 /*
 	Check the correctness of the SelectionTree

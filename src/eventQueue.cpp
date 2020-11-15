@@ -1,5 +1,5 @@
 /* 
- * Copyright 2019 Philipp Mayer - pmayer@cs.sbg.ac.at
+ * Copyright 2020 Philipp Mayer - philmay1992@gmail.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,10 +34,9 @@
 	@param 	e1 	The event which is scheduled later in the event queue
 
 	Note:
-		It is required that the collapseTime of e0 is less than the collapseTime of e1
+		- It is required that the collapseTime of e0 is less than the collapseTime of e1
+		- In theory this should work, but in practice it does not at the moment
 */
-// TODO:
-// Check whether the stabilize() stuff does change anything
 void EventQueue::stabilize(struct Event *e0, struct Event *e1){
 	Triangle *t0, *t1, *t;
 	double area0, area1;
@@ -102,7 +101,7 @@ void EventQueue::stabilize(struct Event *e0, struct Event *e1){
 	The function stabilizeConvex() checks for two events with adjacent triangles and
 	convex shape of the opposing edges whether the events are in the right order and
 	change if necessary. In case the events are in the wrong order the events
-	themselfes are not changed, just the triangles are switched such that it still
+	themselves are not changed, just the triangles are switched such that it still
 	holds that the events in the event queue are order by their collapse times.
 	For further information on the decision criterion for reordering take a look into
 	my master thesis.
@@ -169,7 +168,7 @@ void EventQueue::stabilizeConvex(struct Event* e0, struct Event* e1, TEdge* comm
 					fabs(e0 -> collapseTime - e1 -> collapseTime));
 		}
 
-	// Transition line intersects one of the oppossing edges
+	// Transition line intersects one of the opposing edges
 	}else{
 		t = new Triangle(oldV, newV, common);
 		areaCommon = (*t).signedArea();
@@ -194,7 +193,7 @@ void EventQueue::stabilizeConvex(struct Event* e0, struct Event* e1, TEdge* comm
 	The function stabilizeNonConvex() checks for two events with adjacent triangles
 	and non-convex shape of the opposing edges whether the events are in the right
 	order and change if necessary. In case the events are in the wrong order the
-	events themselfes are not changed, just the triangles are switched such that it
+	events themselves are not changed, just the triangles are switched such that it
 	still holds that the events in the event queue are order by their collapse times.
 	For further information on the decision criterion for reordering take a look into
 	my master thesis.
@@ -261,7 +260,7 @@ void EventQueue::stabilizeNonConvex(struct Event *e0, struct Event *e1, TEdge *c
 					fabs(e0 -> collapseTime - e1 -> collapseTime));
 		}
 
-	// Transition line intersects one of the oppossing edges
+	// Transition line intersects one of the opposing edges
 	}else{
 		
 		t = new Triangle(oldV, newV, common);
@@ -314,8 +313,6 @@ EventQueue::EventQueue(Vertex * const orig, Vertex * const oV, Vertex * const nV
 	Note:
 		The ordering of the events will not be checked by this function!
 */
-// TODO:
-// Maybe add a function for inserting elements with checking
 void EventQueue::insertWithoutCheck(const double time, Triangle *t){
 	struct Event *e0;
 	struct Event *e1, *prev = NULL;
@@ -375,13 +372,16 @@ void EventQueue::insertWithoutCheck(const double time, Triangle *t){
 	events closer then Settings::epsEventTime which are then considered as concurrent.
 	Two concurrent events then get checked and potentially reorder by the function
 	stabilize(). If it finds three or more neighboring events which are pairwise
-	concurrent, it returns false and the translation will be arborted.
+	concurrent, it returns false and the translation will be aborted.
 
 	@param 	initial 	Indicates whether the event queue is the initial event queue
 						or not, which leads to different outputs in case the
 						translation gets aborted.
 	@return 			True if there are not more than two neighboring concurrent
 						events, otherwise false
+	
+	Note:
+		- Due to stability issues this function is unused at the moment.
 */
 bool EventQueue::makeStable(const bool initial){
 	struct Event *e0, *e1;
@@ -403,7 +403,8 @@ bool EventQueue::makeStable(const bool initial){
 			// Check first whether there is a third concurrent event
 
 			// TODO:
-			// Definitelly the changing of event orders is not stable at the moment
+			// Definitely the changing of event orders is not stable at the moment
+
 			/*if(e1 -> next != NULL){
 				dif = fabs(time1 - e1 -> next -> collapseTime);
 				if(dif < Settings::epsEventTime){

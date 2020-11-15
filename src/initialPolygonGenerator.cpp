@@ -1,5 +1,5 @@
 /* 
- * Copyright 2019 Philipp Mayer - pmayer@cs.sbg.ac.at
+ * Copyright 2020 Philipp Mayer - philmay1992@gmail.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -127,7 +127,7 @@ void initialTriangulationPseudoStar(Triangulation * const T){
 	style take a look at my master thesis).
 
 	Note:
-	The suitable startindex for the box polygon function is 0!
+	The suitable start index for the box polygon function is 0!
 */
 void initialTriangulationZigZag(Triangulation * const T){
 	unsigned int i;
@@ -140,7 +140,7 @@ void initialTriangulationZigZag(Triangulation * const T){
 	e0 = new TEdge(v1, v0, EdgeType::POLYGON);
 	(*T).addEdge(e0, 0);
 
-	// The inital triangulation contains n-2 triangles
+	// The initial triangulation contains n-2 triangles
 	for(i = 0; i < Settings::initialSize - 2; i++){
 
 		if(i % 2 == 0){
@@ -193,7 +193,7 @@ void initialTriangulationZigZag(Triangulation * const T){
 	@param	T 	The triangulation already containing the vertices of the outer polygon
 
 	Note:
-		The suitable startindex for the boxPolygon function is 0!
+		The suitable start index for the boxPolygon function is 0!
 */
 void generateInitialHoleTriangle(Triangulation * const T){
 	double alpha;
@@ -453,7 +453,7 @@ void splitHoleTriangle(Triangulation * const T){
 						triangulation inside the polygon
 	@param	startIndex 	The index of the first vertex being placed at the circle
 						of vertices (normally each vertex is placed at the circle
-						so the startindex can be zero, but for some special inner
+						so the start index can be zero, but for some special inner
 						triangulations, e.g. pseudoStar, the vertex 0 is not at 
 						the	circle)
 */

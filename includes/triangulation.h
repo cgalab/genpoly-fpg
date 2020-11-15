@@ -1,5 +1,5 @@
 /* 
- * Copyright 2019 Philipp Mayer - pmayer@cs.sbg.ac.at
+ * Copyright 2020 Philipp Mayer - philmay1992@gmail.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,6 +22,7 @@
 #include <vector>
 #include <stdio.h>
 #include <map>
+#include <fstream>
 
 /*
 	Include my headers	
@@ -35,7 +36,7 @@
 #define __TRIANGULATION_H_
 
 /*
-	Define and include headers to the entites contained by triangulations
+	Define and include headers to the entities contained by triangulations
 */
 class Vertex;
 class TEdge;
@@ -66,8 +67,8 @@ private:
 		A map of all edges contained by the triangulation
 		Note:
 			- Keeping this is not necessary for running the polygon generator, but it's pretty 
-				useful for debuging, because otherwise it's hard to print the whole triangulation
-			- An unordered map with a hashtable could be faster, but I do not know how efficient 
+				useful for debugging, because otherwise it's hard to print the whole triangulation
+			- An unordered map with a hash table could be faster, but I do not know how efficient 
 				the deletion of elements is implemented their
 	*/
 	std::map<int, TEdge*> edges;
@@ -302,7 +303,7 @@ public:
 
 		Note:
 			- Graphml: https://de.wikipedia.org/wiki/GraphML
-			- Works here: http://graphonline.ru/en/
+			- Works properly with Gephi (scaling factor is required for that)
 	*/
 	void writePolygon(const char *filename) const;
 
@@ -317,7 +318,7 @@ public:
 	/*
 		The function writePolygonToLine() writes all polygons to a .line file
 
-		@param 	filename 	The name of the .dat file
+		@param 	filename 	The name of the .line file
 	*/
 	void writePolygonToLine(const char *filename) const;
 
@@ -328,7 +329,7 @@ public:
 
 	/*
 		The function check() checks for errors in the triangulation. It checks the following
-		criterions:
+		criteria:
 			- Has each edge of the bounding box exactly one triangle assigned
 			- Has each other edge exactly two triangles assigned
 			- Has each edge to different vertices assigned
@@ -364,7 +365,8 @@ public:
 	any intersection it errors with exit code 11.
 
 	Note:
-		This function does not consider edges of other polygons!
+		- This function does not consider edges of other polygons!
+		- Should not be called for larger polygons, because it is highly inefficient.
 */
 	void checkSimplicity() const;
 };

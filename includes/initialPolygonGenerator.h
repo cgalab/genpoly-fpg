@@ -1,5 +1,5 @@
 /* 
- * Copyright 2019 Philipp Mayer - pmayer@cs.sbg.ac.at
+ * Copyright 2020 Philipp Mayer - philmay1992@gmail.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -76,7 +76,7 @@ void initialTriangulationPseudoStar(Triangulation * const T);
 				linked vertices of the start polygon
 
 	Note:
-		The suitable startindex for the box polygon function is 0!
+		The suitable start index for the box polygon function is 0!
 */
 void initialTriangulationZigZag(Triangulation * const T);
 
@@ -89,7 +89,7 @@ void initialTriangulationZigZag(Triangulation * const T);
 	@param	T 	The triangulation already containing the vertices of the outer polygon
 
 	Note:
-		The suitable startindex for the boxPolygon function is 0!
+		The suitable start index for the boxPolygon function is 0!
 */
 void generateInitialHoleTriangle(Triangulation * const T);
 
@@ -115,7 +115,7 @@ void splitHoleTriangle(Triangulation * const T);
 						triangulation inside the polygon
 	@param	startIndex 	The index of the first vertex being placed at the circle
 						of vertices (normally each vertex is placed at the circle
-						so the startindex can be zero, but for some special inner
+						so the start index can be zero, but for some special inner
 						triangulations, e.g. pseudoStar, the vertex 0 is not at 
 						the	circle)
 */

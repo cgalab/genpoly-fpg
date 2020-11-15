@@ -1,5 +1,5 @@
 /* 
- * Copyright 2019 Philipp Mayer - pmayer@cs.sbg.ac.at
+ * Copyright 2020 Philipp Mayer - philmay1992@gmail.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,9 +33,9 @@ unsigned long long Translation::n = 0;
 
 /*
 	Private Constructor:
-	Generates a new translation of any type, whereas the publiuc constructor is just capable
-	of generating translations of type DEFAULT. Grep the moving vertex and its neighbors from
-	the triangulations vertices list and initalize the translation path.
+	Generates a new translation of any type, whereas the public constructor is just capable
+	of generating translations of type DEFAULT. Pick the moving vertex and its neighbors from
+	the triangulations vertices list and initialize the translation path.
 
 	@param 	Tr 		The triangulation the moving vertex lives in
 	@param 	i 		The index of the moving vertex in the triangulation
@@ -83,7 +83,7 @@ Translation::Translation(Triangulation *Tr, int i, double dX, double dY, Transla
 
 	Note:
 		This function also checks whether any of the triangles is zero and tries to repair it. If
-		it finds something not repairable it erros with exit code 7.
+		it finds something not repairable it errors with exit code 7.
 */
 bool Translation::generateInitialQueue(){
 	double t;
@@ -103,7 +103,7 @@ bool Translation::generateInitialQueue(){
 		areaOld = (*tr).signedArea();
 		delete tr;
 
-		// If the vertex lays at an edge at the begining of the translation then try to flip
+		// If the vertex lays at an edge at the beginning of the translation then try to flip
 		if(areaOld == 0){
 			opposite = (*i).getLongestEdgeAlt();
 
@@ -431,7 +431,7 @@ bool Translation::checkEdge(Vertex * const fromV, TEdge * const newE) const{
 
 	Note:
 		As the checkIntersection functions tries to keep vertices far from edges this should never
-		be the case besides such splitted translation where the vertex is moved exactly to a
+		be the case besides such split translation where the vertex is moved exactly to a
 		triangulation edge on purpose.
 */
 void Translation::repairEnd(){
@@ -588,7 +588,7 @@ enum Executed Translation::executeSplitChangeSide(){
 	Statistics::translationsPerf++;
 
 	// For numerical reasons it is possible that the triangle of the old vertex and the
-	// neighboring vertices doesn't vanish at the time when the vertex arrives between its
+	// neighboring vertices does not vanish at the time when the vertex arrives between its
 	// neighbors, therefore this must be checked and corrected before starting the second
 	// translation
 	edge = (*prevV).getEdgeTo(nextV);
@@ -640,8 +640,8 @@ bool Translation::flip(Triangle *t0, const bool singleFlip){
 	Triangle *t1;
 	Vertex *vj0, *vj1; // Joint vertices
 	Vertex *vn0, *vn1; // Non-joint vertices
-	// We call it an opposite flip, if the flipped edge is the one opposite to the moving vertex
-	// i.e. it doesn't contain the moving vertex
+	// We call it an opposite flip, if the flipped edge is the one opposite to the moving vertex,
+	// i.e. it does not contain the moving vertex
 	bool oppositeFlip = false;
 	double x, y;
 	// Indicates whether a new triangle has been inserted into the event queue
@@ -790,7 +790,7 @@ bool Translation::insertAfterOppositeFlip(Triangle * leftT, Triangle * rightT, V
 	delete dummyTriangle;
 	delete dummyVertex;
 
-	// The common vertex is inside the corridor
+	// The common vertex is inside the corridor,
 	// i.e. both new triangles will collapse in the future
 	if(signbit(area0) != signbit(area1)){
 		// Now we have to check for both new triangles, whether they collapse before
@@ -852,7 +852,7 @@ bool Translation::insertAfterOppositeFlip(Triangle * leftT, Triangle * rightT, V
 		delete dummyTriangle;
 
 		// ALARM:
-		// I accidentially assigned both areas to area0, but it worked :O
+		// I accidentally assigned both areas to area0, but it worked :O
 		// Hopefully it also works if I correct it
 		dummyTriangle = new Triangle(leftV, dummyVertex, original);
 		area1 = (*dummyTriangle).signedArea();
@@ -863,7 +863,7 @@ bool Translation::insertAfterOppositeFlip(Triangle * leftT, Triangle * rightT, V
 		// If they are on different sides, then rightT is the triangle which will collapse
 		// in the future
 		if(signbit(area0) == signbit(area1)){
-			// Now we have to check whether leftT collapses before the end of the translation
+			// Now we have to check whether leftT collapses before the end of the translation,
 			// i.e. start and end position have to be on different side of the edge from leftV
 			// to common
 
@@ -882,7 +882,7 @@ bool Translation::insertAfterOppositeFlip(Triangle * leftT, Triangle * rightT, V
 				insertion = true;
 			}
 		}else{
-			// Now we have to check whether righT collapses before the end of the translation
+			// Now we have to check whether righT collapses before the end of the translation,
 			// i.e. start and end position have to be on different side of the edge from rightV
 			// to common
 
@@ -1037,8 +1037,8 @@ bool Translation::undo(){
 
 /*
 	Constructor:
-	Generates a new Translation of type DEFAULT. Greps the moving vertex and its
-	neighbors from the triangulations vertices list and initalize the translation path.
+	Generates a new Translation of type DEFAULT. Picks the moving vertex and its
+	neighbors from the triangulations vertices list and initialize the translation path.
 
 	@param 	Tr 		The triangulation the moving vertex lives in
 	@param 	i 		The index of the moving vertex in the triangulation
@@ -1081,10 +1081,10 @@ Translation::Translation(Triangulation *Tr, int i, double dX, double dY) :
 /*
 	The function checkOverroll() checks whether the polygon would change its orientation by
 	this translation. This basically means that the moving vertex is shifted across the whole
-	polygon which corresponds to all other vertices and edges being inside of the qudrilateral
+	polygon which corresponds to all other vertices and edges being inside of the quadrilateral
 	formed by the oldV, the newV and their neighboring edges. Obviously if the quadrilateral is
 	not simple, this can not happen at all. If the quadrilateral is simple then it corresponds
-	to having one of the other vertices of the polygon inside the qudrilateral, because if
+	to having one of the other vertices of the polygon inside the quadrilateral, because if
 	one vertex is inside it follows all other vertices must be inside or at least one is outside
 	so it exist at least one edge intersecting the quadrilateral so the translation can not lead
 	to a simple polygon at all.
@@ -1326,7 +1326,7 @@ void Translation::checkSplit(){
 	deletes the flip stack.
 */
 // TODO:
-// Does it still make sense to check the surrounding polyogn here?
+// Does it still make sense to check the surrounding polygon here?
 Translation::~Translation(){
 	bool ok;
 	struct Flip *f;

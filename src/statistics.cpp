@@ -1,5 +1,5 @@
 /* 
- * Copyright 2019 Philipp Mayer - pmayer@cs.sbg.ac.at
+ * Copyright 2020 Philipp Mayer - philmay1992@gmail.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -228,6 +228,14 @@ void Statistics::calculateTwistNumber(Triangulation const * const T){
 	}
 }
 
+/*
+	Prints the calculated statistics to stderr. 
+
+	@param 	T 	The triangulation the polygon lives in
+
+	Note:
+		- Before the stats are printed, they must be calculated
+*/
 void Statistics::printStats(Triangulation const * const T){
 	unsigned int i;
 	unsigned int nrOfHoles;
@@ -276,6 +284,14 @@ void Statistics::printStats(Triangulation const * const T){
 	fprintf(stderr, "Number of twists by pi: %u\n", twistNumber);
 }
 
+/*
+	Writes the calculated statistics to an xml-file. 
+
+	@param 	T 	The triangulation the polygon lives in
+
+	Note:
+		- Before the stats are printed, they must be calculated
+*/
 void Statistics::writeStatsFile(Triangulation const * const T){
 	ptree tree;
 	unsigned int i;

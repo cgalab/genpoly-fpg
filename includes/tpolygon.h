@@ -1,5 +1,5 @@
 /* 
- * Copyright 2019 Philipp Mayer - pmayer@cs.sbg.ac.at
+ * Copyright 2020 Philipp Mayer - philmay1992@gmail.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,7 +34,7 @@
 #define __TPOLYGON_H_
 
 /*
-	Define and include headers to the entites used in TPolygon
+	Define and include headers to the entities used in TPolygon
 */
 class Triangulation;
 class Vertex;
@@ -78,11 +78,42 @@ private:
 public:
 
 	/*
+		LIST OF PUBLIC MEMBER FUNCTIONS
+
+		CONSTRUCTORS:
+
+						TPolygon(Triangulation const * const t, const in n)
+
+		SETTERS:
+
+		void 			addVertex(Vertex * const v)
+		void 			addEdge(TEdge * const e)
+
+		GETTERS
+
+		unsigned int 	getID() const
+		Vertex* 		getVertex(const int i) const
+		int 			getActualPolygonSize() const
+		TEdge* 			getRandomEdgeWeighted() const
+
+		REMOVER
+
+		Vertex* 		removeVertex(const int i)
+
+		OTHERS
+
+		void 			writeToLine(std:ostream& os) const
+		void 			checkST() const
+
+	*/
+
+
+	/*
 		C ~ O ~ N ~ S ~ T ~ R ~ U ~ C ~ T ~ O ~ R ~ S
 	*/
 
 	/*
-		Contructor:
+		Constructor:
 		Already allocates memory for all vertices which will be inserted in the future.
 
 		@param 	t 	The triangulation the new polygon lives in
@@ -150,17 +181,17 @@ public:
 	*/
 	Vertex *removeVertex(const int i);
 
+
+	/*
+		O ~ T ~ H ~ E ~ R ~ S
+	*/
+
 	/*
 		Write this polygon to os in line format.
 
 		@param  os      Output stream
 	*/
 	void writeToLine(std::ostream& os) const;
-
-
-	/*
-		O ~ T ~ H ~ E ~ R ~ S
-	*/
 
 	/*
 		Checks the correctness of the SelectionTree

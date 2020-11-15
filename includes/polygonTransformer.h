@@ -1,5 +1,5 @@
 /* 
- * Copyright 2019 Philipp Mayer - pmayer@cs.sbg.ac.at
+ * Copyright 2020 Philipp Mayer - philmay1992@gmail.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -38,9 +38,9 @@
 
 
 /*
-	The function transformPolygonByMoves() transforms a polygon by randomly chosing a
+	The function transformPolygonByMoves() transforms a polygon by randomly selecting a
 	vertex and a direction to move and then randomly computing a distance to shift in
-	the choosen direction which with the constraint that the movement should be
+	the chosen direction which with the constraint that the movement should be
 	applicable with reasonable effort. This is done iterations times.
 
 	@param 	T 			The triangulation the polygon lives in
@@ -50,7 +50,7 @@
 	Note:
 		- The number of really performed moves is most likely less then the number of moves
 			which should be tried
-		- For polygons with holes the vertex also is reandomly choosen, i.e. it can be from
+		- For polygons with holes the vertex also is randomly selected, i.e. it can be from
 			the outer polygon as well as of one of the inner polygons
 */
 int transformPolygonByMoves(Triangulation * const T, const int iterations);
@@ -70,18 +70,37 @@ void growPolygonBy(Triangulation * const T, const unsigned int pID,  const int n
 
 
 /*
+	This strategy starts with a small regular polygon, applies a bunch of translations
+	to it, then it grows the polygon directly to the desired number of vertices
+	and afterwards applies another bunch of translations.
 
+	@param 	T 	The triangulation the polygon lives in
 */
 void strategyNoHoles0(Triangulation * const T);
 
 
 /*
+	This strategy starts with a small regular polygon and then does the following until
+	the desired number of vertices is reached:
+		- Apply a bunch of translations
+		- Double the number of vertices
 
+	@param 	T 	The triangulation the polygon lives in
+
+	Note:
+		- Unused at the moment
 */
 void strategyNoHoles1(Triangulation * const T);
 
 
 /*
+	Strategy for the generation of polygons with holes:
+		- Apply a bunch of translations to the initial polygon
+		- Until all polygons have reached the desired number of vertices:
+			- Double up the size of the inner polygons
+			- Double up the size of the outer polygon
+			- Apply a bunch of translations
 
+	@param 	T 	The triangulation the polygon lives in
 */
 void strategyWithHoles0(Triangulation * const T);

@@ -1,5 +1,5 @@
 /* 
- * Copyright 2019 Philipp Mayer - pmayer@cs.sbg.ac.at
+ * Copyright 2020 Philipp Mayer - philmay1992@gmail.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,7 +24,6 @@
 unsigned int Settings::nrInnerPolygons = 0;
 unsigned int Settings::outerSize = 0;
 std::vector<unsigned int> Settings::innerSizes;
-const std::string Settings::dummyFileName = "dummy.fpg";
 
 /*
 	Initial polygon
@@ -41,7 +40,6 @@ int Settings::initialTranslationNumber = -1;
 	Translation parameters
 */
 Arithmetics Settings::arithmetics = Arithmetics::DOUBLE;
-double Settings::distMax = -1;
 int Settings::stddevDiv = 3;
 bool Settings::localChecking = true;
 bool Settings::globalChecking = false;
@@ -73,14 +71,14 @@ RandomGenerator* Settings::generator = NULL;
 	Feedback settings
 */
 FeedbackMode Settings::feedback = FeedbackMode::DEFAULT;
-bool Settings::enableStats = false;
 OutputFormat Settings::outputFormat = OutputFormat::GRAPHML;
-bool Settings::simplicityCheck = false;
-char* Settings::polygonFile = (char*)"polygon.dat";
+char* Settings::polygonFile = NULL;
 bool Settings::triangulationOutputRequired = false;
 char* Settings::triangulationFile = NULL;
+bool Settings::enableStats = false;
 char* Settings::statisticsFile = NULL;
 
+bool Settings::simplicityCheck = false;
 double Settings::timing = 0;
 
 

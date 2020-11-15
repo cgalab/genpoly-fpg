@@ -1,5 +1,5 @@
 /* 
- * Copyright 2019 Philipp Mayer - pmayer@cs.sbg.ac.at
+ * Copyright 2020 Philipp Mayer - philmay1992@gmail.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,7 +37,7 @@ unsigned long long Vertex::deleted = 0;
 */
 
 /*
-	The function getEnvironment() recursivelly inserts all adjacent edges and vertices into
+	The function getEnvironment() recursively inserts all adjacent edges and vertices into
 	maps. As key the IDs are used. This function is used for debug outputs.
 
 	@param 	es 		The map of edges
@@ -185,7 +185,7 @@ void Vertex::setToPrev(TEdge * const e){
 	The function setToNext() sets the pointer for the polygon edge which connects the vertex
 	to its successor in the polygon.
 
-	@param 	e 	The edge to the succesor of the vertex in the polygon
+	@param 	e 	The edge to the successor of the vertex in the polygon
 
 	Note:
 		This function is automatically called when a new polygon edge is constructed.
@@ -308,7 +308,7 @@ double Vertex::getMediumEdgeLength() const{
 
 /*
 	The function getDirectedEdgeLength() finds the triangle incident to the vertex
-	in direction alpha (alpha = 0 corresponds to the positive x-driection) and
+	in direction alpha (alpha = 0 corresponds to the positive x-direction) and
 	computes the mean edge length of the edges of the triangle containing the
 	vertex. This value can be used as estimate for appropriate distribution
 	parameters.
@@ -326,7 +326,7 @@ double Vertex::getDirectedEdgeLength(const double alpha) const{
 	double length;
 
 	for(auto const& i : triangles){
-		// The function getRange() checkes whether the triangle is in direction
+		// The function getRange() checks whether the triangle is in direction
 		// alpha and returns the range if true, otherwise it returns -1
 		length = (*i).getRange(this, alpha);
 
@@ -381,7 +381,7 @@ Triangulation *Vertex::getTriangulation() const{
 	does not exist, it returns NULL
 
 	@param 	v0 	Second vertex contained by the searched triangle
-	@param 	v1 	Third vertex vontained by the searched triangle
+	@param 	v1 	Third vertex contained by the searched triangle
 	@return 	The searched triangle if it exists, otherwise NULL
 */
 Triangle *Vertex::getTriangleWith(Vertex const * const v0, Vertex const * const v1) const{
@@ -524,7 +524,7 @@ void Vertex::print() const{
 
 /*
 	The function writeEnvironment() writes a local part of the triangulation around
-	the vertex to a -graphml file. It collects the data recursivelly by the function
+	the vertex to a -graphml file. It collects the data recursively by the function
 	getEnvironment().
 
 	@param 	depth 		The number of recursive steps to be done, basically a depth of n
@@ -709,7 +709,7 @@ void Vertex::stretch(const double factor){
 	of its surrounding polygon. It errors with exit code 10 if a vertex lays exactly at
 	a polygon edge.
 
-	Defintion surrounding polygon:
+	Definition surrounding polygon:
 		Be T the set of triangles containing the vertex v. Be E the set of edges
 		contained by the triangles of T. Be E' the subset of E which only contains
 		those elements of E which do not contain v.
@@ -727,7 +727,7 @@ bool Vertex::checkSurroundingPolygon(){
 	Triangle *t, *t0;
 	TEdge *e;
     
-    // Insert all vertices into the Q in the order they form the surrouding polygon
+    // Insert all vertices into the Q in the order they form the surrounding polygon
     // the start vertex is is contained a second time at the end of the queue
 	t = triangles.front();
 	t0 = t;
@@ -787,7 +787,7 @@ bool Vertex::checkSurroundingPolygon(){
 				continue;
 		}
 
-		// Compare orientation with the oriantation of the first triangle
+		// Compare orientation with the orientation of the first triangle
 		if(signbit(area) != signbit(area0)){
 			// In the case that the first area was exactly zero we can take the next area as
 			// first area
@@ -819,7 +819,7 @@ double Vertex::getDistanceToOrigin() const{
 	Destructor:
 	The destructor also delete all triangles and edges which still contain the vertex by
 	calling their destructors. Therefore we need copies of the lists in form of arrays
-	because iterating over a list while deleting its elements is pretyy dangerous.
+	because iterating over a list while deleting its elements is pretty dangerous.
 
 	Note:
 		It is the best way to delete all edges and triangles containing the vertex

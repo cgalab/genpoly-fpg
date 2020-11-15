@@ -1,5 +1,5 @@
 /* 
- * Copyright 2019 Philipp Mayer - pmayer@cs.sbg.ac.at
+ * Copyright 2020 Philipp Mayer - philmay1992@gmail.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -42,6 +42,7 @@ class Statistics{
 
 private:
 
+	// These variables save the results of the functions
 	static double radialDistDev;
 	static double twistMin;
 	static double twistMax;
@@ -99,8 +100,28 @@ public:
 	static unsigned int maxTriangles;
 
 
+	/*
+		The function calculateDistanceDistribution() calculates the distance distribution
+		for all vertices (including the vertices of the holes) and prints it to stdout.
+		Therefore it splits the bounding box into ring layers of diameter width, counts
+		the vertices in each layer and compute the vertex densities in the layers.
+		The number of layers is computed by the distance of the origin to the bounding 
+		box divided by width.
+
+		Note:
+			As the box is a rectangle the outer layer is in fact no ring anymore, but is
+			defined as the rectangle minus the circle defined by the outer border of the
+			second outer layer.
+	*/
+	// TODO:
+	// Possibly kick that out
 	static void calculateRadialDistanceDistribution(Triangulation const * const T, const double width);
 
+	
+	/*
+		The following functions calculate the criteria stated in my theses.
+		For further information on these criteria take a look at my theses.
+	*/
 	static void calculateRadialDistanceDeviation(Triangulation const * const T);
 
 	static void calculateMaxTwist(Triangulation const * const T);
@@ -109,7 +130,23 @@ public:
 
 	static void calculateTwistNumber(Triangulation const * const T);
 
+	/*
+		Prints the calculated statistics to stderr. 
+
+		@param 	T 	The triangulation the polygon lives in
+
+		Note:
+			- Before the stats are printed, they must be calculated
+	*/
 	static void printStats(Triangulation const * const T);
 
+	/*
+		Writes the calculated statistics to an xml-file. 
+
+		@param 	T 	The triangulation the polygon lives in
+
+		Note:
+			- Before the stats are printed, they must be calculated
+	*/
 	static void writeStatsFile(Triangulation const * const T);
 };

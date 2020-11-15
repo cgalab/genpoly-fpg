@@ -1,5 +1,5 @@
 /* 
- * Copyright 2020 Philipp Mayer - pmayer@cs.sbg.ac.at
+ * Copyright 2020 Philipp Mayer - philmay1992@gmail.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -94,7 +94,7 @@ public:
 	/*
 		Constructor:
 		Sets the parent entry in the SelectionTree and the weight of its
-		object.
+		object. In case the tree is unweighted, all weights get the value 1.
 
 		@param 	e 	The object this STEntry represents
 		@param 	prt	The parent entry in the SelectionTree
@@ -123,7 +123,7 @@ public:
 	/*
 		The function addChild() adds a new child entry to this STEntry. The new
 		child gets added left if there is no child already, otherwise it gets
-		added right. Afterwards the number of elements and the total weights get
+		added right. Afterwards the number of elements and the total weights is
 		updated for all ancestors.
 
 		@param 	child 	The new child entry
@@ -247,17 +247,18 @@ public:
 	*/
 
 	/*
-		The function update() updates the lengths and the numbers of elements of
-		this entry and calls update() for the parent entry.
+		The function update() updates the weights and the numbers of elements of
+		this entry and calls update() for the parent entry. In case the tree is
+		unweighted, the element gets the weight 1.
 	*/
 	void update(){
 
-		if(!(*tree).isWeighted())
-			elementWeight = 1;
-		else if(element != NULL)
+		if(element == NULL)
+			elementWeight = 0;
+		else if((*tree).isWeighted())
 			elementWeight = (*element).getWeight();
 		else
-			elementWeight = 0;
+			elementWeight = 1;
 
 		if(leftChild != NULL){
 			leftWeight = (*leftChild).getTotalWeight();

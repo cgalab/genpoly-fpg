@@ -1,5 +1,5 @@
 /* 
- * Copyright 2019 Philipp Mayer - pmayer@cs.sbg.ac.at
+ * Copyright 2020 Philipp Mayer - philmay1992@gmail.com
  *                Günther Eder  - geder@cs.sbg.ac.at
  *
  * This program is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@
 #include <getopt.h>
 #include <boost/algorithm/string.hpp>
 
-static const char* short_options = "hn:i:s:aH:o:T:lgvtwp:m";
+static const char* short_options = "hn:i:s:aH:o:T:lgvmtwp:";
 static struct option long_options[] = {
 		{ "help"                , no_argument      , 0, 'h'},
 		{ "nrofholes"           , required_argument, 0, 'n'},
@@ -214,6 +214,9 @@ private:
 
 		if(outerSize == 0)   {outerSize = 20;}
 		if(initialSize == 0) {initialSize = 10;}
-		if(additionalTrans == 0) {additionalTrans = outerSize;}
+		
+		// In the strategy used the number of additional translations after the growth
+		// of the polygon equals the desired number of vertices
+		additionalTrans = outerSize;
 	}
 };

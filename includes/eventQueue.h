@@ -1,5 +1,5 @@
 /* 
- * Copyright 2019 Philipp Mayer - pmayer@cs.sbg.ac.at
+ * Copyright 2020 Philipp Mayer - philmay1992@gmail.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,15 +34,15 @@
 	The EventQueue is basically a list of events which contains all at the moment known
 	future events ordered by their event times. An instance of EventQueue always belongs
 	to one translation and will be deleted after the translation will have finished. It
-	is capable of checking the numerical stability of a translation by checking and
-	changing th order of neighboring events and aborting the translation if instability
+	is capable of checking the numerical stability of a translation by checking (and
+	changing) the order of neighboring events and aborting the translation if instability
 	is expected.
 */
 #ifndef __EVENTQUEUE_H_
 #define __EVENTQUEUE_H_
 
 /*
-	The struct Event is the type of elements in the event queue. It consists of the
+	The struct Event is the type of elements in the EventQueue. It consists of the
 	following information:
 	collapseTime 	The time at which the event will occur
 	triangle 		The triangle which will collapse at the event
@@ -70,8 +70,9 @@ private:
 	*/
 	int n;
 
+
 	/*
-		Vertices of the actual translation
+		Vertices of the recent translation
 	*/
 
 	/*
@@ -107,7 +108,8 @@ private:
 		@param 	e1 	The event which is scheduled later in the event queue
 
 		Note:
-			It is required that the collapseTime of e0 is less than the collapseTime of e1
+			- It is required that the collapseTime of e0 is less than the collapseTime of e1
+			- In theory this should work, but in practice it does not at the moment
 	*/
 	void stabilize(struct Event *e0, struct Event *e1);
 
@@ -115,7 +117,7 @@ private:
 		The function stabilizeConvex() checks for two events with adjacent triangles and
 		convex shape of the opposing edges whether the events are in the right order and
 		change if necessary. In case the events are in the wrong order the events
-		themselfes are not changed, just the triangles are switched such that it still
+		themselves are not changed, just the triangles are switched such that it still
 		holds that the events in the event queue are order by their collapse times.
 		For further information on the decision criterion for reordering take a look into
 		my master thesis.
@@ -134,7 +136,7 @@ private:
 		The function stabilizeNonConvex() checks for two events with adjacent triangles
 		and non-convex shape of the opposing edges whether the events are in the right
 		order and change if necessary. In case the events are in the wrong order the
-		events themselfes are not changed, just the triangles are switched such that it
+		events themselves are not changed, just the triangles are switched such that it
 		still holds that the events in the event queue are order by their collapse times.
 		For further information on the decision criterion for reordering take a look into
 		my master thesis.
@@ -206,13 +208,16 @@ public:
 		events closer then Settings::epsEventTime which are then considered as concurrent.
 		Two concurrent events then get checked and potentially reorder by the function
 		stabilize(). If it finds three or more neighboring events which are pairwise
-		concurrent, it returns false and the translation will be arborted.
+		concurrent, it returns false and the translation will be aborted.
 
 		@param 	initial 	Indicates whether the event queue is the initial event queue
 							or not, which leads to different outputs in case the
 							translation gets aborted.
 		@return 			True if there are not more than two neighboring concurrent
 							events, otherwise false
+
+		Note:
+			- Due to stability issues this function is unused at the moment.
 	*/
 	bool makeStable(const bool initial);
 

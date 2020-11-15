@@ -1,5 +1,5 @@
 /* 
- * Copyright 2019 Philipp Mayer - pmayer@cs.sbg.ac.at
+ * Copyright 2020 Philipp Mayer - philmay1992@gmail.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -137,7 +137,7 @@ void TEdge::setEdgeType(const EdgeType tp, const bool temp){
 
 /*
 	The function setTriangle() registers a new triangle, which contains the edge, at the
-	edge. The new triangle is set at t0 if t0 is NULL, otherwwise it is set at t1 if
+	edge. The new triangle is set at t0 if t0 is NULL, otherwise it is set at t1 if
 	t1 is NULL, otherwise the function errors with exit code 4 if the edge has already
 	registered two triangles. The function errors with exit code 5 if the edge has already
 	registered the same triangle.
@@ -423,15 +423,15 @@ double TEdge::getAngle(Vertex const * const v) const{
 
 /*
 	The function isBetween() checks whether the vertex v is between the two vertices of the
-	edge, i.e. is v inside the rectangle with edges parallel to the coordinate axes and spaned
+	edge, i.e. is v inside the rectangle with edges parallel to the coordinate axes and spanned
 	by the two vertices of the edge.
 
 	@param 	v 	The vertex to be checked
-	@return 	True if v is inside the ractangle, otherwise false
+	@return 	True if v is inside the rectangle, otherwise false
 
 	Note:
 		It is assumed that v lays pretty close to the supporting line of the edge, so it is only
-		necessary to check whether v lays between the longer edge of the ractangle.
+		necessary to check whether v lays between the longer edge of the rectangle.
 */
 bool TEdge::isBetween(Vertex const * const v) const{
 	double v0x, v1x, v0y, v1y, dx, dy, z;
@@ -444,7 +444,7 @@ bool TEdge::isBetween(Vertex const * const v) const{
 	dx = fabs(v0x - v1x);
 	dy = fabs(v0y - v1y);
 
-	// Take the direction with larger intervall for comparison
+	// Take the direction with larger interval for comparison
 	if(dx >= dy){
 		z = (*v).getX();
 
@@ -504,9 +504,9 @@ TEdge::~TEdge(){
 	The function checkIntersection() checks whether to edge e0 and e1 intersect.
 	Therefore it computes the determinants of all possible combination of one edge with one vertex of
 	the other edge and classify into the following intersection types:
-		- VERTEX: One vertex lays at the other edge, if one of the determinantes is zero and the used
+		- VERTEX: One vertex lays at the other edge, if one of the determinants is zero and the used
 				vertex lays between the vertices of the used edge
-		- EDGE: The two edges are intersecting, if the pairs of determinantes using the same edge have
+		- EDGE: The two edges are intersecting, if the pairs of determinants using the same edge have
 				different signs
 		- NONE: Otherwise, the two edges do not intersect
 
@@ -514,11 +514,11 @@ TEdge::~TEdge(){
 	@param 	e1 		Second edge
 	@param 	precise If false the function uses Settings::epsInt instead of zero for the VERTEX
 					intersections
-	@return 		The tpye of intersection
+	@return 		The type of intersection
 
 	Note:
 		For numerical stability a vertex is considered to lay exactly at an edge if the corresponding
-		determinantent's absolute value is less than Settings::EpsInt. This also keeps vertices a bit
+		determinant's absolute value is less than Settings::EpsInt. This also keeps vertices a bit
 		away from edges.
 */
 enum IntersectionType checkIntersection(TEdge const * const e0, TEdge const * const e1,
@@ -601,7 +601,7 @@ enum IntersectionType checkIntersection(TEdge const * const e0, TEdge const * co
 */
 Vertex *getIntersectionPoint(TEdge const * const e0, TEdge const * const e1){
 	double s0x, s0y, e0x, e0y, s1x, s1y, e1x, e1y;
-	double d0x, d0y, d1x, d1y; // Compenents of the displacement vectors
+	double d0x, d0y, d1x, d1y; // Components of the displacement vectors
 	double t, s; // Intersection times
 	double crossD;
 
