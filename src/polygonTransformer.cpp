@@ -37,7 +37,7 @@
 int transformPolygonByMoves(Triangulation * const T, const int iterations){
 	int index = 0;
 	double dx = 0, dy = 0, stddev, alpha, r;
-	bool simple, overroll;
+	bool simple, orientationChange;
 	Translation *trans;
 	int n = (*T).getActualNumberOfVertices();
 	int performedTranslations = 0;
@@ -71,9 +71,9 @@ int transformPolygonByMoves(Triangulation * const T, const int iterations){
 		trans = new Translation(T, index, dx, dy);
 
 		// Check for an orientation change
-		overroll = (*trans).checkOverroll();
+		orientationChange = (*trans).checkOrientation();
 
-		if(!overroll){
+		if(!orientationChange){
 			// Check whether the translation leads to a simple polygon
 			simple = (*trans).checkSimplicityOfTranslation();
 

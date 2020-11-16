@@ -1079,7 +1079,7 @@ Translation::Translation(Triangulation *Tr, int i, double dX, double dY) :
 */
 
 /*
-	The function checkOverroll() checks whether the polygon would change its orientation by
+	The function checkOrientation() checks whether the polygon would change its orientation by
 	this translation. This basically means that the moving vertex is shifted across the whole
 	polygon which corresponds to all other vertices and edges being inside of the quadrilateral
 	formed by the oldV, the newV and their neighboring edges. Obviously if the quadrilateral is
@@ -1101,8 +1101,8 @@ Translation::Translation(Triangulation *Tr, int i, double dX, double dY) :
 		For more information on how to check which cases can be solved by split translations
 		take a look at my Master Thesis
 */
-bool Translation::checkOverroll(){
-	bool overroll;
+bool Translation::checkOrientation(){
+	bool orientationChange;
 	Vertex *randomV;
 	unsigned int i;
 	Triangle *dummy;
@@ -1139,10 +1139,10 @@ bool Translation::checkOverroll(){
 	// Now we check whether the polygon rolls over another polygon or itself
 
 	// Check whether the quadrilateral of the chosen Vertex P, its translated version P' and the
-	// two neighbors M and N is simple, otherwise there can not be any overroll
-	overroll = !(checkIntersection(prevOldE, nextNewE, false) != IntersectionType::NONE || checkIntersection(nextOldE, prevNewE, false) != IntersectionType::NONE);
+	// two neighbors M and N is simple, otherwise there can not be any orientation change
+	orientationChange = !(checkIntersection(prevOldE, nextNewE, false) != IntersectionType::NONE || checkIntersection(nextOldE, prevNewE, false) != IntersectionType::NONE);
 
-	if(!overroll)
+	if(!orientationChange)
 		return false;
 
 
@@ -1170,14 +1170,14 @@ bool Translation::checkOverroll(){
 		// Check for vertex before the previous vertex whether it is inside the quadrilateral
 		randomV = (*prevV).getPrev();
 
-		overroll = insideQuadrilateral(randomV);
+		orientationChange = insideQuadrilateral(randomV);
 
 		// Check also for a second vertex to increase the chance to reject non-simple translation
 		randomV = (*nextV).getNext();
 
-		overroll = overroll || insideQuadrilateral(randomV);
+		orientationChange = orientationChange || insideQuadrilateral(randomV);
 
-		if(overroll)
+		if(orientationChange)
 			return true;
 	}
 
@@ -1198,9 +1198,9 @@ bool Translation::checkOverroll(){
 		// Get a random vertex of the polygon
 		randomV = (*T).getVertex(0, i);
 
-		overroll = insideQuadrilateral(randomV);
+		orientationChange = insideQuadrilateral(randomV);
 
-		if(overroll)
+		if(orientationChange)
 			return true;
 	}
 
@@ -1303,11 +1303,11 @@ bool Translation::checkSimplicityOfTranslation() const{
 	The function checkSplit() determines whether a translation can be executed directly or must
 	be split into two translation. This corresponds to the question whether the translation path
 	intersects any polygon edge or not. If the translation must be split the function sets the
-	internal split flag. If the split flag was already set by the function checkOverroll() it 
+	internal split flag. If the split flag was already set by the function checkOrientation() it 
 	does nothing.
 */
 void Translation::checkSplit(){
-	// In case the checkOverroll() has already demanded a split
+	// In case the checkOrientation() has already demanded a split
 	if(split)
 		return;
 

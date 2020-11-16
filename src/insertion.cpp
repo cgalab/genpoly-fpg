@@ -153,7 +153,7 @@ void Insertion::execute(){
 */
 void Insertion::translate() const{
 	int index;
-	bool overroll, simple = false;
+	bool orientationChange, simple = false;
 	double alpha, stddev, r, dx, dy;
 	Translation *trans;
 	unsigned int count = 0;
@@ -177,9 +177,9 @@ void Insertion::translate() const{
 		trans = new Translation(T, index, dx, dy);
 
 		// Check for a potential orientation change
-		overroll = (*trans).checkOverroll();
+		orientationChange = (*trans).checkOrientation();
 
-		if(!overroll){
+		if(!orientationChange){
 			// Check the simplicity of the translation
 			simple = (*trans).checkSimplicityOfTranslation();
 

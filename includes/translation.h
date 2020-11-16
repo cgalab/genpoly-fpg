@@ -404,7 +404,7 @@ public:
 
 		OTHERS:
 
-		bool 			checkOverroll()
+		bool 			checkOrientation()
 		enum Executed 	execute()
 		bool 			checkSimplicityOfTranslation()
 		void 			checkSplit()
@@ -436,7 +436,7 @@ public:
 	*/
 
 	/*
-		The function checkOverroll() checks whether the polygon would change its orientation by
+		The function checkOrienation() checks whether the polygon would change its orientation by
 		this translation. This basically means that the moving vertex is shifted across the whole
 		polygon which corresponds to all other vertices and edges being inside of the quadrilateral
 		formed by the oldV, the newV and their neighboring edges. Obviously if the quadrilateral is
@@ -458,7 +458,7 @@ public:
 			For more information on how to check which cases can be solved by split translations
 			take a look at my Master Thesis
 	*/
-	bool checkOverroll();
+	bool checkOrientation();
 
 	/*
 		The function execute() processes a translation. If the flag split is set, it calls the
@@ -486,7 +486,7 @@ public:
 		The function checkSplit() determines whether a translation can be executed directly or must
 		be split into two translation. This corresponds to the question whether the translation path
 		intersects any polygon edge or not. If the translation must be split the function sets the
-		internal split flag. If the split flag was already set by the function checkOverroll() it 
+		internal split flag. If the split flag was already set by the function checkOrientation() it 
 		does nothing.
 	*/
 	void checkSplit();
