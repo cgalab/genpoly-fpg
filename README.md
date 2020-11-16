@@ -48,4 +48,4 @@ For the `RELEASE` version use `cmake -D CMAKE_BUILD_TYPE=Release ..`
 
 # License
 
-FPG is licenced under [GPLv3](https://www.gnu.org/licenses/gpl-3.0.html).
+FPG is licensed under [GPLv3](https://www.gnu.org/licenses/gpl-3.0.html).
