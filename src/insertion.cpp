@@ -174,7 +174,7 @@ void Insertion::translate() const{
 		dx = r * cos(alpha);
 		dy = r * sin(alpha);
 
-		trans = new Translation(T, index, dx, dy);
+		trans = new TranslationKinetic(T, index, dx, dy);
 
 		// Check for a potential orientation change
 		orientationChange = (*trans).checkOrientation();
@@ -185,7 +185,7 @@ void Insertion::translate() const{
 
 			// Execute the translation
 			if(simple){
-				(*trans).checkSplit();
+				//(*trans).checkSplit();
 
 				(*trans).execute();
 			}

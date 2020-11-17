@@ -68,7 +68,7 @@ int transformPolygonByMoves(Triangulation * const T, const int iterations){
 		dx = r * cos(alpha);
 		dy = r * sin(alpha);
 
-		trans = new Translation(T, index, dx, dy);
+		trans = new TranslationKinetic(T, index, dx, dy);
 
 		// Check for an orientation change
 		orientationChange = (*trans).checkOrientation();
@@ -79,7 +79,7 @@ int transformPolygonByMoves(Triangulation * const T, const int iterations){
 
 			if(simple){
 				// Check whether the translation can be performed directly or must be split
-				(*trans).checkSplit();
+				//(*trans).checkSplit();
 
 				// Try to execute the translation
 				ex = (*trans).execute();

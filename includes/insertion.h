@@ -24,6 +24,7 @@
 #include "triangulation.h"
 #include "tedge.h"
 #include "triangle.h"
+#include "translationKinetic.h"
 #include "translation.h"
 #include "settings.h"
 
