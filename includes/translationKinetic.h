@@ -128,7 +128,7 @@ private:
 		the opposite edge of the triangle lays between the start and the target position of the
 		moving vertex. After inserting all collapsing triangles with their estimated collapse
 		times into the event queue it lets check the event queue the stability of the event
-		ordering and try to repair.
+		ordering.
 
 		@return 	True if the event queue is stable, otherwise false
 
@@ -203,12 +203,12 @@ private:
 
 		Note:
 			- It is assumed that the area of the collapsing triangle is zero (or at least close
-				to 0), i.e. the moving vertex is already shifted to the event time
+				to 0), i.e. the moving vertex is already shifted to the event time.
 			- Checking whether a resulting triangle will collapse during the further translation
 				is a highly sensible thing! It is not recommend to use the actual position of
 				the moving vertex therefore, because the small errors in its position can lead
-				to wrong decisions
-			- For more information on the method of deciding take a look into my Master Thesis
+				to wrong decisions.
+			- For more information on the method of deciding take a look into my Master Thesis.
 	*/
 	bool flip(Triangle *t0, const bool singleFlip);
 
@@ -229,9 +229,9 @@ private:
 						otherwise false
 
 		Note:
-			- For detailed information on the decision criteria take a look into my Master Thesis
+			- For detailed information on the decision criteria take a look into my Master Thesis.
 			- Left and right may not be really left and right, but this does not matter as long
-				as leftV corresponds to leftT and rightV to rightT
+				as leftV corresponds to leftT and rightV to rightT.
 	*/
 	bool insertAfterOppositeFlip(Triangle * leftT, Triangle * rightT, Vertex *leftV, Vertex *
 		rightV, Vertex * common) const;
@@ -253,13 +253,13 @@ private:
 							otherwise false
 
 		Note:
-			- For detailed information on the decision criteria take a look into my Master Thesis
+			- For detailed information on the decision criteria take a look into my Master Thesis.
 	*/
 	bool insertAfterNonOppositeFlip(Triangle *t, Vertex * shared0, Vertex * shared1, Vertex *
 		opposite) const;
 
 	/*
-		The function undo() checks whether moving vertex still lays inside of its 
+		The function undo() checks whether the moving vertex still lays inside of its 
 		surrounding polygon. If it does not the function undoes all executed flips in
 		reversed order and sets the moving vertex back to its original position.
 	*/
@@ -273,7 +273,7 @@ public:
 
 		CONSTRUCTORS:
 		
-						Translation(Triangulation *Tr, int i, double dX, double dY)
+						TranslationKinetic(Triangulation *Tr, int i, double dX, double dY)
 
 		OTHERS:
 
@@ -333,10 +333,11 @@ public:
 	bool checkOrientation() override;
 
 	/*
-		The function execute() processes a translation. If the flag split is set, it calls the
-		functions which split the translation into two translations (depending on the geometric
-		case) and executes them, otherwise execute() executes the translation by successively
-		working through the events in the event queue.
+		The function execute() processes a translation. First it calls checkSplit() for checking
+		whether the translation can be executed directly or must be split. If the flag split is set,
+		it calls one of the functions which split the translation into two translations
+		(depending on the geometric case) and executes them, otherwise execute() executes the
+		translation by successively working through the events in the event queue.
 
 		@return 	Indicates whether the execution was rejected, aborted or fully processed
 

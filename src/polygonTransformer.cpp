@@ -78,9 +78,6 @@ int transformPolygonByMoves(Triangulation * const T, const int iterations){
 			simple = (*trans).checkSimplicityOfTranslation();
 
 			if(simple){
-				// Check whether the translation can be performed directly or must be split
-				//(*trans).checkSplit();
-
 				// Try to execute the translation
 				ex = (*trans).execute();
 

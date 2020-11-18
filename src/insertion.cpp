@@ -184,11 +184,8 @@ void Insertion::translate() const{
 			simple = (*trans).checkSimplicityOfTranslation();
 
 			// Execute the translation
-			if(simple){
-				//(*trans).checkSplit();
-
+			if(simple)
 				(*trans).execute();
-			}
 		}
 
 		delete trans;

@@ -64,7 +64,7 @@ void TranslationKinetic::checkSplit(){
 	during the translation. To achieve this it gets checked whether the opposite edge of the triangle
 	lays between the start and the target position of the moving vertex.
 	After inserting all collapsing triangles with their estimated collapse times into the event queue
-	it lets check the event queue the stability of the event ordering and try to repair.
+	it lets check the event queue the stability of the event ordering.
 
 	@return 	True if the event queue is stable, otherwise false
 
@@ -688,7 +688,7 @@ bool TranslationKinetic::insertAfterNonOppositeFlip(Triangle *t, Vertex * shared
 }
 
 /*
-	The function undo() checks whether moving vertex still lays inside of its 
+	The function undo() checks whether the moving vertex still lays inside of its 
 	surrounding polygon. If it does not the function undoes all executed flips in
 	reversed order and sets the moving vertex back to its original position.
 
@@ -909,10 +909,11 @@ bool TranslationKinetic::checkOrientation(){
 }
 
 /*
-	The function execute() processes a translation. If the flag split is set, it calls the
-	functions which split the translation into two translations (depending on the geometric
-	case) and executes them, otherwise execute() executes the translation by successively
-	working through the events in the event queue.
+	The function execute() processes a translation. First it calls checkSplit() for checking
+	whether the translation can be executed directly or must be split. If the flag split is set,
+	it calls one of the functions which split the translation into two translations
+	(depending on the geometric case) and executes them, otherwise execute() executes the
+	translation by successively working through the events in the event queue.
 
 	@return 	Indicates whether the execution was rejected, aborted or fully processed
 
