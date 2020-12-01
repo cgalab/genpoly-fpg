@@ -84,6 +84,9 @@ public:
 		Translation parameters
 	*/
 
+	// Type of translation used
+	static bool kinetic;
+
 	// Type of used arithmetics
 	static Arithmetics arithmetics;
 

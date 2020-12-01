@@ -39,6 +39,7 @@ int Settings::initialTranslationNumber = -1;
 /*
 	Translation parameters
 */
+bool Settings::kinetic = false;
 Arithmetics Settings::arithmetics = Arithmetics::DOUBLE;
 int Settings::stddevDiv = 3;
 bool Settings::localChecking = true;

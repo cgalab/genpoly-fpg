@@ -20,13 +20,14 @@
 #include <getopt.h>
 #include <boost/algorithm/string.hpp>
 
-static const char* short_options = "hn:i:s:aH:o:T:lgvmtwp:";
+static const char* short_options = "hn:i:s:aH:o:T:lgvmtwp:k";
 static struct option long_options[] = {
 		{ "help"                , no_argument      , 0, 'h'},
 		{ "nrofholes"           , required_argument, 0, 'n'},
 		{ "startsize"           , required_argument, 0, 'i'},
 		{ "seed"                , required_argument, 0, 's'},
 		{ "arithmetic"          , no_argument,       0, 'a'},
+		{ "kinetic"             , no_argument,       0, 'k'},
 		{ "holesizes"           , required_argument, 0, 'H'},
 		{ "outputformat"        , required_argument, 0, 'o'},
 		{ "statsfile"           , required_argument, 0, 'T'},
@@ -50,9 +51,10 @@ static struct option long_options[] = {
 	fprintf(f,"           --startsize <num>          polygon start-size, initial-size (default 10).\n");
 	fprintf(f,"           --seed <num>               seed for rnd (default random).\n");
 	fprintf(f,"           --arithmetic               enable 'exact' arithmetic? (default off).\n");
+	fprintf(f,"           --kinetic                  enable execution using kinetic triangulation.\n");
 	fprintf(f,"           --holesizes <a,b,c,...>    define hole sizes.\n");
 	fprintf(f,"           --outputformat <format>    dat, line, or graphml (default graphml).\n");
-	fprintf(f,"           --disablelocalchecks       \n");
+	fprintf(f,"           --disablelocalchecks       (default on).\n");
 	fprintf(f,"           --enableglobalchecks       (default off).\n");
 	fprintf(f,"           --verbose                  (default off).\n");
 	fprintf(f,"           --mute                     (default off).\n");
@@ -122,6 +124,10 @@ private:
 			}
 			case 'a': {
 				arithmetics = Arithmetics::EXACT;
+				break;
+			}
+			case 'k': {
+				kinetic = true;
 				break;
 			}
 			case 'H': {

@@ -68,7 +68,10 @@ int transformPolygonByMoves(Triangulation * const T, const int iterations){
 		dx = r * cos(alpha);
 		dy = r * sin(alpha);
 
-		trans = new TranslationKinetic(T, index, dx, dy);
+		if(Settings::kinetic)
+			trans = new TranslationKinetic(T, index, dx, dy);
+		else
+			trans = new TranslationRetriangulation(T, index, dy, dx);
 
 		// Check for an orientation change
 		orientationChange = (*trans).checkOrientation();

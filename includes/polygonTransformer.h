@@ -33,6 +33,7 @@
 #include "vertex.h"
 #include "triangle.h"
 #include "translationKinetic.h"
+#include "translationRetriangulation.h"
 #include "translation.h"
 #include "insertion.h"
 #include "settings.h"

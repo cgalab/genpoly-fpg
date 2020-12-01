@@ -55,5 +55,7 @@ add_executable(fpg
                   src/triangulation.cpp
                   src/vertex.cpp
                   src/translationKinetic.cpp
+                  src/translationRetriangulation.cpp
+                  src/polygon.cpp
                )
 include_directories(includes)
