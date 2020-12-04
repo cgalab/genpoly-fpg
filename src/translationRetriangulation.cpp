@@ -17,6 +17,79 @@
 
 #include "translationRetriangulation.h"
 
+void TranslationRetriangulation::buildPolygonsSideChange(){
+	Triangle *t, *tTest, *oldTriangle;
+	Vertex *v;
+	TEdge *e, *oldEdge, *edgeToRemove;
+	double areaOld, areaNew;
+
+	// Find the polygon in opposite direction and remove the corresponding triangles
+
+	// First of all we have to find the triangle in the correct direction of the
+	// surrounding polygon
+	tTest = new Triangle(prevV, nextV, newV);
+	areaNew = (*tTest).signedArea();
+	delete tTest;
+
+	// We simple check one triangle and take the other one if it is not the right
+	// one
+	t = (*prevOldE).getT0();
+	v = (*t).getOtherVertex(prevOldE);
+	tTest = new Triangle(prevV, nextV, v);
+	areaOld = (*tTest).signedArea();
+	delete tTest;
+
+	// Make sure to take the triangle in the right direction
+	// TODO:
+	// Maybe this condition is not complete
+	if(signbit(areaOld) == signbit(areaNew) || (*v).getID() == (*nextV).getID())
+		t = (*prevOldE).getT1();
+	
+	// Start building the polygon
+	p0 = new Polygon(PolygonType::STARSHAPED);
+
+	(*p0).addVertex(prevV);
+
+	// Now we go along the surrounding polygon from prevOldE until we reach
+	// nextOldE and remove all triangles and edges inside the surrounding polygon
+	e = prevOldE;
+	oldEdge = NULL;
+	edgeToRemove = NULL;
+	while((*e).getID() != (*nextOldE).getID()){
+		(*p0).addEdge((*t).getEdgeNotContaining(original));
+
+		// Go further to the next triangle
+		e = (*t).getOtherEdgeContaining(original, e);
+		(*p0).addVertex((*e).getOtherVertex(original));
+		oldTriangle = t;
+		t = (*e).getOtherTriangle(oldTriangle);
+
+		// Remove the previous triangle
+		delete oldTriangle;
+
+		// Make sure to only remove the right edges
+		// The first remove takes place in the second loop iteration and
+		// is the edge of the first iteration, so it is delayed
+		if(edgeToRemove != NULL)
+			delete edgeToRemove;
+		if(oldEdge != NULL)
+			edgeToRemove = oldEdge;
+		oldEdge = e;
+	}
+
+	// Remove the remaining edge
+	if(edgeToRemove != NULL)
+		delete edgeToRemove;
+
+	// Close the polygon with a new edge
+	e = new TEdge(prevV, nextV);
+	(*p0).close(e);
+	(*p0).setKernel(oldV);
+
+	// Immediately add a new triangle to the translation
+	new Triangle(e, prevOldE, nextOldE, prevV, nextV, original);
+}
+
 /*
 	C ~ O ~ N ~ S ~ T ~ R ~ U ~ C ~ T ~ O ~ R ~ S
 */
@@ -70,6 +143,14 @@ TranslationRetriangulation::TranslationRetriangulation(Triangulation *Tr, int i,
 		For more information on the splits see my Master Thesis
 */
 enum Executed TranslationRetriangulation::execute(){
+
+	// Find the polygons to retriangulate
+	if(sideChange)
+		buildPolygonsSideChange();
+
+	// Move the vertex to its target position
+	(*original).setPosition((*newV).getX(), (*newV).getY());
+
 	return Executed::FULL;
 }
 

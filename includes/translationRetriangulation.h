@@ -44,10 +44,13 @@ private:
 		The polygons we have to retriangulate during the translation. Depending on the
 		type of translation not all of these polygons are used.
 	*/
+	// The polygon in opposite direction to the translation direction
 	Polygon *p0;
 	Polygon *p1;
 	Polygon *p2;
 	Polygon *p3;
+
+	void buildPolygonsSideChange();
 
 public:
 

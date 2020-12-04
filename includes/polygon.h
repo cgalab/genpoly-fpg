@@ -109,8 +109,13 @@ private:
 	*/
 	PolygonEdge *lastEUsed;
 
+	/*
+		One point of the kernel in case of a star-shaped polygon
+	*/
+	Vertex *kernel;
 
-	void triangulateStar();
+
+	void triangulateStar(Vertex *kernel);
 	void triangulateVisible();
 
 public:
@@ -121,7 +126,11 @@ public:
 
 	void addEdge(TEdge *e);
 
+	void setKernel(Vertex *k);
+
 	void close(TEdge *e);
+
+	void print();
 
 	void triangulate();
 };

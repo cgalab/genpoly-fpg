@@ -17,7 +17,7 @@
 
 #include "polygon.h"
 
-void Polygon::triangulateStar(){
+void Polygon::triangulateStar(Vertex *kernel){
 
 }
 
@@ -34,7 +34,7 @@ Polygon::Polygon(PolygonType tp) :
 void Polygon::addVertex(Vertex *v){
 	PolygonVertex *entry;
 
-	if(n != 0 && lastEUsed == NULL){
+	if(n != 0 && lastVUsed != NULL){
 		fprintf(stderr, "Polygon build error: something went wrong while building a polygon to retriangulate....two vertices next to each other!\n");
 		exit(15);
 	}
@@ -81,6 +81,10 @@ void Polygon::addEdge(TEdge *e){
 	lastEUsed = entry;
 }
 
+void Polygon::setKernel(Vertex *k){
+	kernel = k;
+}
+
 void Polygon::close(TEdge *e){
 	PolygonEdge *entry;
 
@@ -99,13 +103,36 @@ void Polygon::close(TEdge *e){
 	entry -> e = e;
 	entry -> prevV = lastVUsed;
 	entry -> nextV = startVertex;
+	lastVUsed -> nextE = entry;
+	startVertex -> prevE = entry;
 
 	lastVUsed = NULL;
 }
 
+void Polygon::print(){
+	PolygonVertex *vertex;
+	PolygonEdge *edge;
+
+	fprintf(stderr, "Polygon:\n");
+
+	vertex = startVertex;
+	edge = vertex -> nextE;
+	do{
+		
+		fprintf(stderr, "Vertex %llu\n", (*vertex -> v).getID());
+		fprintf(stderr, "Edge %llu\n", (*edge -> e).getID());
+
+		vertex = edge -> nextV;
+		edge = vertex -> nextE;
+		
+	}while(vertex != startVertex);
+
+	fprintf(stderr, "End of polygon\n");
+}
+
 void Polygon::triangulate(){
 	if(type == PolygonType::STARSHAPED)
-		triangulateStar();
+		triangulateStar(NULL);
 	else if(type == PolygonType::EDGEVISIBLE)
 		triangulateVisible();
 }
