@@ -19,9 +19,7 @@
 
 void TranslationRetriangulation::buildPolygonsSideChange(){
 	bPSCOppositeDirection();
-	printf("Opposite direction done\n");
 	bPSCTranslationDirection();
-	printf("Translation direction done\n");
 
 	(*p0).print();
 	if(p1 != NULL) (*p1).print();
@@ -116,7 +114,11 @@ void TranslationRetriangulation::bPSCTranslationDirection(){
 	Vertex *v = NULL, *v1, *v2, *v3;
 	std::vector<TEdge*> surEdges;
 	double areaOther, areaTest;
-	bool leavesSP = true;
+	bool leavesSP1 = true, leavesSP2 = true;
+
+	/*
+		P O L Y G O N   C O N T A I N I N G   P R E V V
+	*/
 
 	// Start the polygon containing prevV
 	p1 = new Polygon(PolygonType::EDGEVISIBLE);
@@ -132,7 +134,6 @@ void TranslationRetriangulation::bPSCTranslationDirection(){
 			(*i).setIntersected();
 			edgesToRemove.push_back(i);
 			e = i;
-			printf("found intersection of previous edge\n");
 			break;
 		}
 	}
@@ -141,7 +142,9 @@ void TranslationRetriangulation::bPSCTranslationDirection(){
 	// done with this edge
 	// Otherwise we have to go further through the triangulation until the edge
 	// ends in one triangle
-	if(e != NULL){
+	if(e == NULL)
+		leavesSP1 = false;
+	else{
 		// Check the orientation of nextV relative to prevNewE
 		test = new Triangle(prevV, newV, nextV);
 		areaOther = (*test).signedArea();
@@ -192,13 +195,19 @@ void TranslationRetriangulation::bPSCTranslationDirection(){
 			// Advance to the next triangle
 			t = (*e).getOtherTriangle(t);
 		}
-	}else
-		leavesSP = false;
+	}
 
+	// store the last edge intersected, in case nextV does not intersect any edge
+	e1 = e;
+
+
+
+	/*
+		P O L Y G O N   C O N T A I N I N G   N E X T V
+	*/
 
 	e = NULL;
-	t = NULL;
-	v = NULL;
+
 	// Start the polygon containing nextV
 	p2 = new Polygon(PolygonType::EDGEVISIBLE);
 	(*p2).addVertex(nextV);
@@ -215,46 +224,17 @@ void TranslationRetriangulation::bPSCTranslationDirection(){
 				edgesToRemove.push_back(i);
 			}
 			e = i;
-			printf("found intersection of next edge\n");
 			break;
 		}
-	}
-
-	// In case the new vertex lies in the surrounding polygon of both adjacent vertices, 
-	// we can repair the triangulation with one single edge
-	if(e == NULL && !leavesSP){
-		
-		// So we do not need the polygons to retriangulate here
-		delete p1;
-		delete p2;
-
-		p1 = NULL;
-		p2 = NULL;
-
-		// Find the other entities of the triangle in which the translation ends and
-		// split it into two triangles
-		e = (*prevV).getEdgeTo(nextV);
-		t = (*e).getTriangleNotContaining(original);
-		v = (*t).getOtherVertex(e);
-
-		e1 = new TEdge(original, v);
-		(*T).addEdge(e1, 0);
-
-		// Remove the old triangle
-		delete t;
-
-		// Fill the empty space with two new triangles
-		new Triangle(prevOldE, e1, (*prevV).getEdgeTo(v), prevV, original, v);
-		new Triangle(nextOldE, e1, (*nextV).getEdgeTo(v), nextV, original, v);
-
-		return;
 	}
 
 	// In case the new edge does not leave the surrounding polygon, we are already
 	// done with this edge
 	// Otherwise we have to go further through the triangulation until the edge
 	// ends in one triangle
-	if(e != NULL){
+	if(e == NULL)
+		leavesSP2 = false;
+	else{
 		// Check the orientation of prevV relative to nextNewE
 		test = new Triangle(nextV, newV, prevV);
 		areaOther = (*test).signedArea();
@@ -309,8 +289,41 @@ void TranslationRetriangulation::bPSCTranslationDirection(){
 		}
 	}
 
+	// In case the new vertex lies in the surrounding polygon of both adjacent vertices, 
+	// we can repair the triangulation with one single edge
+	if(!leavesSP1 && !leavesSP2){
 
+		// So we do not need the polygons to retriangulate here
+		delete p1;
+		delete p2;
 
+		p1 = NULL;
+		p2 = NULL;
+
+		// Find the other entities of the triangle in which the translation ends and
+		// split it into two triangles
+		e = (*prevV).getEdgeTo(nextV);
+		t = (*e).getTriangleNotContaining(original);
+		v = (*t).getOtherVertex(e);
+
+		e1 = new TEdge(original, v);
+		(*T).addEdge(e1, 0);
+
+		// Remove the old triangle
+		delete t;
+
+		// Fill the empty space with two new triangles
+		new Triangle(prevOldE, e1, (*prevV).getEdgeTo(v), prevV, original, v);
+		new Triangle(nextOldE, e1, (*nextV).getEdgeTo(v), nextV, original, v);
+
+		return;
+	}
+
+	// Restore the last edge intersected of prevOldE, in case nextOldE has not intersected any edge
+	if(e == NULL)
+		e = e1;
+
+	// Get the vertices of the final triangle
 	v1 = (*e).getV0();
 	v2 = (*e).getV1();
 	v3 = (*t).getOtherVertex(e);
@@ -319,54 +332,224 @@ void TranslationRetriangulation::bPSCTranslationDirection(){
 	for(auto& i : edgesToRemove)
 		delete i;
 
-	// Check whether the final triangle is incident to the moving vertex and therefore the 
-	// moving vertex has not left its surrounding polygon
-	if((*v1).getID() == (*original).getID() || (*v2).getID() == (*original).getID() || (*v3).getID() == (*original).getID()){
-		e1 = NULL;
-		e2 = NULL;
-		e3 = NULL;
-		/*
-		TODO:
+	// Case: 
+	// Translation ends in a triangle which is incident to the moving vertex
+	if((*v1).getID() == (*original).getID() || (*v2).getID() == (*original).getID()
+		|| (*v3).getID() == (*original).getID()){
 
-		Fill this hole with code
+		// The triangle is also incident to prevV
+		// => v3 is prevV
+		if(!leavesSP1){
+			
+			delete p1;
+			p1 = NULL;
 
-		*/
+			if((*v1).getID() == (*original).getID()){
+				// => v2 is another vertex to link with
+				e1 = new TEdge(original, v2);
+				new Triangle(prevOldE, e1, (*v3).getEdgeTo(v2), prevV, original, v2);
+
+				(*p2).addVertex(v2);
+			}else{
+				// => v1 is another vertex to link with
+				e1 = new TEdge(original, v1);
+				new Triangle(prevOldE, e1, (*v3).getEdgeTo(v1), prevV, original, v1);
+
+				(*p2).addVertex(v1);
+			}
+
+			(*p2).addEdge(e1);
+			(*p2).addVertex(original);
+			(*p2).close(nextOldE);
+
+		// The triangle is also incident to nextV
+		// => v3 is nextV
+		}else if(!leavesSP2){
+
+			delete p2;
+			p2 = NULL;
+
+			if((*v1).getID() == (*original).getID()){
+				// => v2 is another vertex to link with
+				e1 = new TEdge(original, v2);
+				new Triangle(nextOldE, e1, (*v3).getEdgeTo(v2), nextV, original, v2);
+
+				(*p2).addVertex(v2);
+			}else{
+				// => v1 is another vertex to link with
+				e1 = new TEdge(original, v1);
+				new Triangle(nextOldE, e1, (*v3).getEdgeTo(v1), nextV, original, v1);
+
+				(*p2).addVertex(v1);
+			}
+
+			(*p2).addEdge(e1);
+			(*p2).addVertex(original);
+			(*p2).close(prevOldE);
+
+		// The triangle is not incident to prevV or nextV (it is not possible that
+		// it is incident to original, prevV and nextV)
+		}else{
+			// => v3 is the vertex to close the chain of prevOldE
+
+			e1 = new TEdge(original, v3);
+			(*T).addEdge(e1, 0);
+
+			(*p1).addVertex(v3);
+			(*p1).addEdge(e1);
+			(*p1).addVertex(original);
+			(*p1).close(prevOldE);
+
+			if((*original).getID() == (*v1).getID()){
+				// => v2 is the vertex to close the chain of nextOldE
+				e2 = new TEdge(original, v2);
+				(*T).addEdge(e2, 0);
+
+				new Triangle(e1, e2, (*v3).getEdgeTo(v2), original, v2, v3);
+
+				(*p2).addVertex(v2);
+				(*p2).addEdge(e2);
+				(*p2).addVertex(original);
+				(*p2).close(nextOldE);
+			}else{
+				// => v1 is the vertex to close the chain of nextOldE
+				e2 = new TEdge(original, v1);
+				(*T).addEdge(e2, 0);
+
+				new Triangle(e1, e2, (*v3).getEdgeTo(v1), original, v1, v3);
+
+				(*p2).addVertex(v1);
+				(*p2).addEdge(e2);
+				(*p2).addVertex(original);
+				(*p2).close(nextOldE);
+			}
+		}
+	// Translation ends in an triangle not incident to original
 	}else{
-		e1 = new TEdge(v1, original);
-		e2 = new TEdge(v2, original);
-		e3 = new TEdge(v3, original);
 
-		(*T).addEdge(e1, 0);
-		(*T).addEdge(e2, 0);
-		(*T).addEdge(e3, 0);
+		// v3 is always the vertex opposite to the last intersected edge
 
-		new Triangle(e1, e3, (*v1).getEdgeTo(v3), v1, original, v3);
-		new Triangle(e2, e3, (*v2).getEdgeTo(v3), original, v2, v3);
+		// prevE has not left its SP
+		if(!leavesSP1){
+
+			delete p1;
+			p1 = NULL;
+
+			e1 = new TEdge(original, v3);
+			(*T).addEdge(e1, 0);
+
+			new Triangle(prevOldE, e1, (*prevV).getEdgeTo(v3), original, prevV, v3);
+
+			// Case:
+			// v1 is the prevV
+			// => v2 will close the chain of nextV
+			if((*prevV).getID() == (*v1).getID()){
+				
+				e2 = new TEdge(original, v2);
+				(*T).addEdge(e2, 0);
+
+				new Triangle(e1, e2, (*v3).getEdgeTo(v2), original, v2, v3);
+
+				(*p2).addVertex(v2);
+				(*p2).addEdge(e2);
+				(*p2).addVertex(original);
+				(*p2).close(nextOldE);
+
+			// v2 is the prevV
+			// => v1 will close the chain of nextV
+			}else{
+
+				e2 = new TEdge(original, v1);
+				(*T).addEdge(e2, 0);
+
+				new Triangle(e1, e2, (*v3).getEdgeTo(v2), original, v1, v3);
+
+				(*p2).addVertex(v1);
+				(*p2).addEdge(e2);
+				(*p2).addVertex(original);
+				(*p2).close(nextOldE);
+			}
+
+		// nextE has not left its SP
+		}else if(!leavesSP2){
+
+			delete p2;
+			p2 = NULL;
+
+			e1 = new TEdge(original, v3);
+			(*T).addEdge(e1, 0);
+
+			new Triangle(nextOldE, e1, (*nextV).getEdgeTo(v3), original, nextV, v3);
+
+			// Case:
+			// v1 is the nextV
+			// => v2 will close the chain of prevV
+			if((*nextV).getID() == (*v1).getID()){
+				
+				e2 = new TEdge(original, v2);
+				(*T).addEdge(e2, 0);
+
+				new Triangle(e1, e2, (*v3).getEdgeTo(v2), original, v2, v3);
+
+				(*p1).addVertex(v2);
+				(*p1).addEdge(e2);
+				(*p1).addVertex(original);
+				(*p1).close(prevOldE);
+
+			// v2 is the nextV
+			// => v1 will close the chain of prevV
+			}else{
+
+				e2 = new TEdge(original, v1);
+				(*T).addEdge(e2, 0);
+
+				new Triangle(e1, e2, (*v3).getEdgeTo(v2), original, v1, v3);
+
+				(*p1).addVertex(v1);
+				(*p1).addEdge(e2);
+				(*p1).addVertex(original);
+				(*p1).close(prevOldE);
+			}
+
+		// Both, prevE and nextE, have left their SP
+		}else{
+			
+			e1 = new TEdge(v1, original);
+			e2 = new TEdge(v2, original);
+			e3 = new TEdge(v3, original);
+
+			(*T).addEdge(e1, 0);
+			(*T).addEdge(e2, 0);
+			(*T).addEdge(e3, 0);
+
+			new Triangle(e1, e3, (*v1).getEdgeTo(v3), v1, original, v3);
+			new Triangle(e2, e3, (*v2).getEdgeTo(v3), original, v2, v3);
+
+			if((*v).getID() != (*v1).getID()){
+				(*p1).addVertex(v2);
+				(*p1).addEdge(e2);
+				(*p1).addVertex(original);
+				(*p1).close(prevOldE);
+
+				(*p2).addVertex(v1);
+				(*p2).addEdge(e1);
+				(*p2).addVertex(original);
+				(*p2).close(nextOldE);
+			}else{
+				(*p1).addVertex(v1);
+				(*p1).addEdge(e1);
+				(*p1).addVertex(original);
+				(*p1).close(prevOldE);
+
+				(*p2).addVertex(v2);
+				(*p2).addEdge(e2);
+				(*p2).addVertex(original);
+				(*p2).close(nextOldE);
+			}
+		}
 	}
-
-	// Close the polygons
-	if((*v).getID() != (*v1).getID()){
-		(*p1).addVertex(v2);
-		(*p1).addEdge(e2);
-		(*p1).addVertex(original);
-		(*p1).close(prevOldE);
-
-		(*p2).addVertex(v1);
-		(*p2).addEdge(e1);
-		(*p2).addVertex(original);
-		(*p2).close(nextOldE);
-	}else{
-		(*p1).addVertex(v1);
-		(*p1).addEdge(e1);
-		(*p1).addVertex(original);
-		(*p1).close(prevOldE);
-
-		(*p2).addVertex(v2);
-		(*p2).addEdge(e2);
-		(*p2).addVertex(original);
-		(*p2).close(nextOldE);
-	}	
 }
+
 
 /*
 	C ~ O ~ N ~ S ~ T ~ R ~ U ~ C ~ T ~ O ~ R ~ S
