@@ -18,6 +18,17 @@
 #include "translationRetriangulation.h"
 
 void TranslationRetriangulation::buildPolygonsSideChange(){
+	bPSCOppositeDirection();
+	printf("Opposite direction done\n");
+	bPSCTranslationDirection();
+	printf("Translation direction done\n");
+
+	(*p0).print();
+	if(p1 != NULL) (*p1).print();
+	if(p2 != NULL) (*p2).print();
+}
+
+void TranslationRetriangulation::bPSCOppositeDirection(){
 	Triangle *t, *tTest, *oldTriangle;
 	Vertex *v;
 	TEdge *e, *oldEdge, *edgeToRemove;
@@ -81,13 +92,280 @@ void TranslationRetriangulation::buildPolygonsSideChange(){
 	if(edgeToRemove != NULL)
 		delete edgeToRemove;
 
-	// Close the polygon with a new edge
-	e = new TEdge(prevV, nextV);
+	// Close the polygon with the edge between the two adjacent vertices
+	e = (*prevV).getEdgeTo(nextV);
+
+	// In case the triangulation does not consist this edge already, we have to
+	// generate it now
+	if(e == NULL){
+		e = new TEdge(prevV, nextV);
+		(*T).addEdge(e, 0);
+
+		// Add a new triangle to the triangulation
+		new Triangle(e, prevOldE, nextOldE, prevV, nextV, original);
+	}
+	
 	(*p0).close(e);
 	(*p0).setKernel(oldV);
+}
 
-	// Immediately add a new triangle to the translation
-	new Triangle(e, prevOldE, nextOldE, prevV, nextV, original);
+void TranslationRetriangulation::bPSCTranslationDirection(){
+	std::list<TEdge*> edgesToRemove;
+	Triangle *t = NULL, *test, *t1, *t2, *t3;
+	TEdge *e = NULL, *e1, *e2, *e3;
+	Vertex *v = NULL, *v1, *v2, *v3;
+	std::vector<TEdge*> surEdges;
+	double areaOther, areaTest;
+	bool leavesSP = true;
+
+	// Start the polygon containing prevV
+	p1 = new Polygon(PolygonType::EDGEVISIBLE);
+	(*p1).addVertex(prevV);
+
+	// Get all edges of the surrounding polygon of prevV
+	surEdges = (*prevV).getSurroundingEdges();
+
+	// Search for the triangle through which the new edge leaves the surrounding polygon
+	for(auto& i : surEdges){
+
+		if(checkIntersection(prevNewE, i, false) != IntersectionType::NONE){
+			(*i).setIntersected();
+			edgesToRemove.push_back(i);
+			e = i;
+			printf("found intersection of previous edge\n");
+			break;
+		}
+	}
+
+	// In case the new edge does not leave the surrounding polygon, we are already
+	// done with this edge
+	// Otherwise we have to go further through the triangulation until the edge
+	// ends in one triangle
+	if(e != NULL){
+		// Check the orientation of nextV relative to prevNewE
+		test = new Triangle(prevV, newV, nextV);
+		areaOther = (*test).signedArea();
+		delete test;
+
+		// Get the right vertex
+		v = (*e).getV0();
+		test = new Triangle(prevV, newV, v);
+		areaTest = (*test).signedArea();
+		delete test;
+
+		if(signbit(areaOther) == signbit(areaTest))
+			v = (*e).getV1();
+
+		t = (*e).getTriangleContaining(prevV);
+		(*p1).addEdge((*t).getEdgeContaining(prevV, v));
+
+		// Advance to the next triangle
+		t = (*e).getOtherTriangle(t);
+
+		while(true){
+			// Get the other edges of the triangle we are currently in
+			surEdges = (*t).getOtherEdges(e);
+
+			// prevNewE intersects the first edge
+			if(checkIntersection(prevNewE, surEdges[0], false) != IntersectionType::NONE)
+				e = surEdges[0];
+			// prevNewE intersects the other edge
+			else if(checkIntersection(prevNewE, surEdges[1], false) != IntersectionType::NONE)
+				e = surEdges[1];
+			// prevNewE does not intersect any further edge
+			else
+				break;
+
+			(*e).setIntersected();
+			edgesToRemove.push_back(e);
+
+			v = (*t).getOtherVertex(e);
+			test = new Triangle(prevV, newV, v);
+			areaTest = (*test).signedArea();
+			delete test;
+
+			if(signbit(areaTest) != signbit(areaOther)){	
+				(*p1).addVertex(v);
+				(*p1).addEdge((*t).getOtherEdgeContaining(v, e));
+			}
+
+			// Advance to the next triangle
+			t = (*e).getOtherTriangle(t);
+		}
+	}else
+		leavesSP = false;
+
+
+	e = NULL;
+	t = NULL;
+	v = NULL;
+	// Start the polygon containing nextV
+	p2 = new Polygon(PolygonType::EDGEVISIBLE);
+	(*p2).addVertex(nextV);
+
+	// Get all edges of the surrounding polygon of nextV
+	surEdges = (*nextV).getSurroundingEdges();
+
+	// Search for the triangle through which the new edge leaves the surrounding polygon
+	for(auto& i : surEdges){
+
+		if(checkIntersection(nextNewE, i, false) != IntersectionType::NONE){
+			if(!(*i).isIntersected()){
+				(*i).setIntersected();
+				edgesToRemove.push_back(i);
+			}
+			e = i;
+			printf("found intersection of next edge\n");
+			break;
+		}
+	}
+
+	// In case the new vertex lies in the surrounding polygon of both adjacent vertices, 
+	// we can repair the triangulation with one single edge
+	if(e == NULL && !leavesSP){
+		
+		// So we do not need the polygons to retriangulate here
+		delete p1;
+		delete p2;
+
+		p1 = NULL;
+		p2 = NULL;
+
+		// Find the other entities of the triangle in which the translation ends and
+		// split it into two triangles
+		e = (*prevV).getEdgeTo(nextV);
+		t = (*e).getTriangleNotContaining(original);
+		v = (*t).getOtherVertex(e);
+
+		e1 = new TEdge(original, v);
+		(*T).addEdge(e1, 0);
+
+		// Remove the old triangle
+		delete t;
+
+		// Fill the empty space with two new triangles
+		new Triangle(prevOldE, e1, (*prevV).getEdgeTo(v), prevV, original, v);
+		new Triangle(nextOldE, e1, (*nextV).getEdgeTo(v), nextV, original, v);
+
+		return;
+	}
+
+	// In case the new edge does not leave the surrounding polygon, we are already
+	// done with this edge
+	// Otherwise we have to go further through the triangulation until the edge
+	// ends in one triangle
+	if(e != NULL){
+		// Check the orientation of prevV relative to nextNewE
+		test = new Triangle(nextV, newV, prevV);
+		areaOther = (*test).signedArea();
+		delete test;
+
+		// Get the right vertex
+		v = (*e).getV0();
+		test = new Triangle(nextV, newV, v);
+		areaTest = (*test).signedArea();
+		delete test;
+
+		if(signbit(areaOther) == signbit(areaTest))
+			v = (*e).getV1();
+
+		t = (*e).getTriangleContaining(nextV);
+		(*p2).addEdge((*t).getEdgeContaining(nextV, v));
+
+		// Advance to the next triangle
+		t = (*e).getOtherTriangle(t);
+		
+		while(true){
+			// Get the other edges of the triangle we are currently in
+			surEdges = (*t).getOtherEdges(e);
+
+			// prevNewE intersects the first edge
+			if(checkIntersection(nextNewE, surEdges[0], false) != IntersectionType::NONE)
+				e = surEdges[0];
+			// prevNewE intersects the other edge
+			else if(checkIntersection(nextNewE, surEdges[1], false) != IntersectionType::NONE)
+				e = surEdges[1];
+			// prevNewE does not intersect any further edge
+			else
+				break;
+
+			if(!(*e).isIntersected()){
+				(*e).setIntersected();
+				edgesToRemove.push_back(e);
+			}
+
+			v = (*t).getOtherVertex(e);
+			test = new Triangle(nextV, newV, v);
+			areaTest = (*test).signedArea();
+			delete test;
+
+			if(signbit(areaTest) != signbit(areaOther)){
+				(*p2).addVertex(v);
+				(*p2).addEdge((*t).getOtherEdgeContaining(v, e));
+			}
+
+			// Advance to the next triangle
+			t = (*e).getOtherTriangle(t);
+		}
+	}
+
+
+
+	v1 = (*e).getV0();
+	v2 = (*e).getV1();
+	v3 = (*t).getOtherVertex(e);
+
+	// Delete all intersected edges
+	for(auto& i : edgesToRemove)
+		delete i;
+
+	// Check whether the final triangle is incident to the moving vertex and therefore the 
+	// moving vertex has not left its surrounding polygon
+	if((*v1).getID() == (*original).getID() || (*v2).getID() == (*original).getID() || (*v3).getID() == (*original).getID()){
+		e1 = NULL;
+		e2 = NULL;
+		e3 = NULL;
+		/*
+		TODO:
+
+		Fill this hole with code
+
+		*/
+	}else{
+		e1 = new TEdge(v1, original);
+		e2 = new TEdge(v2, original);
+		e3 = new TEdge(v3, original);
+
+		(*T).addEdge(e1, 0);
+		(*T).addEdge(e2, 0);
+		(*T).addEdge(e3, 0);
+
+		new Triangle(e1, e3, (*v1).getEdgeTo(v3), v1, original, v3);
+		new Triangle(e2, e3, (*v2).getEdgeTo(v3), original, v2, v3);
+	}
+
+	// Close the polygons
+	if((*v).getID() != (*v1).getID()){
+		(*p1).addVertex(v2);
+		(*p1).addEdge(e2);
+		(*p1).addVertex(original);
+		(*p1).close(prevOldE);
+
+		(*p2).addVertex(v1);
+		(*p2).addEdge(e1);
+		(*p2).addVertex(original);
+		(*p2).close(nextOldE);
+	}else{
+		(*p1).addVertex(v1);
+		(*p1).addEdge(e1);
+		(*p1).addVertex(original);
+		(*p1).close(prevOldE);
+
+		(*p2).addVertex(v2);
+		(*p2).addEdge(e2);
+		(*p2).addVertex(original);
+		(*p2).close(nextOldE);
+	}	
 }
 
 /*
@@ -123,6 +401,9 @@ TranslationRetriangulation::TranslationRetriangulation(Triangulation *Tr, int i,
 
 	delete t0;
 	delete t1;
+
+	(*T).addVertex(newV, 0);
+	(*T).writeTriangulation("position.graphml");
 }
 
 

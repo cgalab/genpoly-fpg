@@ -149,6 +149,8 @@ public:
 		TEdge* 					getEdgeContaining(Vertex const * const v) const
 		TEdge* 					getOtherEdgeContaining(Vertex const * const v, TEdge const *
 								const e) const
+		TEdge* 					getEdgeContaining(Vertex const * const v0, Vertex const *
+								const v1) const
 		std::vector<TEdge*> 	getOtherEdges(TEdge * const e) const
 		TEdge* 					getLongestEdge(const double epsilon) const
 		TEdge* 					getLongestEdgeAlt() const
@@ -287,6 +289,16 @@ public:
 					is wrong)
 	*/
 	TEdge *getOtherEdgeContaining(Vertex const * const v, TEdge const * const e) const;
+
+	/*
+		The function getEdgeContaining() gets you the edge of the triangle which contains both
+		given vertices.
+
+		@param 	v0 	One of the vertices the edge must contain
+		@param 	v1 	The other vertex the edge must contain
+		@return 	The edge which contains both vertices or NULL if no such edge exists
+	*/
+	TEdge *getEdgeContaining(Vertex const * const v0, Vertex const * const v1) const;
 
 	/*
 		@param 	e 	One edge which should be part of the triangle

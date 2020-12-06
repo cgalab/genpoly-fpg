@@ -105,6 +105,11 @@ private:
 	STEntry<TEdge*> *entry;
 
 	/*
+		A flag whether this edge has been intersected by a new edge
+	*/
+	bool intersected;
+
+	/*
 		The unique ID of the edge
 	*/
 	const unsigned long long id;
@@ -130,6 +135,7 @@ public:
 		void 				setEdgeType(const EdgeType tp)
 		void 				setTriangle(Triangle * const t)
 		void 				setSTEntry(STEntry *ste)
+		void				setIntersected()
 
 		GETTER:
 
@@ -145,6 +151,7 @@ public:
 		Vertex* 			getOtherVertex(Vertex const * const v) const
 		STentry<TEdge*> 	getSTEntry() const
 		double 				getWeight() const
+		bool 				isIntersected() const
 
 		REMOVER:
 
@@ -235,6 +242,11 @@ public:
 	*/
 	void setSTEntry(STEntry<TEdge*> *ste);
 
+	/*
+		Sets the intersected flag of the TEdge
+	*/
+	void setIntersected();
+
 	
 	/*
 		G ~ E ~ T ~ T ~ E ~ R ~ S
@@ -316,6 +328,11 @@ public:
 		@return 	The length of the edge
 	*/
 	double getWeight() const;
+
+	/*
+		@return 	The value of the intersected flag
+	*/
+	bool isIntersected() const;
 
 
 	/*

@@ -322,6 +322,23 @@ TEdge *Triangle::getOtherEdgeContaining(Vertex const * const v, TEdge const * co
 }
 
 /*
+	The function getEdgeContaining() gets you the edge of the triangle which contains both
+	given vertices.
+
+	@param 	v0 	One of the vertices the edge must contain
+	@param 	v1 	The other vertex the edge must contain
+	@return 	The edge which contains both vertices or NULL if no such edge exists
+*/
+TEdge *Triangle::getEdgeContaining(Vertex const * const v0, Vertex const * const v1) const{
+	if((*e0).contains(v0) && (*e0).contains(v1)) return e0;
+	if((*e1).contains(v0) && (*e1).contains(v1)) return e1;
+	if((*e2).contains(v0) && (*e2).contains(v1)) return e2;
+
+	return NULL;
+}
+
+
+/*
 	@param 	e 	One edge which should be part of the triangle
 	@return 	A vector of all other edges part of the triangle
 */

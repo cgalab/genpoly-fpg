@@ -19,7 +19,7 @@
 /*
 	Include standard libraries
 */
-
+#include <list>
 
 /*
 	Include my headers	
@@ -51,6 +51,8 @@ private:
 	Polygon *p3;
 
 	void buildPolygonsSideChange();
+	void bPSCOppositeDirection();
+	void bPSCTranslationDirection();
 
 public:
 

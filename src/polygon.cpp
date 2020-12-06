@@ -120,14 +120,15 @@ void Polygon::print(){
 	do{
 		
 		fprintf(stderr, "Vertex %llu\n", (*vertex -> v).getID());
-		fprintf(stderr, "Edge %llu\n", (*edge -> e).getID());
+		fprintf(stderr, "Edge %llu from Vertex %llu to Vertex %llu\n", (*edge -> e).getID(),
+			(*(*edge -> e).getV0()).getID(), (*(*edge -> e).getV1()).getID());
 
 		vertex = edge -> nextV;
 		edge = vertex -> nextE;
 		
 	}while(vertex != startVertex);
 
-	fprintf(stderr, "End of polygon\n");
+	fprintf(stderr, "End of polygon\n\n");
 }
 
 void Polygon::triangulate(){

@@ -41,7 +41,7 @@ unsigned long long TEdge::n = 0;
 */
 TEdge::TEdge(Vertex * const V0, Vertex * const V1) :
 	T(NULL), v0(V0), v1(V1), t0(NULL), t1(NULL), type(EdgeType::TRIANGULATION), entry(NULL), 
-	id(n) { 
+	intersected(false), id(n) { 
 	
 	// Register the new edge at its vertices
 	(*v0).addEdge(this);
@@ -71,7 +71,8 @@ TEdge::TEdge(Vertex * const V0, Vertex * const V1) :
 		important!
 */
 TEdge::TEdge(Vertex * const V0, Vertex * const V1, const EdgeType tp) :
-	T(NULL), v0(V0), v1(V1), t0(NULL), t1(NULL), type(tp), entry(NULL), id(n) {
+	T(NULL), v0(V0), v1(V1), t0(NULL), t1(NULL), type(tp), entry(NULL), intersected(false),
+	id(n) {
 	
 	// For polygon edges set the ordering in the polygon
 	if(type == EdgeType::POLYGON){
@@ -167,6 +168,12 @@ void TEdge::setSTEntry(STEntry<TEdge*> *ste){
 	entry = ste;
 }
 
+/*
+	Sets the intersected flag of the TEdge
+*/
+void TEdge::setIntersected(){
+	intersected = true;
+}
 
 
 /*
@@ -278,6 +285,13 @@ STEntry<TEdge*> *TEdge::getSTEntry() const{
 */
 double TEdge::getWeight() const{
  return length();
+}
+
+/*
+	@return 	The value of the intersected flag
+*/
+bool TEdge::isIntersected() const{
+	return intersected;
 }
 
 
