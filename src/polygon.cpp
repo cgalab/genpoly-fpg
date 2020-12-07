@@ -82,7 +82,78 @@ void Polygon::triangulateStar(){
 }
 
 void Polygon::triangulateVisible(){
+	double referenceDet, area;
+	PolygonVertex *v0, *v1, *v2, *additionalV;
+	PolygonEdge *e0, *e1, *e2;
+	Triangle *t;
+	TEdge * newEdge;
+
+	// Get the first three vertices and their edges
+	v0 = startVertex;
+	e0 = v0 -> nextE;
+	v1 = e0 -> nextV;
+	e1 = v1 -> nextE;
+	v2 = e1 -> nextV;
+
+	// At first we have to find out whether positive or negative determinant values
+	// mark convex vertices
+	// For that we can exploit the fact that the vertices incident to the base edge
+	// must always be convex
+	additionalV = startVertex -> prevE-> prevV;
+	t = new Triangle(additionalV -> v, v0 -> v, v1 -> v);
+	referenceDet = (*t).signedArea();
+	delete t;
+
+	while(n > 3){
+
+		// Check whether the recent three vertices are in convex position
+		t = new Triangle(v0 -> v, v1 -> v, v2 -> v);
+		area = (*t).signedArea();
+		delete t;
+
+		if(v1 != startVertex && signbit(area) == signbit(referenceDet)){
+			newEdge = new TEdge(v0 -> v, v2 -> v);
+			(*T).addEdge(newEdge, 0);
+
+			new Triangle(e0 -> e, e1 -> e, newEdge, v0 -> v, v1 -> v, v2 -> v);
+
+			// Remove the entries of the cut off entities
+			free(e0);
+			free(e1);
+			free(v1);
+
+			v1 = v0;
+			e0 = v1 -> prevE;
+			v0 = e0 -> prevV;
+
+			// Create an entry for the new edge
+			e1 = (PolygonEdge*)malloc(sizeof(PolygonEdge));
+			e1 -> e = newEdge;
+			e1 -> prevV = v1;
+			e1 -> nextV = v2;
+
+			n--;
+		}else{
+			v0 = v1;
+			e0 = e1;
+			v1 = v2;
+			e1 = v1 -> nextE;
+			v2 = e1 -> nextV;
+		}
+	}
 	
+	e2 = v2 -> nextE;
+
+	new Triangle(e0 -> e, e1 -> e, e2 -> e, v0 -> v, v1 -> v, v2 -> v);
+
+	free(e0);
+	free(e1);
+	free(e2);
+	free(v0);
+	free(v1);
+	free(v2);
+
+	n = 0;
 }
 
 /*
