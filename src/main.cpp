@@ -49,6 +49,7 @@ code 	name						meaning
 13 		Parameter error				A parameter given in the configuration file has a wrong type
 14 		Setting error				Some mandatory settings are not given or settings are conflicting
 15 		Polygon build error 		Something went wrong while building a polygon to retriangulate
+16 		Missing kernel 				Start-shaped polygon can not be triangulated, because no kernel point is given
 */
 
 int main(int argc, char *argv[]){

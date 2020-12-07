@@ -55,7 +55,7 @@ void TranslationRetriangulation::bPSCOppositeDirection(){
 		t = (*prevOldE).getT1();
 	
 	// Start building the polygon
-	p0 = new Polygon(PolygonType::STARSHAPED);
+	p0 = new Polygon(T, PolygonType::STARSHAPED);
 
 	(*p0).addVertex(prevV);
 
@@ -121,7 +121,7 @@ void TranslationRetriangulation::bPSCTranslationDirection(){
 	*/
 
 	// Start the polygon containing prevV
-	p1 = new Polygon(PolygonType::EDGEVISIBLE);
+	p1 = new Polygon(T, PolygonType::EDGEVISIBLE);
 	(*p1).addVertex(prevV);
 
 	// Get all edges of the surrounding polygon of prevV
@@ -209,7 +209,7 @@ void TranslationRetriangulation::bPSCTranslationDirection(){
 	e = NULL;
 
 	// Start the polygon containing nextV
-	p2 = new Polygon(PolygonType::EDGEVISIBLE);
+	p2 = new Polygon(T, PolygonType::EDGEVISIBLE);
 	(*p2).addVertex(nextV);
 
 	// Get all edges of the surrounding polygon of nextV
@@ -614,6 +614,15 @@ enum Executed TranslationRetriangulation::execute(){
 
 	// Move the vertex to its target position
 	(*original).setPosition((*newV).getX(), (*newV).getY());
+
+	if(p0 != NULL)
+		(*p0).triangulate();
+
+	if(p1 != NULL)
+		(*p1).triangulate();
+
+	if(p2 != NULL)
+		(*p2).triangulate();
 
 	return Executed::FULL;
 }
