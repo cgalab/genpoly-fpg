@@ -155,6 +155,7 @@ public:
 		TEdge* 					getLongestEdge(const double epsilon) const
 		TEdge* 					getLongestEdgeAlt() const
 		double 					getRange(Vertex const * const v, const double alpha) const
+		TEdge* 					getNotIntersectedEdge() const
 
 		PRINTER:
 
@@ -349,6 +350,11 @@ public:
 						into an edge
 	*/
 	double getRange(Vertex const * const v, const double alpha) const;
+
+	/*
+		@return 	The first edge which has its intersected flag not set
+	*/
+	TEdge *getNotIntersectedEdge() const;
 
 
 	/*

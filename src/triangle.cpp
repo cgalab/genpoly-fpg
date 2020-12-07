@@ -521,6 +521,16 @@ double Triangle::getRange(Vertex const * const v, const double alpha) const{
 	return -1;
 }
 
+/*
+	@return 	The first edge which has its intersected flag not set
+*/
+TEdge *Triangle::getNotIntersectedEdge() const{
+	if(!(*e0).isIntersected()) return e0;
+	if(!(*e1).isIntersected()) return e1;
+	if(!(*e2).isIntersected()) return e2;
+
+	return NULL;
+}
 
 /*
 	P ~ R ~ I ~ N ~ T ~ E ~ R

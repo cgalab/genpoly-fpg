@@ -122,6 +122,7 @@ void Polygon::triangulateVisible(){
 			free(e1);
 			free(v1);
 
+			// Make a backtracking step
 			v1 = v0;
 			e0 = v1 -> prevE;
 			v0 = e0 -> prevV;

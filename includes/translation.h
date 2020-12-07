@@ -79,6 +79,7 @@ protected:
 	/*
 		The path the vertex should move along
 	*/
+	// TODO: maybe this is just used by the kinetic approach
 	TEdge *transPath;
 
 	/*
