@@ -19,7 +19,9 @@
 
 void TranslationRetriangulation::buildPolygonsSideChange(){
 	bPSCOppositeDirection();
+	printf("Found polygon in opposite direction\n");
 	bPSCTranslationDirection();
+	printf("Found polygons in translation direction\n");
 
 	(*p0).print();
 	if(p1 != NULL) (*p1).print();
@@ -189,7 +191,7 @@ void TranslationRetriangulation::bPSCTranslationDirection(){
 
 			if(signbit(areaTest) != signbit(areaOther)){	
 				(*p1).addVertex(v);
-				(*p1).addEdge((*t).getOtherEdgeContaining(v, e));
+				(*p1).addEdge((*t).getNotIntersectedEdge());
 			}
 
 			// Advance to the next triangle
@@ -281,7 +283,7 @@ void TranslationRetriangulation::bPSCTranslationDirection(){
 
 			if(signbit(areaTest) != signbit(areaOther)){
 				(*p2).addVertex(v);
-				(*p2).addEdge((*t).getOtherEdgeContaining(v, e));
+				(*p2).addEdge((*t).getNotIntersectedEdge());
 			}
 
 			// Advance to the next triangle
@@ -340,7 +342,7 @@ void TranslationRetriangulation::bPSCTranslationDirection(){
 		// The triangle is also incident to prevV
 		// => v3 is prevV
 		if(!leavesSP1){
-			
+
 			delete p1;
 			p1 = NULL;
 
@@ -362,10 +364,12 @@ void TranslationRetriangulation::bPSCTranslationDirection(){
 			(*p2).addVertex(original);
 			(*p2).close(nextOldE);
 
+			(*T).addEdge(e1, 0);
+
 		// The triangle is also incident to nextV
 		// => v3 is nextV
 		}else if(!leavesSP2){
-
+			printf("correct case\n");
 			delete p2;
 			p2 = NULL;
 
@@ -374,18 +378,20 @@ void TranslationRetriangulation::bPSCTranslationDirection(){
 				e1 = new TEdge(original, v2);
 				new Triangle(nextOldE, e1, (*v3).getEdgeTo(v2), nextV, original, v2);
 
-				(*p2).addVertex(v2);
+				(*p1).addVertex(v2);
 			}else{
 				// => v1 is another vertex to link with
 				e1 = new TEdge(original, v1);
 				new Triangle(nextOldE, e1, (*v3).getEdgeTo(v1), nextV, original, v1);
 
-				(*p2).addVertex(v1);
+				(*p1).addVertex(v1);
 			}
 
-			(*p2).addEdge(e1);
-			(*p2).addVertex(original);
-			(*p2).close(prevOldE);
+			(*p1).addEdge(e1);
+			(*p1).addVertex(original);
+			(*p1).close(prevOldE);
+
+			(*T).addEdge(e1, 0);
 
 		// The triangle is not incident to prevV or nextV (it is not possible that
 		// it is incident to original, prevV and nextV)
@@ -513,7 +519,7 @@ void TranslationRetriangulation::bPSCTranslationDirection(){
 
 		// Both, prevE and nextE, have left their SP
 		}else{
-			
+
 			e1 = new TEdge(v1, original);
 			e2 = new TEdge(v2, original);
 			e3 = new TEdge(v3, original);
@@ -585,8 +591,10 @@ TranslationRetriangulation::TranslationRetriangulation(Triangulation *Tr, int i,
 	delete t0;
 	delete t1;
 
-	(*T).addVertex(newV, 0);
-	(*T).writeTriangulation("position.graphml");
+	/*if(index == 4){
+		(*T).addVertex(newV, 0);
+		(*T).writeTriangulation("position.graphml");
+	}*/
 }
 
 
@@ -608,13 +616,20 @@ TranslationRetriangulation::TranslationRetriangulation(Triangulation *Tr, int i,
 */
 enum Executed TranslationRetriangulation::execute(){
 
+	printf("Translation of vertex %llu by %.6f and %.6f\n", (*original).getID(), dx, dy);
+
 	// Find the polygons to retriangulate
-	if(sideChange)
+	if(sideChange){
+		printf("start to find polygons\n");
 		buildPolygonsSideChange();
+		printf("found polygons\n");
+		(*original).setPosition((*newV).getX(), (*newV).getY());
+		(*T).writeTriangulation("polygons.graphml");
+		printf("executed\n");
+	}
 
 	// Move the vertex to its target position
-	(*original).setPosition((*newV).getX(), (*newV).getY());
-
+	//(*original).setPosition((*newV).getX(), (*newV).getY());
 	if(p0 != NULL)
 		(*p0).triangulate();
 
@@ -623,6 +638,9 @@ enum Executed TranslationRetriangulation::execute(){
 
 	if(p2 != NULL)
 		(*p2).triangulate();
+
+	if(sideChange)
+		(*T).writeTriangulation("triangulation.graphml");
 
 	return Executed::FULL;
 }
@@ -638,6 +656,38 @@ enum Executed TranslationRetriangulation::execute(){
 	vertices and edges. It errors with exit code 6 if the surrounding polygon check fails. It also
 	deletes the flip stack.
 */	
-TranslationRetriangulation::~TranslationRetriangulation(){
 
+TranslationRetriangulation::~TranslationRetriangulation(){
+	bool ok;
+
+	// Update the edge lengths in the SelectionTree
+	if(Settings::weightedEdgeSelection){
+		(*prevOldE).updateSTEntry();
+		(*nextOldE).updateSTEntry();
+	}
+
+	ok = (*original).checkSurroundingPolygon();
+
+	if(!ok){
+		fprintf(stderr, "\nstart position:\n");
+		(*oldV).print();
+		fprintf(stderr, "original position:\n");
+		(*original).print();
+		fprintf(stderr, "target position:\n");
+		(*newV).print();
+		fprintf(stderr, "translation vector: dx = %.20f dy = %.20f \n", dx, dy);
+
+		(*T).writeTriangulation("failure.graphml");
+
+		exit(6);
+	}
+	
+	delete transPath;
+	delete prevNewE;
+	delete nextNewE;
+	printf("delete oldV\n");
+	delete oldV;
+	printf("delete newV\n");
+	delete newV;
+	printf("Destructor end\n");
 }
