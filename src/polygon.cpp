@@ -18,10 +18,12 @@
 #include "polygon.h"
 
 void Polygon::triangulateStar(){
+	double referenceDet, area;
 	PolygonVertex *v0, *v1, *v2;
 	PolygonEdge *e0, *e1, *e2;
-	TEdge *newEdge;
-	bool inside = false;
+	Triangle *t;
+	TEdge * newEdge;
+	bool inside;
 
 	// Get the first three vertices and their edges
 	v0 = startVertex;
@@ -30,13 +32,28 @@ void Polygon::triangulateStar(){
 	e1 = v1 -> nextE;
 	v2 = e1 -> nextV;
 
+	// At first we have to find out whether positive or negative determinant values
+	// mark convex vertices
+	// For that we can exploit the fact that the kernel can be seen from each vertex
+	// Thus, it must hold that three consecutive vertices v0, v1 and v2 form an ear,
+	// if v2 is at the same side of (v0, v1) as the kernel point
+	t = new Triangle(v0 -> v, v1 -> v, kernel);
+	referenceDet = (*t).signedArea();
+	delete t;
+
 	while(n > 3){
-		
+
+		// Check whether the recent three vertices are in convex position
+		t = new Triangle(v0 -> v, v1 -> v, v2 -> v);
+		area = (*t).signedArea();
+		delete t;
+
+		// Additionally, we have to check whether the triangle contains the kernel
+		// If it does, we can not cut off this triangle as the polygon could afterwards
+		// be not star-shaped anymore
 		inside = insideTriangle(v0 -> v, v1 -> v, v2 -> v, kernel);
 
-		// In case the kernel point is not in the interior of the given ear,
-		// we can clip it
-		if(!inside){
+		if(!inside && signbit(area) == signbit(referenceDet)){
 			newEdge = new TEdge(v0 -> v, v2 -> v);
 			(*T).addEdge(newEdge, 0);
 
@@ -47,15 +64,16 @@ void Polygon::triangulateStar(){
 			free(e1);
 			free(v1);
 
-			// Create an entry for the new edge
-			e0 = (PolygonEdge*)malloc(sizeof(PolygonEdge));
-			e0 -> e = newEdge;
-			e0 -> prevV = v0;
-			e0 -> nextV = v2;
+			// Make a backtracking step
+			v1 = v0;
+			e0 = v1 -> prevE;
+			v0 = e0 -> prevV;
 
-			v1 = v2;
-			e1 = v1 -> nextE;
-			v2 = e1 -> nextV;
+			// Create an entry for the new edge
+			e1 = (PolygonEdge*)malloc(sizeof(PolygonEdge));
+			e1 -> e = newEdge;
+			e1 -> prevV = v1;
+			e1 -> nextV = v2;
 
 			n--;
 		}else{
@@ -66,7 +84,7 @@ void Polygon::triangulateStar(){
 			v2 = e1 -> nextV;
 		}
 	}
-
+	
 	e2 = v2 -> nextE;
 
 	new Triangle(e0 -> e, e1 -> e, e2 -> e, v0 -> v, v1 -> v, v2 -> v);
