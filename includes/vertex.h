@@ -583,14 +583,13 @@ public:
 
 	/*
 		Destructor:
-		The destructor also delete all triangles and edges which still contain the vertex by
-		calling their destructors. Therefore we need copies of the lists in form of arrays
-		because iterating over a list while deleting its elements is pretty dangerous.
+		The Destructor deletes a vertex if it is not linked to any other entity. If it is
+		still link, the Destructor throws a vertex deletion error.
 
-		Note:
-			It is the best way to delete all edges and triangles containing the vertex
-			before deleting the vertex itself such that the edges and triangles lists are
-			already empty.
+		ATTENTIONE:
+			- This code should only be used for dummy vertices!
+			- If a vertex of the triangulation is deleted, you have to make sure that
+				there is no pointer to the vertex in the triangulation's vertices vector left!
 	*/
 	~Vertex();
 };

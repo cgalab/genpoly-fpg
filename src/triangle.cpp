@@ -26,6 +26,11 @@
 */
 unsigned long long Triangle::n = 0;
 
+/*
+	Number of triangles existing at the moment
+*/
+unsigned long long Triangle::existing = 0; 
+
 
 /*
 	P ~ R ~ I ~ V ~ A ~ T ~ E 	M ~ E ~ M ~ B ~ E ~ R 	F ~ U ~ N ~ C ~ T ~ I ~ O ~ N ~ S
@@ -167,6 +172,8 @@ Triangle::Triangle(TEdge *E0, TEdge *E1, TEdge *E2, Vertex *V0, Vertex *V1, Vert
 
 
 	n++;
+
+	existing++;
 }
 
 /*
@@ -192,6 +199,8 @@ Triangle::Triangle(Vertex *V0, Vertex *V1, Vertex *V2) :
 	(*v2).addTriangle(this);
 
 	n++;
+
+	existing++;
 }
 
 
@@ -533,6 +542,14 @@ TEdge *Triangle::getNotIntersectedEdge() const{
 }
 
 /*
+	@return 	The recent number of existing instances of triangle
+*/
+unsigned long long Triangle::getNumberOfExistingTriangles(){
+	return existing;
+}
+
+
+/*
 	P ~ R ~ I ~ N ~ T ~ E ~ R
 */
 
@@ -702,4 +719,6 @@ Triangle::~Triangle(){
 		(*e1).removeTriangle(this);
 	if(e0 != NULL)
 		(*e2).removeTriangle(this);
+
+	existing--;
 }

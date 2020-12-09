@@ -728,7 +728,7 @@ bool Vertex::checkSurroundingPolygon(){
 	TEdge *e;
     
     // Insert all vertices into the Q in the order they form the surrounding polygon
-    // the start vertex is is contained a second time at the end of the queue
+    // the start vertex is contained a second time at the end of the queue
 	t = triangles.front();
 	t0 = t;
 	e = (*t).getEdgeContaining(this);
@@ -758,7 +758,7 @@ bool Vertex::checkSurroundingPolygon(){
 	area0 = (*t).signedArea();
 	delete t;
 
-	// If the vertex lays exactly at an edge, check whether the edge is a PE
+	// If the vertex lies exactly at an edge, check whether the edge is a PE
 	if(area0 == 0){
 		t = getTriangleWith(first, second);
 		e = (*t).getLongestEdgeAlt();
@@ -776,7 +776,7 @@ bool Vertex::checkSurroundingPolygon(){
 		area = (*t).signedArea();
 		delete t;
 
-		// If the vertex lays exactly at an edge, check whether the edge is a PE
+		// If the vertex lies exactly at an edge, check whether the edge is a PE
 		if(area == 0){
 			t = getTriangleWith(first, second);
 			e = (*t).getLongestEdgeAlt();
@@ -817,27 +817,27 @@ double Vertex::getDistanceToOrigin() const{
 
 /*
 	Destructor:
-	The destructor also delete all triangles and edges which still contain the vertex by
-	calling their destructors. Therefore we need copies of the lists in form of arrays
-	because iterating over a list while deleting its elements is pretty dangerous.
+	The Destructor deletes a vertex if it is not linked to any other entity. If it is
+	still link, the Destructor throws a vertex deletion error.
 
-	Note:
-		It is the best way to delete all edges and triangles containing the vertex
-		before deleting the vertex itself such that the edges and triangles lists are
-		already empty.
+	ATTENTIONE:
+		- This code should only be used for dummy vertices!
+		- If a vertex of the triangulation is deleted, you have to make sure that
+			there is no pointer to the vertex in the triangulation's vertices vector left!
 */
 Vertex::~Vertex(){
 	int nEdges = edges.size();
 	int nTriangles = triangles.size();
-	int i;
 
 	if(nEdges != 0 || nTriangles != 0){
 		fprintf(stderr, "Vertex deletion error: the deleted vertex was still part of an edge or triangle!\n");
 		exit(8);
 	}
 
-	if(T != NULL)
-		(*T).removeVertex(id);
+	if(T != NULL){
+		fprintf(stderr, "Vertex deletion error: the vertex is part of the triangulation!\n");
+		exit(8);
+	}
 
 	deleted++;
 }

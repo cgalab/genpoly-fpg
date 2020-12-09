@@ -253,6 +253,7 @@ TEdge *Triangulation::getRandomEdgeWeighted(const unsigned int pID) const{
 	Note:
 		- This function is just for debugging purposes and should normally not be used
 			anywhere in the code
+		- ATTENTIONE: The index may differ from the ID of the vertex!!!!!!!!!!
 */
 void Triangulation::removeVertex(const int index){
 	vertices[index] = NULL;
@@ -515,7 +516,7 @@ bool Triangulation::check() const{
 	}
 
 	for(auto const& i : vertices){
-		// Check whether each vertex as a next and a previous vertex
+		// Check whether each vertex has a next and a previous vertex
 		ok = ok && (*i).check();
 		// Check whether each vertex lives inside its surrounding polygon
 		part = (*i).checkSurroundingPolygon();

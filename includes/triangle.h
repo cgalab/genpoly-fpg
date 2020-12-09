@@ -79,6 +79,11 @@ private:
 	*/
 	static unsigned long long n;
 
+	/*
+		Number of triangles existing at the moment
+	*/
+	static unsigned long long existing; 
+
 
 	/*
 		P ~ R ~ I ~ V ~ A ~ T ~ E 	M ~ E ~ M ~ B ~ E ~ R 	F ~ U ~ N ~ C ~ T ~ I ~ O ~ N ~ S
@@ -135,42 +140,43 @@ public:
 
 		CONSTRUCTORS:
 
-								Triangle(TEdge *E0, TEdge *E1, TEdge *E2, Vertex *V0,
-								Vertex *V1, Vertex *V2)
-								Triangle(Vertex *V0, Vertex *V1, Vertex *V2)
+									Triangle(TEdge *E0, TEdge *E1, TEdge *E2, Vertex *V0,
+									Vertex *V1, Vertex *V2)
+									Triangle(Vertex *V0, Vertex *V1, Vertex *V2)
 
 		GETTER:
 
-		unsigned long long 		getID() const
-		Vertex* 				getVertex(const int index) const
-		TEdge* 					getEdge(const int index) const
-		Vertex* 				getOtherVertex(TEdge * const e) const
-		TEdge* 					getEdgeNotContaining(Vertex const * const v) const
-		TEdge* 					getEdgeContaining(Vertex const * const v) const
-		TEdge* 					getOtherEdgeContaining(Vertex const * const v, TEdge const *
-								const e) const
-		TEdge* 					getEdgeContaining(Vertex const * const v0, Vertex const *
-								const v1) const
-		std::vector<TEdge*> 	getOtherEdges(TEdge * const e) const
-		TEdge* 					getLongestEdge(const double epsilon) const
-		TEdge* 					getLongestEdgeAlt() const
-		double 					getRange(Vertex const * const v, const double alpha) const
-		TEdge* 					getNotIntersectedEdge() const
+		unsigned long long 			getID() const
+		Vertex* 					getVertex(const int index) const
+		TEdge* 						getEdge(const int index) const
+		Vertex* 					getOtherVertex(TEdge * const e) const
+		TEdge* 						getEdgeNotContaining(Vertex const * const v) const
+		TEdge* 						getEdgeContaining(Vertex const * const v) const
+		TEdge* 						getOtherEdgeContaining(Vertex const * const v, TEdge const *
+									const e) const
+		TEdge* 						getEdgeContaining(Vertex const * const v0, Vertex const *
+									const v1) const
+		std::vector<TEdge*> 		getOtherEdges(TEdge * const e) const
+		TEdge* 						getLongestEdge(const double epsilon) const
+		TEdge* 						getLongestEdgeAlt() const
+		double 						getRange(Vertex const * const v, const double alpha) const
+		TEdge* 						getNotIntersectedEdge() const
+		static unsigned long long 	getNumberOfExistingTriangles() const
 
 		PRINTER:
 
-		void 					print() const
+		void 						print() const
 
 		OTHERS:
 
-		bool 					contains(Vertex const * const v) const
-		bool 					contains(TEdge const * const e) const
-		void 					enqueue()
-		void 					dequeue()
-		bool 					isEnqueued() const
-		double 					calculateCollapseTime(Vertex * const moving, const double dx,
-								const double dy) const
-		double 					signedArea() const
+		bool 						contains(Vertex const * const v) const
+		bool 						contains(TEdge const * const e) const
+		void 						enqueue()
+		void 						dequeue()
+		bool 						isEnqueued() const
+		double 						calculateCollapseTime(Vertex * const moving, const double dx,
+									const double dy) const
+		double 						signedArea() const
 
 	*/
 
@@ -355,6 +361,11 @@ public:
 		@return 	The first edge which has its intersected flag not set
 	*/
 	TEdge *getNotIntersectedEdge() const;
+
+	/*
+		@return 	The recent number of existing instances of triangle
+	*/
+	static unsigned long long getNumberOfExistingTriangles();
 
 
 	/*
