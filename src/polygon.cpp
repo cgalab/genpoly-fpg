@@ -72,8 +72,12 @@ void Polygon::triangulateStar(){
 			// Create an entry for the new edge
 			e1 = (PolygonEdge*)malloc(sizeof(PolygonEdge));
 			e1 -> e = newEdge;
+
+			// Link the new entry with the adjacent entities
 			e1 -> prevV = v1;
 			e1 -> nextV = v2;
+			v1 -> nextE = e1;
+			v2 -> prevE = e1;
 
 			n--;
 		}else{
@@ -148,8 +152,12 @@ void Polygon::triangulateVisible(){
 			// Create an entry for the new edge
 			e1 = (PolygonEdge*)malloc(sizeof(PolygonEdge));
 			e1 -> e = newEdge;
+
+			// Link the new entry with the adjacent entities
 			e1 -> prevV = v1;
 			e1 -> nextV = v2;
+			v1 -> nextE = e1;
+			v2 -> prevE = e1;
 
 			n--;
 		}else{
