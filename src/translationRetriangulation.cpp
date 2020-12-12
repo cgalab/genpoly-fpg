@@ -19,13 +19,7 @@
 
 void TranslationRetriangulation::buildPolygonsSideChange(){
 	bPSCOppositeDirection();
-	printf("Found polygon in opposite direction\n");
 	bPSCTranslationDirection();
-	printf("Found polygons in translation direction\n");
-
-	(*p0).print();
-	if(p1 != NULL) (*p1).print();
-	if(p2 != NULL) (*p2).print();
 }
 
 void TranslationRetriangulation::bPSCOppositeDirection(){
@@ -38,7 +32,7 @@ void TranslationRetriangulation::bPSCOppositeDirection(){
 
 	// First of all we have to find the triangle in the correct direction of the
 	// surrounding polygon
-	tTest = new Triangle(prevV, nextV, newV);
+	tTest = new Triangle(prevV, oldV, nextV);
 	areaNew = (*tTest).signedArea();
 	delete tTest;
 
@@ -46,7 +40,7 @@ void TranslationRetriangulation::bPSCOppositeDirection(){
 	// one
 	t = (*prevOldE).getT0();
 	v = (*t).getOtherVertex(prevOldE);
-	tTest = new Triangle(prevV, nextV, v);
+	tTest = new Triangle(prevV, oldV, v);
 	areaOld = (*tTest).signedArea();
 	delete tTest;
 
@@ -369,7 +363,7 @@ void TranslationRetriangulation::bPSCTranslationDirection(){
 		// The triangle is also incident to nextV
 		// => v3 is nextV
 		}else if(!leavesSP2){
-			printf("correct case\n");
+
 			delete p2;
 			p2 = NULL;
 
@@ -468,7 +462,7 @@ void TranslationRetriangulation::bPSCTranslationDirection(){
 				e2 = new TEdge(original, v1);
 				(*T).addEdge(e2, 0);
 
-				new Triangle(e1, e2, (*v3).getEdgeTo(v2), original, v1, v3);
+				new Triangle(e1, e2, (*v3).getEdgeTo(v1), original, v1, v3);
 
 				(*p2).addVertex(v1);
 				(*p2).addEdge(e2);
@@ -491,7 +485,7 @@ void TranslationRetriangulation::bPSCTranslationDirection(){
 			// v1 is the nextV
 			// => v2 will close the chain of prevV
 			if((*nextV).getID() == (*v1).getID()){
-				
+		
 				e2 = new TEdge(original, v2);
 				(*T).addEdge(e2, 0);
 
@@ -509,7 +503,7 @@ void TranslationRetriangulation::bPSCTranslationDirection(){
 				e2 = new TEdge(original, v1);
 				(*T).addEdge(e2, 0);
 
-				new Triangle(e1, e2, (*v3).getEdgeTo(v2), original, v1, v3);
+				new Triangle(e1, e2, (*v3).getEdgeTo(v1), original, v1, v3);
 
 				(*p1).addVertex(v1);
 				(*p1).addEdge(e2);
@@ -531,17 +525,18 @@ void TranslationRetriangulation::bPSCTranslationDirection(){
 			new Triangle(e1, e3, (*v1).getEdgeTo(v3), v1, original, v3);
 			new Triangle(e2, e3, (*v2).getEdgeTo(v3), original, v2, v3);
 
-			if((*v).getID() != (*v1).getID()){
-				(*p1).addVertex(v2);
-				(*p1).addEdge(e2);
-				(*p1).addVertex(original);
-				(*p1).close(prevOldE);
+			t = new Triangle(nextV, newV, prevV);
+			areaOther = (*t).signedArea();
+			delete t;
 
-				(*p2).addVertex(v1);
-				(*p2).addEdge(e1);
-				(*p2).addVertex(original);
-				(*p2).close(nextOldE);
-			}else{
+			t = new Triangle(nextV, newV, v1);
+			areaTest = (*t).signedArea();
+			delete t;
+
+			// v1 lies at the same side of (nextV, newV) as prevV and thus,
+			// it closes p1 and v2 closes p2
+			if(signbit(areaOther) == signbit(areaTest)){
+
 				(*p1).addVertex(v1);
 				(*p1).addEdge(e1);
 				(*p1).addVertex(original);
@@ -549,6 +544,19 @@ void TranslationRetriangulation::bPSCTranslationDirection(){
 
 				(*p2).addVertex(v2);
 				(*p2).addEdge(e2);
+				(*p2).addVertex(original);
+				(*p2).close(nextOldE);
+
+			// v1 lies at the opposite side of (nextV, newV) than prevV and thus,
+			// it closes p2 and v2 closes p1
+			}else{
+				(*p1).addVertex(v2);
+				(*p1).addEdge(e2);
+				(*p1).addVertex(original);
+				(*p1).close(prevOldE);
+
+				(*p2).addVertex(v1);
+				(*p2).addEdge(e1);
 				(*p2).addVertex(original);
 				(*p2).close(nextOldE);
 			}
@@ -590,11 +598,6 @@ TranslationRetriangulation::TranslationRetriangulation(Triangulation *Tr, int i,
 
 	delete t0;
 	delete t1;
-
-	/*if(index == 4){
-		(*T).addVertex(newV, 0);
-		(*T).writeTriangulation("position.graphml");
-	}*/
 }
 
 
@@ -616,20 +619,15 @@ TranslationRetriangulation::TranslationRetriangulation(Triangulation *Tr, int i,
 */
 enum Executed TranslationRetriangulation::execute(){
 
-	printf("Translation of vertex %llu by %.6f and %.6f\n", (*original).getID(), dx, dy);
-
 	// Find the polygons to retriangulate
 	if(sideChange){
-		printf("start to find polygons\n");
 		buildPolygonsSideChange();
-		printf("found polygons\n");
 		(*original).setPosition((*newV).getX(), (*newV).getY());
-		(*T).writeTriangulation("polygons.graphml");
-		printf("executed\n");
 	}
 
 	// Move the vertex to its target position
 	//(*original).setPosition((*newV).getX(), (*newV).getY());
+
 	if(p0 != NULL)
 		(*p0).triangulate();
 
@@ -638,9 +636,6 @@ enum Executed TranslationRetriangulation::execute(){
 
 	if(p2 != NULL)
 		(*p2).triangulate();
-
-	if(sideChange)
-		(*T).writeTriangulation("triangulation.graphml");
 
 	return Executed::FULL;
 }
@@ -681,13 +676,10 @@ TranslationRetriangulation::~TranslationRetriangulation(){
 
 		exit(6);
 	}
-	
+
 	delete transPath;
 	delete prevNewE;
 	delete nextNewE;
-	printf("delete oldV\n");
 	delete oldV;
-	printf("delete newV\n");
 	delete newV;
-	printf("Destructor end\n");
 }
