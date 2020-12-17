@@ -51,7 +51,9 @@ private:
 	Polygon *p3;
 
 	void buildPolygonsSideChange();
+	void buildPolygonSideRemainCase1();
 	void bPSCOppositeDirection();
+	void bPSRC1OppositeDirection();
 	void bPSCTranslationDirection();
 
 public:

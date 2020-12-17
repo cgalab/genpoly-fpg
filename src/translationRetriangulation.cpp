@@ -22,6 +22,14 @@ void TranslationRetriangulation::buildPolygonsSideChange(){
 	bPSCTranslationDirection();
 }
 
+void TranslationRetriangulation::buildPolygonSideRemainCase1(){
+	bPSRC1OppositeDirection();
+	//if(p0 != NULL) (*p0).print();
+	bPSCTranslationDirection();
+	//if(p1 != NULL) (*p1).print();
+	//if(p2 != NULL) (*p2).print();
+}
+
 void TranslationRetriangulation::bPSCOppositeDirection(){
 	Triangle *t, *tTest, *oldTriangle;
 	Vertex *v;
@@ -89,7 +97,7 @@ void TranslationRetriangulation::bPSCOppositeDirection(){
 	// Close the polygon with the edge between the two adjacent vertices
 	e = (*prevV).getEdgeTo(nextV);
 
-	// In case the triangulation does not consist this edge already, we have to
+	// In case the triangulation does not contain this edge already, we have to
 	// generate it now
 	if(e == NULL){
 		e = new TEdge(prevV, nextV);
@@ -100,6 +108,77 @@ void TranslationRetriangulation::bPSCOppositeDirection(){
 	}
 	
 	(*p0).close(e);
+	(*p0).setKernel(oldV);
+}
+
+void TranslationRetriangulation::bPSRC1OppositeDirection(){
+	Triangle *t, *tTest, *oldTriangle;
+	Vertex *v;
+	TEdge *e, *oldEdge, *edgeToRemove;
+	double areaOld, areaNew;
+
+	// Find the polygon in opposite direction and remove the corresponding triangles
+
+	// First of all we have to find the triangle in the correct direction of the
+	// surrounding polygon
+	tTest = new Triangle(prevV, oldV, nextV);
+	areaNew = (*tTest).signedArea();
+	delete tTest;
+
+	// We simple check one triangle and take the other one if it is not the right
+	// one
+	t = (*prevOldE).getT0();
+	v = (*t).getOtherVertex(prevOldE);
+	tTest = new Triangle(prevV, oldV, v);
+	areaOld = (*tTest).signedArea();
+	delete tTest;
+
+	// Make sure to take the triangle in the right direction
+	// TODO:
+	// Maybe this condition is not complete
+	if(signbit(areaOld) != signbit(areaNew))
+		t = (*prevOldE).getT1();
+	
+	// Start building the polygon
+	p0 = new Polygon(T, PolygonType::STARSHAPED);
+
+	(*p0).addVertex(prevV);
+
+	// Now we go along the surrounding polygon from prevOldE until we reach
+	// nextOldE and remove all triangles and edges inside the surrounding polygon
+	e = prevOldE;
+	oldEdge = NULL;
+	edgeToRemove = NULL;
+	while((*e).getID() != (*nextOldE).getID()){
+		(*p0).addEdge((*t).getEdgeNotContaining(original));
+
+		// Go further to the next triangle
+		e = (*t).getOtherEdgeContaining(original, e);
+		(*p0).addVertex((*e).getOtherVertex(original));
+		oldTriangle = t;
+		t = (*e).getOtherTriangle(oldTriangle);
+
+		// Remove the previous triangle
+		delete oldTriangle;
+
+		// Make sure to only remove the right edges
+		// The first remove takes place in the second loop iteration and
+		// is the edge of the first iteration, so it is delayed
+		if(edgeToRemove != NULL)
+			delete edgeToRemove;
+		if(oldEdge != NULL)
+			edgeToRemove = oldEdge;
+		oldEdge = e;
+	}
+
+	// Remove the remaining edge
+	if(edgeToRemove != NULL)
+		delete edgeToRemove;
+
+	(*p0).addEdge(nextOldE);
+	(*p0).addVertex(original);	
+	(*p0).close(prevOldE);
+
 	(*p0).setKernel(oldV);
 }
 
@@ -598,6 +677,13 @@ TranslationRetriangulation::TranslationRetriangulation(Triangulation *Tr, int i,
 
 	delete t0;
 	delete t1;
+
+	//printf("Translation %llu of vertex %llu by (%.6f , %.6f)\n", id, (*original).getID(), dx, dy);
+
+	/*if(id == 0){
+		(*T).addVertex(newV, 0);
+		(*T).writeTriangulation("position.graphml");
+	}*/
 }
 
 
@@ -618,11 +704,35 @@ TranslationRetriangulation::TranslationRetriangulation(Triangulation *Tr, int i,
 		For more information on the splits see my Master Thesis
 */
 enum Executed TranslationRetriangulation::execute(){
+	bool newInsideOld, oldInsideNew;
 
 	// Find the polygons to retriangulate
 	if(sideChange){
 		buildPolygonsSideChange();
 		(*original).setPosition((*newV).getX(), (*newV).getY());
+	}else{
+		newInsideOld = insideTriangle(prevV, oldV, nextV, newV);
+		oldInsideNew = insideTriangle(prevV, newV, nextV, oldV);
+
+		// 1. Case:
+		// The vertex is moved into the triangle defined by the old position of the
+		// vertex and its adjacent vertices
+		if(newInsideOld){
+			
+
+		// 2. Case:
+		// The vertex is moved in a way such that the original position of the vertex
+		// is inside the triangle defined by the new position and the adjacent vertices
+		}else if(oldInsideNew){
+			buildPolygonSideRemainCase1();
+			(*original).setPosition((*newV).getX(), (*newV).getY());
+
+		// 3. Case:
+		// The vertex is moved in a way such that the translation quadrilateral is not
+		// simple
+		}else{
+
+		}
 	}
 
 	// Move the vertex to its target position
@@ -636,6 +746,8 @@ enum Executed TranslationRetriangulation::execute(){
 
 	if(p2 != NULL)
 		(*p2).triangulate();
+
+	//(*T).writeTriangulation("triangulation.graphml");
 
 	return Executed::FULL;
 }
