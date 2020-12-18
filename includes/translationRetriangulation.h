@@ -52,8 +52,11 @@ private:
 
 	void buildPolygonsSideChange();
 	void buildPolygonSideRemainCase1();
+	void buildPolygonSideRemainCase2();
 	void bPSCOppositeDirection();
+	void bPSRC1TranslationDirection();
 	void bPSRC1OppositeDirection();
+	void bPSRC2OppositeDirection();
 	void bPSCTranslationDirection();
 
 public:

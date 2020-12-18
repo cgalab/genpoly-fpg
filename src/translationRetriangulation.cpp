@@ -24,6 +24,24 @@ void TranslationRetriangulation::buildPolygonsSideChange(){
 
 void TranslationRetriangulation::buildPolygonSideRemainCase1(){
 	bPSRC1OppositeDirection();
+	bPSRC1TranslationDirection();
+
+	/*if(p0 != NULL){
+		printf("P0\n");
+		(*p0).print();
+	}
+	if(p1 != NULL){
+		printf("P1\n");
+		(*p1).print();
+	}
+	if(p2 != NULL){
+		printf("P2\n");
+		(*p2).print();
+	}*/
+}
+
+void TranslationRetriangulation::buildPolygonSideRemainCase2(){
+	bPSRC2OppositeDirection();
 	//if(p0 != NULL) (*p0).print();
 	bPSCTranslationDirection();
 	//if(p1 != NULL) (*p1).print();
@@ -111,7 +129,7 @@ void TranslationRetriangulation::bPSCOppositeDirection(){
 	(*p0).setKernel(oldV);
 }
 
-void TranslationRetriangulation::bPSRC1OppositeDirection(){
+void TranslationRetriangulation::bPSRC2OppositeDirection(){
 	Triangle *t, *tTest, *oldTriangle;
 	Vertex *v;
 	TEdge *e, *oldEdge, *edgeToRemove;
@@ -180,6 +198,170 @@ void TranslationRetriangulation::bPSRC1OppositeDirection(){
 	(*p0).close(prevOldE);
 
 	(*p0).setKernel(oldV);
+}
+
+void TranslationRetriangulation::bPSRC1OppositeDirection(){
+	Triangle *t, *tTest, *oldTriangle;
+	Vertex *v;
+	TEdge *e, *oldEdge, *edgeToRemove;
+	double areaOld, areaNew;
+
+	// Find the polygon in opposite direction and remove the corresponding triangles
+
+	// First of all we have to find the triangle in the correct direction of the
+	// surrounding polygon
+	tTest = new Triangle(prevV, oldV, newV);
+	areaNew = (*tTest).signedArea();
+	delete tTest;
+
+	// We simple check one triangle and take the other one if it is not the right
+	// one
+	t = (*prevOldE).getT0();
+	v = (*t).getOtherVertex(prevOldE);
+	tTest = new Triangle(prevV, oldV, v);
+	areaOld = (*tTest).signedArea();
+	delete tTest;
+
+	// Make sure to take the triangle in the right direction
+	// TODO:
+	// Maybe this condition is not complete
+	if(signbit(areaOld) == signbit(areaNew))
+		t = (*prevOldE).getT1();
+	
+	// Start building the polygon
+	p0 = new Polygon(T, PolygonType::STARSHAPED);
+
+	(*p0).addVertex(prevV);
+
+	// Now we go along the surrounding polygon from prevOldE until we reach
+	// nextOldE and remove all triangles and edges inside the surrounding polygon
+	e = prevOldE;
+	oldEdge = NULL;
+	edgeToRemove = NULL;
+	while((*e).getID() != (*nextOldE).getID()){
+		(*p0).addEdge((*t).getEdgeNotContaining(original));
+
+		// Go further to the next triangle
+		e = (*t).getOtherEdgeContaining(original, e);
+		(*p0).addVertex((*e).getOtherVertex(original));
+		oldTriangle = t;
+		t = (*e).getOtherTriangle(oldTriangle);
+
+		// Remove the previous triangle
+		delete oldTriangle;
+
+		// Make sure to only remove the right edges
+		// The first remove takes place in the second loop iteration and
+		// is the edge of the first iteration, so it is delayed
+		if(edgeToRemove != NULL)
+			delete edgeToRemove;
+		if(oldEdge != NULL)
+			edgeToRemove = oldEdge;
+		oldEdge = e;
+	}
+
+	// Remove the remaining edge
+	if(edgeToRemove != NULL)
+		delete edgeToRemove;
+
+	(*p0).addEdge(nextOldE);
+	(*p0).addVertex(original);	
+	(*p0).close(prevOldE);
+
+	(*p0).setKernel(oldV);
+}
+
+void TranslationRetriangulation::bPSRC1TranslationDirection(){
+	std::list<TEdge*> edgesToRemove;
+	Vertex *v;
+	TEdge *e = NULL, *newEdge;
+	Triangle *t = NULL;
+	IntersectionType i;
+
+	// Check Whether there exists the triangle build by prevV, original
+	// and nextV
+	e = (*prevV).getEdgeTo(nextV);
+
+	// In case it does, we do not have to retriangulate anything here
+	if(e != NULL)
+		return;
+
+
+	// First of all we have to find the triangle in the correct direction of the
+	// surrounding polygon. For that it helps that the triangle in the other
+	// direction has already been removed by the previous function call
+
+	// We simple check one triangle and take the other one if this triangle 
+	// does not exist anymore
+	t = (*prevOldE).getT0();
+	if(t == NULL)
+		t = (*prevOldE).getT1();
+
+	// We start with the polygon containing prevV
+	p1 = new Polygon(T, PolygonType::EDGEVISIBLE);
+	(*p1).addVertex(prevV);
+
+	e = (*t).getOtherEdgeContaining(original, prevOldE);
+	i = checkIntersection(e, prevNewE, true);
+	while(i == IntersectionType::EDGE && (*e).getID() != (*nextOldE).getID()){
+		(*p1).addEdge((*t).getEdgeNotContaining(original));
+		(*p1).addVertex((*e).getOtherVertex(original));
+		edgesToRemove.push_back(e);
+
+		t = (*e).getOtherTriangle(t);
+		e = (*t).getOtherEdgeContaining(original, e);
+		i = checkIntersection(e, prevNewE, true);
+	}
+
+	// Now e is the first edge which does not intersect prevNewE anymore,
+	// but nextNewE
+	(*p1).addEdge((*t).getEdgeNotContaining(original));
+	v = (*e).getOtherVertex(original);
+	(*p1).addVertex(v);
+
+	// So we close the first polygon with a new edge and start the second one
+	// (only in case we have not reached nextOldE, otherwise we simply
+	// close p1 and do not need a second polygon)
+	if((*e).getID() == (*nextOldE).getID()){
+		// Close
+		(*p1).addEdge(nextOldE);
+		(*p1).addVertex(original);
+		(*p1).close(prevOldE);
+	}else{
+		newEdge = new TEdge(v, original);
+		(*T).addEdge(newEdge, 0);
+
+		// Close
+		(*p1).addEdge(newEdge);
+		(*p1).addVertex(original);
+		(*p1).close(prevOldE);
+
+		// Start new polygon
+		p2 = new Polygon(T, PolygonType::EDGEVISIBLE);
+		(*p2).addVertex(original);
+		(*p2).addEdge(newEdge);
+		(*p2).addVertex(v);
+
+		t = (*e).getOtherTriangle(t);
+		edgesToRemove.push_back(e);
+		e = (*t).getOtherEdgeContaining(original, e);
+		while((*e).getID() != (*nextOldE).getID()){
+			(*p2).addEdge((*t).getEdgeNotContaining(original));
+			(*p2).addVertex((*e).getOtherVertex(original));
+			edgesToRemove.push_back(e);
+
+			t = (*e).getOtherTriangle(t);
+			e = (*t).getOtherEdgeContaining(original, e);
+		}
+
+		(*p2).addEdge((*t).getEdgeNotContaining(original));
+		v = (*e).getOtherVertex(original);
+		(*p2).addVertex(v);
+		(*p2).close(nextOldE);
+	}
+
+	for(auto& i : edgesToRemove)
+		delete i;
 }
 
 void TranslationRetriangulation::bPSCTranslationDirection(){
@@ -678,9 +860,9 @@ TranslationRetriangulation::TranslationRetriangulation(Triangulation *Tr, int i,
 	delete t0;
 	delete t1;
 
-	//printf("Translation %llu of vertex %llu by (%.6f , %.6f)\n", id, (*original).getID(), dx, dy);
+	//printf("\n\nTranslation %llu of vertex %llu by (%.6f , %.6f)\n", id, (*original).getID(), dx, dy);
 
-	/*if(id == 0){
+	/*if(id == 88){
 		(*T).addVertex(newV, 0);
 		(*T).writeTriangulation("position.graphml");
 	}*/
@@ -718,13 +900,16 @@ enum Executed TranslationRetriangulation::execute(){
 		// The vertex is moved into the triangle defined by the old position of the
 		// vertex and its adjacent vertices
 		if(newInsideOld){
-			
+			//printf("case 1\n");
+			buildPolygonSideRemainCase1();
+			(*original).setPosition((*newV).getX(), (*newV).getY());
 
 		// 2. Case:
 		// The vertex is moved in a way such that the original position of the vertex
 		// is inside the triangle defined by the new position and the adjacent vertices
 		}else if(oldInsideNew){
-			buildPolygonSideRemainCase1();
+			//printf("case 2\n");
+			buildPolygonSideRemainCase2();
 			(*original).setPosition((*newV).getX(), (*newV).getY());
 
 		// 3. Case:
@@ -733,6 +918,8 @@ enum Executed TranslationRetriangulation::execute(){
 		}else{
 
 		}
+
+		//(*T).writeTriangulation("polygons.graphml");
 	}
 
 	// Move the vertex to its target position
