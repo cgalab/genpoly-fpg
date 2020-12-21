@@ -22,30 +22,354 @@ void TranslationRetriangulation::buildPolygonsSideChange(){
 	bPSCTranslationDirection();
 }
 
-void TranslationRetriangulation::buildPolygonSideRemainCase1(){
+void TranslationRetriangulation::buildPolygonsSideRemainCase1(){
 	bPSRC1OppositeDirection();
 	bPSRC1TranslationDirection();
-
-	/*if(p0 != NULL){
-		printf("P0\n");
-		(*p0).print();
-	}
-	if(p1 != NULL){
-		printf("P1\n");
-		(*p1).print();
-	}
-	if(p2 != NULL){
-		printf("P2\n");
-		(*p2).print();
-	}*/
 }
 
-void TranslationRetriangulation::buildPolygonSideRemainCase2(){
+void TranslationRetriangulation::buildPolygonsSideRemainCase2(){
 	bPSRC2OppositeDirection();
-	//if(p0 != NULL) (*p0).print();
 	bPSCTranslationDirection();
-	//if(p1 != NULL) (*p1).print();
-	//if(p2 != NULL) (*p2).print();
+}
+
+void TranslationRetriangulation::buildPolygonsSideRemainCase3(){
+	Vertex *primaryV, *secondaryV;
+	TEdge *primaryE, *secondaryE, *primaryNewE, *secondaryNewE, *borderE = NULL;
+	IntersectionType i;
+
+
+	// First of all we have to find out in which direction the translation goes,
+	// i.e. either the vertex is moved from prevV away to nextV or vice versa
+	i = checkIntersection(prevNewE, nextOldE, true);
+	if(i != IntersectionType::NONE){
+		primaryV = prevV;
+		primaryE = prevOldE;
+		primaryNewE = prevNewE;
+		secondaryV = nextV;
+		secondaryE = nextOldE;
+		secondaryNewE = nextNewE;
+	}else{
+		primaryV = nextV;
+		primaryE = nextOldE;
+		primaryNewE = nextNewE;
+		secondaryV = prevV;
+		secondaryE = prevOldE;
+		secondaryNewE = prevNewE;
+	}
+
+	bPSRC3OppositeDirection(primaryV, secondaryV, primaryE, secondaryE);
+	borderE = bPSRC3SPOld(primaryV, secondaryV, primaryE, secondaryE, primaryNewE, secondaryNewE);
+
+	if(borderE != NULL)
+		bPSRC3TranslationDirection(primaryV, secondaryV, borderE, primaryE, primaryNewE, secondaryE, secondaryNewE);	
+}
+
+void TranslationRetriangulation::bPSRC3OppositeDirection(Vertex *primaryV, Vertex *secondaryV,
+	TEdge *primaryE, TEdge *secondaryE){
+	TEdge *e = NULL, *edgeToRemove;
+	Vertex *v;
+	double area0, area1;
+	Triangle *t, *test;
+
+	/*
+		Find the polygon at the other side of (prevV, nextV)
+	*/
+
+	// In case the triangle prevV, original, nextV does already exist,
+	// we do not have to do something in this direction
+	e = (*primaryV).getEdgeTo(secondaryV);
+
+	if(e == NULL) {
+		p0 = new Polygon(T, PolygonType::EDGEVISIBLE);
+		(*p0).addVertex(primaryV);
+
+		// Find the right triangle
+		t = (*primaryE).getT0();
+		v = (*t).getOtherVertex(primaryE);
+
+		test = new Triangle(primaryV, oldV, v);
+		area0 = (*test).signedArea();
+		delete test;
+
+		test = new Triangle(primaryV, oldV, newV);
+		area1 = (*test).signedArea();
+		delete test;
+
+		if(signbit(area0) != signbit(area1))
+			t = (*primaryE).getT1();
+
+		(*p0).addEdge((*t).getEdgeNotContaining(original));
+		(*p0).addVertex(v);
+
+		e = (*t).getOtherEdgeContaining(original, primaryE);
+		while((*e).getID() != (*secondaryE).getID()){
+			edgeToRemove = e;
+
+			t = (*e).getOtherTriangle(t);
+			e = (*t).getOtherEdgeContaining(original, e);
+
+			delete edgeToRemove;
+
+			(*p0).addEdge((*t).getEdgeNotContaining(original));
+			(*p0).addVertex((*e).getOtherVertex(original));
+		}
+
+		(*p0).addEdge(secondaryE);
+		(*p0).addVertex(original);
+		(*p0).close(primaryE);
+	}
+}
+
+TEdge *TranslationRetriangulation::bPSRC3SPOld(Vertex *primaryV, Vertex *secondaryV, TEdge *primaryE,
+		TEdge *secondaryE, TEdge *primaryNewE, TEdge * secondaryNewE){
+	Triangle *t = NULL;
+	TEdge *e, *SPEdge, *e0, *e1, *e2, *borderE;
+	Vertex *v, *borderV;
+	std::list<TEdge*> edgesToRemove;
+
+	// First we have to find the right triangle
+	// For that we can exploit the fact, that we have already deleted
+	// the triangles in the other direction (except if there is just one triangle)
+	t = (*primaryE).getT0();
+
+	if(t == NULL || (*(*t).getOtherVertex(primaryE)).getID() == (*secondaryV).getID())
+		t = (*primaryE).getT1();
+
+	p1 = new Polygon(T, PolygonType::STARSHAPED);
+	(*p1).addVertex(primaryV);
+
+	e = (*t).getOtherEdgeContaining(original, primaryE);
+	v = (*t).getOtherVertex(primaryE);
+	SPEdge = (*t).getEdgeNotContaining(original);
+
+	while(!insideTriangle(t, newV) && checkIntersection(SPEdge, primaryNewE, true) == IntersectionType::NONE){
+		
+		(*p1).addEdge(SPEdge);
+		(*p1).addVertex(v);
+
+		edgesToRemove.push_back(e);
+
+		t = (*e).getOtherTriangle(t);
+		e = (*t).getOtherEdgeContaining(original, e);
+		SPEdge = (*t).getEdgeNotContaining(original);
+		v = (*e).getOtherVertex(original);
+	}
+
+	borderV = (*t).getOtherVertex(e);
+	borderE = SPEdge;
+
+	e0 = new TEdge(primaryV, borderV);
+	(*p1).close(e0);
+
+	// Now we have to decide whether p1 is really star-shaped or edge-visible
+	// In case it is star-shaped, the original vertex must lie in its interior
+	// By the geometry of this case we can conclude that this must correspond
+	// to the secondaryE intersecting the border edge e0
+	if(checkIntersection(secondaryE, e0, true) == IntersectionType::NONE)
+		(*p1).changeType(PolygonType::EDGEVISIBLE);
+	else
+		(*p1).setKernel(oldV);
+
+
+	if(insideTriangle(t, newV)){
+
+		e1 = new TEdge(borderV, original);
+
+		new Triangle(e0, e1, primaryE, borderV, original, primaryV);
+
+
+		/*
+			Start the second polygon along secondaryE
+		*/
+
+		// First check, whether a second polygon is required
+		// It is not required if the actual triangle contains secondaryV
+		if((*v).getID() == (*secondaryV).getID()){
+			new Triangle(SPEdge, secondaryE, e1, original, v, secondaryV);
+		}else{
+
+			e2 = new TEdge(v, original);
+			new Triangle(SPEdge, e1, e2, original, borderV, v);
+
+			p2 = new Polygon(T, PolygonType::EDGEVISIBLE);
+
+			(*p2).addVertex(original);
+			(*p2).addEdge(e2);
+			(*p2).addVertex(v);
+
+			
+			while((*e).getID() != (*secondaryE).getID()){
+				// Engage to the next triangle
+				t = (*e).getOtherTriangle(t);
+
+				edgesToRemove.push_back(e);
+
+				e = (*t).getOtherEdgeContaining(original, e);
+				v = (*e).getOtherVertex(original);
+				SPEdge = (*t).getEdgeNotContaining(v);
+
+				(*p2).addEdge(SPEdge);
+				(*p2).addVertex(v);
+			}
+
+			(*p2).close(secondaryE);
+		}
+
+		borderE = NULL;
+	}
+
+	for(auto& i : edgesToRemove)
+		delete i;
+
+	return borderE;
+}
+
+void TranslationRetriangulation::bPSRC3TranslationDirection(Vertex *primaryV, Vertex *secondaryV,
+	TEdge *borderE, TEdge *primaryE, TEdge *primaryNewE, TEdge *secondaryE, TEdge *secondaryNewE){
+	
+	Triangle *t, *test;
+	std::vector<TEdge*> surEdges;
+	TEdge *e = NULL, *SPEdge, *e2, *e3;
+	Vertex *v, *v2 = secondaryV, *v3;
+	std::list<TEdge*> edgesToRemove;
+	double areaRef, area;
+
+	p2 = new Polygon(T, PolygonType::EDGEVISIBLE);
+	p3 = new Polygon(T, PolygonType::EDGEVISIBLE);
+
+	// Now we have to check whether borderE does contain secondaryV
+	// In case it does, we can directly start with the incident triangle
+	// (Note: The other incident triangle has already been deleted before)
+	// Otherwise we must at first find a path from secondaryV to the triangle
+	if(!(*borderE).contains(secondaryV)){
+		
+		(*p2).addVertex(secondaryV);
+
+		surEdges = (*secondaryV).getSurroundingEdges();
+
+		for(auto& i : surEdges){
+
+			if(checkIntersection(secondaryNewE, i, false) != IntersectionType::NONE){
+				edgesToRemove.push_back(i);
+				e = i;
+				break;
+			}
+		}
+
+		if(e != NULL){
+			
+			v2 = (*e).getOtherVertex(original);
+
+			(*p2).addEdge((*v2).getEdgeTo(secondaryV));
+			(*p2).addVertex(v2);
+
+			// Find the triangle in the right direction
+			t = (*e).getTriangleNotContaining(secondaryV);
+
+			while(t != NULL){
+				v2 = (*e).getOtherVertex(original);
+
+				(*p2).addEdge((*t).getEdgeNotContaining(original));
+				(*p2).addVertex(v2);
+
+				e = (*t).getOtherEdgeContaining(original, e);
+				t = (*e).getOtherTriangle(t);
+				edgesToRemove.push_back(e);
+			}
+
+			// If we can not find a next triangle (t == NULL), then we reached borderE
+		}		
+
+	}
+
+	// Get the other border vertex
+	v3 = (*borderE).getOtherVertex(v2);
+
+	// Now we have to go further starting at borderE
+	// We can do both polygons in parallel
+	(*p3).addVertex(primaryV);
+	(*p3).addEdge((*primaryV).getEdgeTo(v3));
+	(*p3).addVertex(v3);
+
+	// Get the triangle in the right direction
+	// For that we can exploit the fact that the triangle in the wrong direction
+	// has already been deleted
+	t = (*borderE).getT0();
+
+	if(t == NULL)
+		t = (*borderE).getT1();
+
+	// We need a reference value the check on which side of primaryNewE a vertex is
+	test = new Triangle(primaryV, newV, v2);
+	areaRef = (*test).signedArea();
+	delete test;
+
+	while(true){
+		
+		surEdges = (*t).getOtherEdges(borderE);
+
+		if(checkIntersection(surEdges[0], primaryNewE, true) != IntersectionType::NONE)
+			e = surEdges[0];
+		else if(checkIntersection(surEdges[1], primaryNewE, true) != IntersectionType::NONE)
+			e = surEdges[1];
+		else
+			break;
+
+		edgesToRemove.push_back(e);
+
+		v = (*e).getOtherVertex(v2);
+
+		test = new Triangle(primaryV, newV, v);
+		area = (*test).signedArea();
+		delete test;
+
+		if(signbit(areaRef) == signbit(area)){
+			(*p2).addEdge((*v2).getEdgeTo(v));
+			(*p2).addVertex(v);
+			v2 = v;
+		}else{
+			(*p3).addEdge((*v3).getEdgeTo(v));
+			(*p3).addVertex(v);
+			v3 = v;
+		}
+
+		t = (*e).getOtherTriangle(t);
+	}
+
+	v = (*t).getOtherVertex(e);
+
+	// Delete the old edges
+	for(auto& i : edgesToRemove)
+		delete i;
+
+	// Now we have to close the polygons
+
+	e = new TEdge(original, v);
+	e3 = new TEdge(original, v3);
+
+	// The triangle in which the translations ends is incident to secondaryV
+	if((*t).contains(secondaryV)){
+		// In this case p2 is just a triangle which can directly be inserted
+		delete p2;
+
+		new Triangle((*v).getEdgeTo(secondaryV), e, secondaryE, original, v, secondaryV);
+
+	}else{
+
+		e2 = new TEdge(original, v2);
+
+		new Triangle(e2, e, (*v2).getEdgeTo(v), v2, original, v);
+
+		(*p2).addEdge(e2);
+		(*p2).addVertex(original);
+		(*p2).close(secondaryE);
+	}
+
+	new Triangle(e3, e, (*v3).getEdgeTo(v), v3, original, v);
+
+	(*p3).addEdge(e3);
+	(*p3).addVertex(original);
+	(*p3).close(primaryE);
 }
 
 void TranslationRetriangulation::bPSCOppositeDirection(){
@@ -825,6 +1149,10 @@ void TranslationRetriangulation::bPSCTranslationDirection(){
 	}
 }
 
+bool TranslationRetriangulation::insideTriangle(Triangle *t, Vertex *toCheck){
+	return Translation::insideTriangle((*t).getVertex(0), (*t).getVertex(1), (*t).getVertex(2), toCheck);
+}
+
 
 /*
 	C ~ O ~ N ~ S ~ T ~ R ~ U ~ C ~ T ~ O ~ R ~ S
@@ -891,39 +1219,36 @@ enum Executed TranslationRetriangulation::execute(){
 	// Find the polygons to retriangulate
 	if(sideChange){
 		buildPolygonsSideChange();
-		(*original).setPosition((*newV).getX(), (*newV).getY());
 	}else{
-		newInsideOld = insideTriangle(prevV, oldV, nextV, newV);
-		oldInsideNew = insideTriangle(prevV, newV, nextV, oldV);
+		newInsideOld = Translation::insideTriangle(prevV, oldV, nextV, newV);
+		oldInsideNew = Translation::insideTriangle(prevV, newV, nextV, oldV);
 
 		// 1. Case:
 		// The vertex is moved into the triangle defined by the old position of the
 		// vertex and its adjacent vertices
 		if(newInsideOld){
-			//printf("case 1\n");
-			buildPolygonSideRemainCase1();
-			(*original).setPosition((*newV).getX(), (*newV).getY());
+
+			buildPolygonsSideRemainCase1();
 
 		// 2. Case:
 		// The vertex is moved in a way such that the original position of the vertex
 		// is inside the triangle defined by the new position and the adjacent vertices
 		}else if(oldInsideNew){
-			//printf("case 2\n");
-			buildPolygonSideRemainCase2();
-			(*original).setPosition((*newV).getX(), (*newV).getY());
+
+			buildPolygonsSideRemainCase2();
 
 		// 3. Case:
 		// The vertex is moved in a way such that the translation quadrilateral is not
 		// simple
 		}else{
-
+			buildPolygonsSideRemainCase3();
 		}
 
 		//(*T).writeTriangulation("polygons.graphml");
 	}
 
 	// Move the vertex to its target position
-	//(*original).setPosition((*newV).getX(), (*newV).getY());
+	(*original).setPosition((*newV).getX(), (*newV).getY());
 
 	if(p0 != NULL)
 		(*p0).triangulate();
@@ -933,6 +1258,9 @@ enum Executed TranslationRetriangulation::execute(){
 
 	if(p2 != NULL)
 		(*p2).triangulate();
+
+	if(p3 != NULL)
+		(*p3).triangulate();
 
 	//(*T).writeTriangulation("triangulation.graphml");
 

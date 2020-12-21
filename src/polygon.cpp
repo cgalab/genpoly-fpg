@@ -291,6 +291,10 @@ void Polygon::setKernel(Vertex *k){
 	kernel = k;
 }
 
+void Polygon::changeType(PolygonType tp){
+	type = tp;
+}
+
 void Polygon::close(TEdge *e){
 	PolygonEdge *entry;
 

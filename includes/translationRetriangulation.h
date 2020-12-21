@@ -20,6 +20,7 @@
 	Include standard libraries
 */
 #include <list>
+#include <map>
 
 /*
 	Include my headers	
@@ -51,13 +52,21 @@ private:
 	Polygon *p3;
 
 	void buildPolygonsSideChange();
-	void buildPolygonSideRemainCase1();
-	void buildPolygonSideRemainCase2();
+	void buildPolygonsSideRemainCase1();
+	void buildPolygonsSideRemainCase2();
+	void buildPolygonsSideRemainCase3();
 	void bPSCOppositeDirection();
 	void bPSRC1TranslationDirection();
 	void bPSRC1OppositeDirection();
 	void bPSRC2OppositeDirection();
+	void bPSRC3OppositeDirection(Vertex *primaryV, Vertex *secondaryV, TEdge *primaryE,
+		TEdge *secondaryE);
 	void bPSCTranslationDirection();
+	TEdge *bPSRC3SPOld(Vertex *primaryV, Vertex *secondaryV, TEdge *primaryE,
+		TEdge *secondaryE, TEdge *primaryNewE, TEdge *secondaryNewE);
+	void bPSRC3TranslationDirection(Vertex *primaryV, Vertex *secondaryV, TEdge *borderE,
+		TEdge *primaryE, TEdge *primaryNewE, TEdge *secondaryE, TEdge *secondaryNewE);
+	bool insideTriangle(Triangle *t, Vertex *toCheck);
 
 public:
 

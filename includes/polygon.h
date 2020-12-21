@@ -78,7 +78,7 @@ private:
 	/*
 		The type of the polygon represented
 	*/
-	const PolygonType type;
+	PolygonType type;
 
 	/*
 		The triangulation the polygon lives in
@@ -146,6 +146,8 @@ public:
 	void addEdge(TEdge *e);
 
 	void setKernel(Vertex *k);
+
+	void changeType(PolygonType tp);
 
 	void close(TEdge *e);
 
