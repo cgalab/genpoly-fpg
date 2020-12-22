@@ -155,6 +155,11 @@ Triangle::Triangle(TEdge *E0, TEdge *E1, TEdge *E2, Vertex *V0, Vertex *V1, Vert
 
 	Triangle *t;
 
+	if((*v0).getID() == (*v1).getID() || (*v0).getID() == (*v2).getID() || (*v2).getID() == (*v1).getID()){
+		fprintf(stderr, "Two vertices of the new triangle are identical!\n");
+		exit(5);
+	}
+
 	(*e0).setTriangle(this);
 	(*e1).setTriangle(this);
 	(*e2).setTriangle(this);

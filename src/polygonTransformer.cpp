@@ -92,6 +92,8 @@ int transformPolygonByMoves(Triangulation * const T, const int iterations){
 
 		delete trans;
 
+		(*T).check();
+
 		if(i % div == 0 && Settings::feedback != FeedbackMode::MUTE)
 			fprintf(stderr, "%f%% of %d translations performed after %f seconds \n", (double)i / (double)iterations * 100, iterations, (*Settings::timer).elapsedTime());
 	}
