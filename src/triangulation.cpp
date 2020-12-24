@@ -287,7 +287,7 @@ void Triangulation::removeEdge(TEdge * const e){
 void Triangulation::writeTriangulation(const char *filename) const{
 	FILE *f;
 	TEdge *e;
-	int scale = 5000;
+	int scale = 1000;
 
 	if(Settings::feedback != FeedbackMode::MUTE)
 		fprintf(stderr, "Write triangulation to .graphml file %s...", filename);

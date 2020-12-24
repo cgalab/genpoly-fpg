@@ -230,7 +230,7 @@ Triangle *TEdge::getT1() const{
 	@return 	The triangle not containing v
 */
 Triangle *TEdge::getTriangleNotContaining(Vertex const * const v) const{
-	if((*t0).contains(v)) return t1;
+	if(t0 != NULL && (*t0).contains(v)) return t1;
 	else return t0;
 }
 
@@ -253,7 +253,7 @@ Triangle *TEdge::getTriangleContaining(Vertex const * const v) const{
 	@return 	Another triangle
 */
 Triangle *TEdge::getOtherTriangle(Triangle const * const t) const{
-	if((*t).getID() == (*t0).getID()) return t1;
+	if(t0 != NULL && (*t).getID() == (*t0).getID()) return t1;
 	else return t0;
 }
 
