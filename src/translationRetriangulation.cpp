@@ -59,26 +59,26 @@ void TranslationRetriangulation::buildPolygonsSideRemainCase3(){
 
 	bPSRC3OppositeDirection(primaryV, secondaryV, primaryE, secondaryE);
 
-	(*T).writeTriangulation("polygons1.graphml");
+	//(*T).writeTriangulation("polygons1.graphml");
 	
-	if(p0 != NULL){
+	/*if(p0 != NULL){
 		printf("P0:\n");
 		(*p0).print();
-	}
+	}*/
 	borderE = bPSRC3SPOld(primaryV, secondaryV, primaryE, secondaryE, primaryNewE, secondaryNewE);
 
 	
-	if(p1 != NULL){
+	/*if(p1 != NULL){
 		printf("P1:\n");
 		(*p1).print();
 	}
 	
-	(*T).writeTriangulation("polygons2.graphml");
+	(*T).writeTriangulation("polygons2.graphml");*/
 
 	if(borderE != NULL)
 		bPSRC3TranslationDirection(primaryV, secondaryV, borderE, primaryE, primaryNewE, secondaryE, secondaryNewE);	
 
-	if(p2 != NULL){
+	/*if(p2 != NULL){
 		printf("P2\n");
 		(*p2).print();
 	}
@@ -86,7 +86,7 @@ void TranslationRetriangulation::buildPolygonsSideRemainCase3(){
 	if(p3 != NULL){
 		printf("P3\n");
 		(*p3).print();
-	}
+	}*/
 }
 
 void TranslationRetriangulation::bPSRC3OppositeDirection(Vertex *primaryV, Vertex *secondaryV,
@@ -189,7 +189,7 @@ TEdge *TranslationRetriangulation::bPSRC3SPOld(Vertex *primaryV, Vertex *seconda
 	borderV = (*t).getOtherVertex(e);
 
 	if(insideTriangle(t, newV)){
-		printf("wrong case\n");
+
 		// Close p1
 		e1 = new TEdge(borderV, original);
 		(*T).addEdge(e1, 0);
@@ -254,9 +254,25 @@ TEdge *TranslationRetriangulation::bPSRC3SPOld(Vertex *primaryV, Vertex *seconda
 		borderE = NULL;
 
 	}else{
-		printf("correct case\n");
+
+		// First of all we have to check whether borderV can see primaryV
+		// Otherwise we can not insert an edge between them and thus, have
+		// to abort the translation
+		if(!checkVisibility(borderV, primaryV, secondaryV)){
+
+			delete p1;
+			p1 = NULL;
+
+			aborted = true;
+
+			Statistics::undone++;
+
+			return NULL;
+		}
+
+
 		// Remove all triangles now to avoid registering to much triangles
-		// at one edge
+		// at one edge	
 		for(auto & i : edgesToRemove)
 			delete i;
 
@@ -272,8 +288,6 @@ TEdge *TranslationRetriangulation::bPSRC3SPOld(Vertex *primaryV, Vertex *seconda
 
 			e = new TEdge(borderV, primaryV);
 			(*T).addEdge(e, 0);
-			printf("new edge:\n");
-			(*e).print();
 
 			(*p1).close(e);
 
@@ -298,10 +312,6 @@ void TranslationRetriangulation::bPSRC3TranslationDirection(Vertex *primaryV, Ve
 	std::list<TEdge*> edgesToRemove;
 	double areaRef, area;
 	bool containsSecondaryV;
-
-	printf("\n\nStart polygons in translation direction\n");
-	printf("borderE:\n");
-	(*borderE).print();
 
 	p2 = new Polygon(T, PolygonType::EDGEVISIBLE);
 	p3 = new Polygon(T, PolygonType::EDGEVISIBLE);
@@ -336,14 +346,15 @@ void TranslationRetriangulation::bPSRC3TranslationDirection(Vertex *primaryV, Ve
 			t = (*e).getTriangleNotContaining(secondaryV);
 
 			while(t != NULL){
+				e = (*t).getOtherEdgeContaining(original, e);
+				edgesToRemove.push_back(e);
+
 				v2 = (*e).getOtherVertex(original);
 
 				(*p2).addEdge((*t).getEdgeNotContaining(original));
 				(*p2).addVertex(v2);
-
-				e = (*t).getOtherEdgeContaining(original, e);
+				
 				t = (*e).getOtherTriangle(t);
-				edgesToRemove.push_back(e);
 			}
 
 			// If we can not find a next triangle (t == NULL), then we reached borderE
@@ -449,8 +460,6 @@ void TranslationRetriangulation::bPSRC3TranslationDirection(Vertex *primaryV, Ve
 	(*p3).addEdge(e3);
 	(*p3).addVertex(original);
 	(*p3).close(primaryE);
-
-	printf("End polygons in translation direction\n");
 }
 
 void TranslationRetriangulation::bPSCOppositeDirection(){
@@ -1234,6 +1243,100 @@ bool TranslationRetriangulation::insideTriangle(Triangle *t, Vertex *toCheck){
 	return Translation::insideTriangle((*t).getVertex(0), (*t).getVertex(1), (*t).getVertex(2), toCheck);
 }
 
+bool TranslationRetriangulation::checkVisibility(Vertex *borderV, Vertex *primaryV, Vertex *secondaryV){
+	TEdge *e = new TEdge(borderV, primaryV), *intersected = NULL;
+	bool visible = true;
+	std::vector<TEdge*> surEdges;
+	IntersectionType it;
+	Triangle *t;
+	double areaRef, areaBorder;
+
+
+	// First we have to check whether borderV is turn by at least one pi
+	// around original relative to primaryV
+	// If it is, then its also visible after the translation
+	t = new Triangle(primaryV, original, secondaryV);
+	areaRef = (*t).signedArea();
+	delete t;
+
+	t = new Triangle(primaryV, original, borderV);
+	areaBorder = (*t).signedArea();
+	delete t;
+
+	if(signbit(areaRef) == signbit(areaBorder)){
+		delete e;
+
+		return true;
+	}
+
+	surEdges = (*borderV).getSurroundingEdges();
+
+	for(auto& i : surEdges){
+
+		// Check whether one of the surrounding edges of borderV contains primaryV
+		// In this case v0 can see v1
+		if((*i).contains(primaryV)){
+			delete e;
+
+			return true;
+		}
+		
+		it = checkIntersection(e, i, true);
+
+		if(it == IntersectionType::VERTEX){
+			visible = false;
+
+			break;
+		}else if(it == IntersectionType::EDGE){
+			intersected = i;
+
+			visible = (*intersected).contains(original);
+
+			break;
+		}
+	}
+
+
+	if(visible && intersected != NULL){
+
+		t = (*intersected).getTriangleNotContaining(borderV);
+		surEdges = (*t).getOtherEdges(intersected);
+
+		while(true){
+
+			it = checkIntersection(surEdges[0], e, true);
+
+			if(it == IntersectionType:: NONE){
+				it = checkIntersection(surEdges[1], e, true);
+
+				intersected = surEdges[1];
+			}else
+				intersected = surEdges[0];
+
+			if(it == IntersectionType::NONE)
+				break;
+			else if(it == IntersectionType::VERTEX){
+				visible = false;
+
+				break;
+			}else{
+				visible = (*intersected).contains(original);
+
+				if(!visible)
+					break;
+
+				t = (*intersected).getOtherTriangle(t);
+
+				surEdges = (*t).getOtherEdges(intersected);
+			}
+		}
+	}
+
+	delete e;
+
+	return visible;
+}
+
 
 /*
 	C ~ O ~ N ~ S ~ T ~ R ~ U ~ C ~ T ~ O ~ R ~ S
@@ -1253,7 +1356,7 @@ bool TranslationRetriangulation::insideTriangle(Triangle *t, Vertex *toCheck){
 		Translations of other types can just be generated by the translation class itself.
 */
 TranslationRetriangulation::TranslationRetriangulation(Triangulation *Tr, int i, double dX, double dY) :
-	Translation(Tr, i, dX, dY), p0(NULL), p1(NULL), p2(NULL), p3(NULL){
+	Translation(Tr, i, dX, dY), aborted(false), p0(NULL), p1(NULL), p2(NULL), p3(NULL){
 
 	Triangle *t0, *t1;
 	double areaOld, areaNew;
@@ -1269,12 +1372,12 @@ TranslationRetriangulation::TranslationRetriangulation(Triangulation *Tr, int i,
 	delete t0;
 	delete t1;
 
-	printf("\n\nTranslation %llu of vertex %llu by (%.6f , %.6f)\n", id, (*original).getID(), dx, dy);
+	//printf("\n\nTranslation %llu of vertex %llu by (%.6f , %.6f)\n", id, (*original).getID(), dx, dy);
 
-	if(id == 138){
+	/*if(id == 293){
 		(*T).addVertex(newV, 0);
 		(*T).writeTriangulation("position.graphml");
-	}
+	}*/
 }
 
 
@@ -1307,30 +1410,30 @@ enum Executed TranslationRetriangulation::execute(){
 		// 1. Case:
 		// The vertex is moved into the triangle defined by the old position of the
 		// vertex and its adjacent vertices
-		if(newInsideOld){
+		if(newInsideOld)
 
 			buildPolygonsSideRemainCase1();
 
 		// 2. Case:
 		// The vertex is moved in a way such that the original position of the vertex
 		// is inside the triangle defined by the new position and the adjacent vertices
-		}else if(oldInsideNew){
+		else if(oldInsideNew)
 
 			buildPolygonsSideRemainCase2();
 
 		// 3. Case:
 		// The vertex is moved in a way such that the translation quadrilateral is not
 		// simple
-		}else{
+		else
 			buildPolygonsSideRemainCase3();
-			(*original).setPosition((*newV).getX(), (*newV).getY());
-		}
 
-		(*T).writeTriangulation("polygons.graphml");
+
+		//(*T).writeTriangulation("polygons.graphml");
 	}
 
 	// Move the vertex to its target position
-	(*original).setPosition((*newV).getX(), (*newV).getY());
+	if(!aborted)
+		(*original).setPosition((*newV).getX(), (*newV).getY());
 
 	if(p0 != NULL)
 		(*p0).triangulate();
@@ -1344,7 +1447,7 @@ enum Executed TranslationRetriangulation::execute(){
 	if(p3 != NULL)
 		(*p3).triangulate();
 
-	(*T).writeTriangulation("triangulation.graphml");
+	//(*T).writeTriangulation("triangulation.graphml");
 
 	return Executed::FULL;
 }
@@ -1391,4 +1494,6 @@ TranslationRetriangulation::~TranslationRetriangulation(){
 	delete nextNewE;
 	delete oldV;
 	delete newV;
+
+	//printf("Already arborted translations: %d\n",  Statistics::undone);
 }

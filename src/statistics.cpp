@@ -265,7 +265,10 @@ void Statistics::printStats(Triangulation const * const T){
 	fprintf(stderr, "Number of checked translations: %llu\n", translationTries);
 	fprintf(stderr, "Number of performed translation: %llu\n", translationsPerf);
 	fprintf(stderr, "Number of split translations: %llu\n", splits);
-	fprintf(stderr, "Number of undone translations: %u\n", undone);
+	if(Settings::kinetic)
+		fprintf(stderr, "Number of undone translations: %u\n", undone);
+	else
+		fprintf(stderr, "Number of aborted translations: %u\n", undone);
 	fprintf(stderr, "Average number of SP triangles: %.2f\n",
 		(double)nrSPTriangles / (double) nrChecks);
 	fprintf(stderr, "Max number of SP triangles: %d\n", maxSPTriangles);
@@ -318,7 +321,7 @@ void Statistics::writeStatsFile(Triangulation const * const T){
 	trans.add("checked", translationTries);
 	trans.add("performed", translationsPerf);
 	trans.add("splits", splits);
-	trans.add("undone", undone);
+	trans.add("undone/aborted", undone);
 	trans.add("averagesp", (double)nrSPTriangles / (double) nrChecks);
 	trans.add("maxsp", maxSPTriangles);
 	trans.add("averagepassed", (double)nrTriangles / (double) nrChecks);

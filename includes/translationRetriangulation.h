@@ -42,6 +42,11 @@ private:
 	bool sideChange;
 
 	/*
+		Flag for aborted translations
+	*/
+	bool aborted;
+
+	/*
 		The polygons we have to retriangulate during the translation. Depending on the
 		type of translation not all of these polygons are used.
 	*/
@@ -67,6 +72,7 @@ private:
 	void bPSRC3TranslationDirection(Vertex *primaryV, Vertex *secondaryV, TEdge *borderE,
 		TEdge *primaryE, TEdge *primaryNewE, TEdge *secondaryE, TEdge *secondaryNewE);
 	bool insideTriangle(Triangle *t, Vertex *toCheck);
+	bool checkVisibility(Vertex *borderV, Vertex * primaryV, Vertex * secondaryV);
 
 public:
 
