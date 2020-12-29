@@ -44,7 +44,6 @@ int transformPolygonByMoves(Triangulation * const T, const int iterations){
 	Vertex *v;
 	enum Executed ex;
 	int div;
-	bool ok;
 
 	div = 0.01 * iterations;
 	if(div == 0)

@@ -59,31 +59,35 @@ void TranslationRetriangulation::buildPolygonsSideRemainCase3(){
 
 	bPSRC3OppositeDirection(primaryV, secondaryV, primaryE, secondaryE);
 
-	//(*T).writeTriangulation("polygons1.graphml");
+	/*if(id == 1999)
+		(*T).writeTriangulation("polygons1.graphml");
 	
-	/*if(p0 != NULL){
+	if(id == 1999 && p0 != NULL){
 		printf("P0:\n");
 		(*p0).print();
 	}*/
+
 	borderE = bPSRC3SPOld(primaryV, secondaryV, primaryE, secondaryE, primaryNewE, secondaryNewE);
 
 	
-	/*if(p1 != NULL){
+	/*if(id == 1999 && p1 != NULL){
 		printf("P1:\n");
 		(*p1).print();
-	}
+
+		(*T).writeTriangulation("polygons2.graphml");
+	}*/
 	
-	(*T).writeTriangulation("polygons2.graphml");*/
+	
 
 	if(borderE != NULL)
 		bPSRC3TranslationDirection(primaryV, secondaryV, borderE, primaryE, primaryNewE, secondaryE, secondaryNewE);	
 
-	/*if(p2 != NULL){
+	/*if(id == 1999 && p2 != NULL){
 		printf("P2\n");
 		(*p2).print();
 	}
 
-	if(p3 != NULL){
+	if(id == 1999 && p3 != NULL){
 		printf("P3\n");
 		(*p3).print();
 	}*/
@@ -1274,11 +1278,27 @@ bool TranslationRetriangulation::checkVisibility(Vertex *borderV, Vertex *primar
 	for(auto& i : surEdges){
 
 		// Check whether one of the surrounding edges of borderV contains primaryV
-		// In this case v0 can see v1
 		if((*i).contains(primaryV)){
+			
 			delete e;
 
-			return true;
+			// Now we have to check whether borderV can really see primaryV through
+			// the interior of SP of original
+			// This is the case, if the edge from borderV to primaryV has an triangle
+			// which contains original
+
+			e = (*borderV).getEdgeTo(primaryV);
+
+			t = (*e).getT0();
+			if((*t).contains(original))
+				return true;
+
+			t = (*e).getT1();
+			if((*t).contains(original))
+				return true;
+			// Otherwise borderV can see primaryV, but only through the exterior
+			else
+				return false;
 		}
 		
 		it = checkIntersection(e, i, true);
@@ -1371,13 +1391,6 @@ TranslationRetriangulation::TranslationRetriangulation(Triangulation *Tr, int i,
 
 	delete t0;
 	delete t1;
-
-	//printf("\n\nTranslation %llu of vertex %llu by (%.6f , %.6f)\n", id, (*original).getID(), dx, dy);
-
-	/*if(id == 293){
-		(*T).addVertex(newV, 0);
-		(*T).writeTriangulation("position.graphml");
-	}*/
 }
 
 
@@ -1426,9 +1439,6 @@ enum Executed TranslationRetriangulation::execute(){
 		// simple
 		else
 			buildPolygonsSideRemainCase3();
-
-
-		//(*T).writeTriangulation("polygons.graphml");
 	}
 
 	// Move the vertex to its target position
@@ -1446,8 +1456,6 @@ enum Executed TranslationRetriangulation::execute(){
 
 	if(p3 != NULL)
 		(*p3).triangulate();
-
-	//(*T).writeTriangulation("triangulation.graphml");
 
 	return Executed::FULL;
 }
@@ -1494,6 +1502,4 @@ TranslationRetriangulation::~TranslationRetriangulation(){
 	delete nextNewE;
 	delete oldV;
 	delete newV;
-
-	//printf("Already arborted translations: %d\n",  Statistics::undone);
 }
