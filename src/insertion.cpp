@@ -157,6 +157,7 @@ void Insertion::translate() const{
 	double alpha, stddev, r, dx, dy;
 	Translation *trans;
 	unsigned int count = 0;
+	Executed ex = Executed::FULL;
 
 	// The new vertex is the last one in the vertices vector of the triangulation
 	index = (*T).getActualNumberOfVertices() - 1;
@@ -185,7 +186,26 @@ void Insertion::translate() const{
 
 			// Execute the translation
 			if(simple)
-				(*trans).execute();
+				ex = (*trans).execute();
+
+			// Count executed translations
+			if(ex != Executed::REJECTED){
+			
+				switch(ex){
+					case Executed::FULL:
+						Statistics::translationsPerf++;
+						break;
+					case Executed::PARTIAL:
+						Statistics::translationsPerf++;
+						break;
+					case Executed::UNDONE:
+						Statistics::undone++;
+						break;
+					case Executed::REJECTED:
+					default:
+						break;
+				}
+			}
 		}
 
 		delete trans;

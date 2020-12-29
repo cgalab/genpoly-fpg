@@ -42,7 +42,7 @@ int transformPolygonByMoves(Triangulation * const T, const int iterations){
 	int n = (*T).getActualNumberOfVertices();
 	int performedTranslations = 0;
 	Vertex *v;
-	enum Executed ex;
+	enum Executed ex = Executed::FULL;
 	int div;
 
 	div = 0.01 * iterations;
@@ -85,8 +85,26 @@ int transformPolygonByMoves(Triangulation * const T, const int iterations){
 				ex = (*trans).execute();
 
 				// Count executed translations
-				if(ex != Executed::REJECTED)
+				if(ex != Executed::REJECTED){
 					performedTranslations++;
+
+					switch(ex){
+						case Executed::FULL:
+							Statistics::translationsPerf++;
+							break;
+						case Executed::PARTIAL:
+							Statistics::translationsPerf++;
+							break;
+						case Executed::UNDONE:
+							Statistics::undone++;
+							performedTranslations--;
+							break;
+						case Executed::REJECTED:
+						default:
+							break;
+					}
+
+				}
 			}
 		}
 

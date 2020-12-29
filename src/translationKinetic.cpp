@@ -238,13 +238,8 @@ enum Executed TranslationKinetic::executeSplitRetainSide() const{
 	delete intersectionPoint;
 	delete trans;
 
-	if(ex != Executed::FULL){
-		if(ex == Executed::PARTIAL)
-			Statistics::translationsPerf++;
+	if(ex != Executed::FULL)
 		return ex;
-	}
-
-	Statistics::translationsPerf++;
 
 	// Second part of the translation from the intersection point to the target point
 	transX = (*newV).getX() - (*original).getX();
@@ -299,13 +294,8 @@ enum Executed TranslationKinetic::executeSplitChangeSide(){
 
 	delete trans;
 
-	if(ex != Executed::FULL){
-		if(ex == Executed::PARTIAL)
-			Statistics::translationsPerf++;
+	if(ex != Executed::FULL)
 		return ex;
-	}
-
-	Statistics::translationsPerf++;
 
 	// For numerical reasons it is possible that the triangle of the old vertex and the
 	// neighboring vertices does not vanish at the time when the vertex arrives between its
@@ -962,22 +952,15 @@ enum Executed TranslationKinetic::execute(){
 			// Abort if the event queue becomes unstable
 			if(!flip(t, false)){
 				undone = undo();
-				if(undone){
-					Statistics::undone++;
+				if(undone)
 					return Executed::UNDONE;
-				}else{
-					if(!split)
-						Statistics::translationsPerf++;
+				else
 					return Executed::PARTIAL;
-				}
 			}
 		}
 
 		// Move the vertex to its target position
 		(*original).setPosition((*newV).getX(), (*newV).getY());
-
-		if(!split)
-			Statistics::translationsPerf++;
 
 		return Executed::FULL;
 	}

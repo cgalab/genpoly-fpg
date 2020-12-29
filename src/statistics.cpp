@@ -264,7 +264,8 @@ void Statistics::printStats(Triangulation const * const T){
 	fprintf(stderr, "Translations:\n");
 	fprintf(stderr, "Number of checked translations: %llu\n", translationTries);
 	fprintf(stderr, "Number of performed translation: %llu\n", translationsPerf);
-	fprintf(stderr, "Number of split translations: %llu\n", splits);
+	if(Settings::kinetic)
+		fprintf(stderr, "Number of split translations: %llu\n", splits);
 	if(Settings::kinetic)
 		fprintf(stderr, "Number of undone translations: %u\n", undone);
 	else

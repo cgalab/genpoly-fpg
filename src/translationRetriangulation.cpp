@@ -269,8 +269,6 @@ TEdge *TranslationRetriangulation::bPSRC3SPOld(Vertex *primaryV, Vertex *seconda
 
 			aborted = true;
 
-			Statistics::undone++;
-
 			return NULL;
 		}
 
@@ -1457,7 +1455,10 @@ enum Executed TranslationRetriangulation::execute(){
 	if(p3 != NULL)
 		(*p3).triangulate();
 
-	return Executed::FULL;
+	if(aborted)
+		return Executed::UNDONE;
+	else
+		return Executed::FULL;
 }
 
 
