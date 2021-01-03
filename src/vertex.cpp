@@ -335,7 +335,8 @@ double Vertex::getDirectedEdgeLength(const double alpha) const{
 		}
 	}
 	
-	fprintf(stderr, "was not able to find the triangle for vertex %llu in direction %f, truely zero: \n", id, alpha);
+	if(Settings::feedback == FeedbackMode::VERBOSE)
+		fprintf(stderr, "was not able to find the triangle for vertex %llu in direction %f\n", id, alpha);
 	
 	return - getMediumEdgeLength();
 }
