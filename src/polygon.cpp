@@ -44,6 +44,8 @@ void Polygon::triangulateStar(){
 	while(n > 3){
 
 		// Check whether the recent three vertices are in convex position
+		// Area == 0 is a special case which means that all three vertices lie on
+		// one line. We want to avoid cutting of such triangles!
 		t = new Triangle(v0 -> v, v1 -> v, v2 -> v);
 		area = (*t).signedArea();
 		delete t;
@@ -53,7 +55,7 @@ void Polygon::triangulateStar(){
 		// be not star-shaped anymore
 		inside = insideTriangle(v0 -> v, v1 -> v, v2 -> v, kernel);
 
-		if(!inside && signbit(area) == signbit(referenceDet)){
+		if(!inside && area != 0 && signbit(area) == signbit(referenceDet)){
 			newEdge = new TEdge(v0 -> v, v2 -> v);
 			(*T).addEdge(newEdge, 0);
 
@@ -129,11 +131,13 @@ void Polygon::triangulateVisible(){
 	while(n > 3){
 
 		// Check whether the recent three vertices are in convex position
+		// Area == 0 is a special case which means that all three vertices lie on
+		// one line. We want to avoid cutting of such triangles!
 		t = new Triangle(v0 -> v, v1 -> v, v2 -> v);
 		area = (*t).signedArea();
 		delete t;
 
-		if(v1 != startVertex && signbit(area) == signbit(referenceDet)){
+		if(v1 != startVertex && area != 0 && signbit(area) == signbit(referenceDet)){
 			newEdge = new TEdge(v0 -> v, v2 -> v);
 			(*T).addEdge(newEdge, 0);
 
