@@ -336,7 +336,7 @@ double Vertex::getDirectedEdgeLength(const double alpha) const{
 	}
 	
 	if(Settings::feedback == FeedbackMode::VERBOSE)
-		fprintf(stderr, "was not able to find the triangle for vertex %llu in direction %f\n", id, alpha);
+		fprintf(stderr, "Was not able to find the triangle for vertex %llu in direction %f\n", id, alpha);
 	
 	return - getMediumEdgeLength();
 }
@@ -670,17 +670,20 @@ bool Vertex::check(){
 		}
 
 		if(n != 2){
-			fprintf(stderr, "Vertex %llu has %d polygon edges\n", id, n);
+			if(Settings::feedback == FeedbackMode::VERBOSE)
+				fprintf(stderr, "Vertex %llu has %d polygon edges\n", id, n);
 			ok = false;
 		}
 
 		if(toPrev == NULL){
-			fprintf(stderr, "Edge to previous vertex is missing for vertex %llu \n", id);
+			if(Settings::feedback == FeedbackMode::VERBOSE)
+				fprintf(stderr, "Edge to previous vertex is missing for vertex %llu \n", id);
 			ok = false;
 		}
 
 		if(toNext == NULL){
-			fprintf(stderr, "Edge to next vertex is missing for vertex %llu \n", id);
+			if(Settings::feedback == FeedbackMode::VERBOSE)
+				fprintf(stderr, "Edge to next vertex is missing for vertex %llu \n", id);
 			ok = false;
 		}
 	}
@@ -763,9 +766,14 @@ bool Vertex::checkSurroundingPolygon(){
 	if(area0 == 0){
 		t = getTriangleWith(first, second);
 		e = (*t).getLongestEdgeAlt();
-		fprintf(stderr, "surrouding polygon check: area is exactly 0!\n");
-		if((*e).getEdgeType() == EdgeType::POLYGON)
+
+		if(Settings::feedback == FeedbackMode::VERBOSE)
+			fprintf(stderr, "surrouding polygon check: area is exactly 0!\n");
+
+		if((*e).getEdgeType() == EdgeType::POLYGON){
+			fprintf(stderr, "surrouding polygon check: a vertex lies exactly on a polygon edge!\n");
 			exit(10);
+		}
 	}
 
 	while(!Q.empty()){
@@ -781,10 +789,14 @@ bool Vertex::checkSurroundingPolygon(){
 		if(area == 0){
 			t = getTriangleWith(first, second);
 			e = (*t).getLongestEdgeAlt();
-			fprintf(stderr, "surrouding polygon check: area is exactly 0!\n");
-			if((*e).getEdgeType() == EdgeType::POLYGON)
+				
+			if(Settings::feedback == FeedbackMode::VERBOSE)
+				fprintf(stderr, "surrouding polygon check: area is exactly 0!\n");
+
+			if((*e).getEdgeType() == EdgeType::POLYGON){
+				fprintf(stderr, "surrouding polygon check: a vertex lies exactly on a polygon edge!\n");
 				exit(10);
-			else
+			}else
 				continue;
 		}
 
