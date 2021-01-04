@@ -1,5 +1,5 @@
 /* 
- * Copyright 2020 Philipp Mayer - philmay1992@gmail.com
+ * Copyright 2021 Philipp Mayer - philmay1992@gmail.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,6 +17,17 @@
 
 #include "polygon.h"
 
+/*
+	P ~ R ~ I ~ V ~ A ~ T ~ E 	M ~ E ~ M ~ B ~ E ~ R 	F ~ U ~ N ~ C ~ T ~ I ~ O ~ N ~ S
+*/
+
+/*
+	The function triangulateStar() triangulates a star-shaped polygon using an ear clipping
+	approach. For that it successively cuts of ears which do not contain the given kernel
+	point. This ensures that the polygon is still star-shaped after a cut. To ensure a linear
+	time complexity the function uses a backtracking approach after each cut. Thus, the
+	triangulation is done after one walk around the polygon.
+*/
 void Polygon::triangulateStar(){
 	double referenceDet, area;
 	PolygonVertex *v0, *v1, *v2;
@@ -103,8 +114,18 @@ void Polygon::triangulateStar(){
 	free(v2);
 
 	n = 0;
+
+	startVertex = NULL;
 }
 
+/*
+	The function triangulateVisible() triangulates an edge-visible polygon using an ear
+	clipping approach. For that it successively cuts of ears going along the polygonal chain.
+	For edge visible polygons hold that each convex vertex not incident to the base edge
+	defines an ear and cutting of one of these ears lets the polygon remain edge-visible to
+	the given base edge. To ensure a linear time complexity the function uses a backtracking
+	approach after each cut. Thus, the triangulation is done after one walk around the polygon.
+*/
 void Polygon::triangulateVisible(){
 	double referenceDet, area;
 	PolygonVertex *v0, *v1, *v2, *additionalV;
@@ -185,6 +206,8 @@ void Polygon::triangulateVisible(){
 	free(v2);
 
 	n = 0;
+
+	startVertex = NULL;
 }
 
 /*
@@ -225,12 +248,33 @@ bool Polygon::insideTriangle(Vertex * const v0, Vertex * const v1, Vertex * cons
 }
 
 
+/*
+	C ~ O ~ N ~ S ~ T ~ R ~ U ~ C ~ T ~ O ~ R ~ S
+*/
 
+/*
+	Constructor:
+	Generates a new Polygon of type tp in the triangulation triang.
+
+	@param 	triang 	The triangulation the polygon lives in
+	@param 	tp 		The PolygonType of the polygon
+*/
 Polygon::Polygon(Triangulation *triang, PolygonType tp) :
-	type(tp), T(triang), n(0), startVertex(NULL), closed(false), lastVUsed(NULL), lastEUsed(NULL) {
+	type(tp), T(triang), n(0), startVertex(NULL), closed(false), lastVUsed(NULL),
+	lastEUsed(NULL), kernel(NULL) {}
 
-}
 
+/*
+	S ~ E ~ T ~ T ~ E ~ R ~ S
+*/
+
+/*
+	Adds a new vertex to the polygon which becomes lastVUsed. In case
+	the last added entity was also a vertex or the polygon is already
+	closed, this function throws a polygon build error.
+
+	@param 	v 	The new vertex
+*/
 void Polygon::addVertex(Vertex *v){
 	PolygonVertex *entry;
 
@@ -261,6 +305,13 @@ void Polygon::addVertex(Vertex *v){
 	n++;
 }
 
+/*
+	Adds a new edge to the polygon which becomes lastEUsed. In case
+	the last added entity was also an edge or the polygon is already
+	closed, this function throws a polygon build error.
+
+	@param 	e 	The new edge
+*/
 void Polygon::addEdge(TEdge *e){
 	PolygonEdge *entry;
 
@@ -291,14 +342,13 @@ void Polygon::addEdge(TEdge *e){
 	lastEUsed = entry;
 }
 
-void Polygon::setKernel(Vertex *k){
-	kernel = k;
-}
+/*
+	This function closes the polygon with an edge. Afterwards no other
+	entity can be added to the polygonal chain. In case the last inserted
+	entity was an edge, this function throws a polygon build error.
 
-void Polygon::changeType(PolygonType tp){
-	type = tp;
-}
-
+	@param 	e 	The edge to close the polygon with
+*/
 void Polygon::close(TEdge *e){
 	PolygonEdge *entry;
 
@@ -325,6 +375,45 @@ void Polygon::close(TEdge *e){
 	closed = true;
 }
 
+/*
+	Sets a kernel point for a star-shaped polygon. In case the polygon is
+	not star-shaped, the function throws a polygon build error.
+
+	@param 	k 	The kernel point
+*/
+void Polygon::setKernel(Vertex *k){
+	if(type != PolygonType::STARSHAPED){
+		fprintf(stderr, "Polygon build error: Only star-shaped polygons require a kernel.\n");
+		exit(15);
+	}
+
+	kernel = k;
+}
+
+/*
+	Changes the type of a polygon to tp. In case the polygon has a kernel set
+	and is changed to another type than star-shaped, this function throws a
+	polygon build error.
+
+	@param 	tp 	The new PolygonType of the polygon
+*/
+void Polygon::changeType(PolygonType tp){
+	if(tp != PolygonType::STARSHAPED && kernel != NULL){
+		fprintf(stderr, "Polygon build error: A star-shaped polygon with a given kernel can not be changed to another type!\n");
+		exit(15);
+	}
+
+	type = tp;
+}
+
+
+/*
+	P ~ R ~ I ~ N ~ T ~ E ~ R
+*/
+
+/*
+	Prints the polygon to stderr.
+*/
 void Polygon::print(){
 	PolygonVertex *vertex;
 	PolygonEdge *edge;
@@ -347,6 +436,16 @@ void Polygon::print(){
 	fprintf(stderr, "End of polygon\n\n");
 }
 
+
+/*
+	O ~ T ~ H ~ E ~ R ~ S
+*/
+
+/*
+	Triangulates the polygon with the suitable triangulation function. If
+	the polygon is star-shaped, but no kernel point is set, the function
+	throws a triangulation error.
+*/
 void Polygon::triangulate(){
 	if(type == PolygonType::STARSHAPED){
 		
@@ -359,4 +458,33 @@ void Polygon::triangulate(){
 	}
 	else if(type == PolygonType::EDGEVISIBLE)
 		triangulateVisible();
+}
+
+
+/*
+	D ~ E ~ S ~ T ~ R ~ U ~ C ~ T ~ O ~ R
+*/
+
+/*
+	Destructor:
+	Cleans up the polygonal chain if necessary.
+*/
+Polygon::~Polygon(){
+	PolygonEdge *e;
+
+	while(startVertex != NULL){
+
+		e = startVertex -> nextE;
+
+		free(startVertex);
+
+		if(e != NULL){
+			startVertex = e -> nextV;
+
+			free(e);
+
+			e = NULL;
+		}else
+			startVertex = NULL;
+	}
 }

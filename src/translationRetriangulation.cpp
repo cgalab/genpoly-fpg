@@ -1503,4 +1503,9 @@ TranslationRetriangulation::~TranslationRetriangulation(){
 	delete nextNewE;
 	delete oldV;
 	delete newV;
+
+	if(p0 != NULL) delete p0;
+	if(p1 != NULL) delete p1;
+	if(p2 != NULL) delete p2;
+	if(p3 != NULL) delete p3;
 }
