@@ -1,5 +1,5 @@
 /* 
- * Copyright 2020 Philipp Mayer - philmay1992@gmail.com
+ * Copyright 2021 Philipp Mayer - philmay1992@gmail.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -73,6 +73,11 @@ private:
 		The type of the translation
 	*/
 	const TranslationType type;
+
+	/*
+		The path the vertex should move along
+	*/
+	TEdge *transPath;
 
 	/*
 		The event queue for this translation

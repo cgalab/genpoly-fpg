@@ -324,8 +324,6 @@ Translation::Translation(Triangulation *Tr, int i, double dX, double dY) :
 	oldV = (*original).getTranslated(0, 0);
 	newV = (*original).getTranslated(dx, dy);
 
-	transPath = new TEdge(oldV, newV);
-
 	prevOldE = (*original).getToPrev();
 	nextOldE = (*original).getToNext();
 

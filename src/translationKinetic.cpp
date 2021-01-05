@@ -40,6 +40,8 @@
 TranslationKinetic::TranslationKinetic(Triangulation *Tr, int i, double dX, double dY, TranslationType tp) : 
 	Translation(Tr, i, dX, dY), split(false), type(tp), actualTime(0){
 
+	transPath = new TEdge(oldV, newV);
+
 	Q = new EventQueue(original, oldV, newV);
 }
 
@@ -760,6 +762,8 @@ bool TranslationKinetic::undo(){
 */
 TranslationKinetic::TranslationKinetic(Triangulation *Tr, int i, double dX, double dY) :
 	Translation(Tr, i, dX, dY), split(false), type(TranslationType::DEFAULT), actualTime(0){
+
+	transPath = new TEdge(oldV, newV);
 
 	Q = new EventQueue(original, oldV, newV);
 }
