@@ -1,10 +1,11 @@
 # FPG
 
-Philipp Mayer's Fast Polygon Generator. Starting from a regular polygon of given size FPG randomly translates the poylgon verties across the plane by maintaining the polygons' simplicity.
+Philipp Mayer's Fast Polygon Generator. Starting from a regular polygon of given size FPG randomly translates the polygon's vertices across the plane by maintaining the polygons' simplicity using a triangulation. To adjust the triangulation to changes, FPG has implemented two different approaches: A kinetic triangulation approach and an approach which finds obsolete parts of the triangulation and replaces them by a new triangulation.
 
 # Algorithm
 
-TBD: add reference to my thesis
+Details of the algorithm are described in the Master's Thesis [Generating Random Simple Polygons by Vertex Translations and Insertions](https://www.researchgate.net/publication/348275206_Generating_Random_Simple_Polygons_by_Vertex_Translations_and_Insertions)
+.
 
 # Output
 
@@ -37,6 +38,7 @@ For the `RELEASE` version use `cmake -D CMAKE_BUILD_TYPE=Release ..`
 |  --startsize  | -i        | give the number of vertices of the start polygon (default: 10) |
 |  --seed       | -s        | set the seed for the random generator (default: random)        |
 |  --arithmetic | -a        | enable Shewchuk's 'exact' arithmetic                           |
+|  --kinetic    | -k        | uses the kinetic triangulation approach instead of replacing the obsolete triangulation parts  |
 |  --holesizes  | -H        | give a list for the number of vertices of the holes            |
 |  --outputformat  | -o     | select between dat, line or graphml (default: graphml)         |
 |  --enablestats   | -t     | enable the computation of statistics, results are printed      |

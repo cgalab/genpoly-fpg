@@ -149,8 +149,6 @@ void TranslationRetriangulation::bPSCOppositeDirection(){
 	delete tTest;
 
 	// Make sure to take the triangle in the right direction
-	// TODO:
-	// Maybe this condition is not complete
 	if(signbit(areaOld) == signbit(areaNew) || (*v).getID() == (*nextV).getID())
 		t = (*prevOldE).getT1();
 	
@@ -238,8 +236,6 @@ void TranslationRetriangulation::bPSRC1OppositeDirection(){
 	delete tTest;
 
 	// Make sure to take the triangle in the right direction
-	// TODO:
-	// Maybe this condition is not complete
 	if(signbit(areaOld) == signbit(areaNew))
 		t = (*prevOldE).getT1();
 	
