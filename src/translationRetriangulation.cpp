@@ -1048,7 +1048,7 @@ TEdge *TranslationRetriangulation::bPSRC3SPOld(Vertex *primaryV, Vertex *seconda
 
 	// Note: In the first iteration SPEdge contains primaryV and thus, intersects primaryNewW
 	// This intersection must be filtered
-	while((*SPEdge).contains(primaryV) || (!insideTriangle(t, newV) && checkIntersection(SPEdge, primaryNewE, true) == IntersectionType::NONE)){
+	while((*SPEdge).contains(primaryV) || (!(*t).inside(newV) && checkIntersection(SPEdge, primaryNewE, true) == IntersectionType::NONE)){
 		(*p1).addEdge(SPEdge);
 		(*p1).addVertex(v);
 
@@ -1062,7 +1062,7 @@ TEdge *TranslationRetriangulation::bPSRC3SPOld(Vertex *primaryV, Vertex *seconda
 
 	borderV = (*t).getOtherVertex(e);
 
-	if(insideTriangle(t, newV)){
+	if((*t).inside(newV)){
 
 		// Close p1
 		e1 = new TEdge(borderV, original);
@@ -1163,7 +1163,7 @@ TEdge *TranslationRetriangulation::bPSRC3SPOld(Vertex *primaryV, Vertex *seconda
 
 			(*p1).close(e);
 
-			if(Translation::insideTriangle(borderV, newV, primaryV, oldV))
+			if(Triangle::insideTriangle(borderV, newV, primaryV, oldV))
 				(*p1).changeType(PolygonType::EDGEVISIBLE);
 			else
 				(*p1).setKernel(oldV);
@@ -1353,19 +1353,6 @@ void TranslationRetriangulation::bPSRC3TranslationDirection(Vertex *primaryV, Ve
 }
 
 /*
-	The function insideTriangle() checks whether the vertex toCheck is inside the given
-	triangle t.
-
-	@param 	t 			The triangle
-	@param 	toCheck 	The vertex for which should be checked whether it lays inside the
-						triangle or not
-	@return 			True if toCheck lays inside the triangle, otherwise false
-*/
-bool TranslationRetriangulation::insideTriangle(Triangle *t, Vertex *toCheck){
-	return Translation::insideTriangle((*t).getVertex(0), (*t).getVertex(1), (*t).getVertex(2), toCheck);
-}
-
-/*
 	The function checkVisibility() checks whether v0 is visible to v1 through the interior
 	of the SP of the moving vertex. For that it traces the edge between the two vertices
 	through the triangulation.
@@ -1540,8 +1527,8 @@ enum Executed TranslationRetriangulation::execute(){
 	if(sideChange){
 		buildPolygonsSideChange();
 	}else{
-		newInsideOld = Translation::insideTriangle(prevV, oldV, nextV, newV);
-		oldInsideNew = Translation::insideTriangle(prevV, newV, nextV, oldV);
+		newInsideOld = Triangle::insideTriangle(prevV, oldV, nextV, newV);
+		oldInsideNew = Triangle::insideTriangle(prevV, newV, nextV, oldV);
 
 		// 1. Case:
 		// The vertex is moved into the triangle defined by the old position of the

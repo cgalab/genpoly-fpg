@@ -145,19 +145,6 @@ private:
 	*/
 	void triangulateVisible();
 
-	/*
-		The function insideTriangle() checks whether the vertex toCheck is inside the triangle
-		formed by the vertices v0, v1 and v2.
-
-		@param	v0 			First vertex of the triangle
-		@param 	v1 			Second vertex of the triangle
-		@param 	v2 			Third vertex of the triangle
-		@param 	toCheck 	The vertex for which should be checked whether it lays inside the
-							triangle or not
-		@return 			True if toCheck lays inside the triangle, otherwise false
-	*/
-	bool insideTriangle(Vertex * const v0, Vertex * const v1, Vertex * const v2,
-		Vertex * const toCheck);
 
 public:
 

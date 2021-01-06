@@ -226,17 +226,6 @@ private:
 	*/
 	void bPSRC3TranslationDirection(Vertex *primaryV, Vertex *secondaryV, TEdge *borderE,
 		TEdge *primaryE, TEdge *primaryNewE, TEdge *secondaryE, TEdge *secondaryNewE);
-	
-	/*
-		The function insideTriangle() checks whether the vertex toCheck is inside the given
-		triangle t.
-
-		@param 	t 			The triangle
-		@param 	toCheck 	The vertex for which should be checked whether it lays inside the
-							triangle or not
-		@return 			True if toCheck lays inside the triangle, otherwise false
-	*/
-	bool insideTriangle(Triangle *t, Vertex *toCheck);
 
 	/*
 		The function checkVisibility() checks whether v0 is visible to v1 through the interior

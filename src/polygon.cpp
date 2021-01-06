@@ -64,7 +64,7 @@ void Polygon::triangulateStar(){
 		// Additionally, we have to check whether the triangle contains the kernel
 		// If it does, we can not cut off this triangle as the polygon could afterwards
 		// be not star-shaped anymore
-		inside = insideTriangle(v0 -> v, v1 -> v, v2 -> v, kernel);
+		inside = Triangle::insideTriangle(v0 -> v, v1 -> v, v2 -> v, kernel);
 
 		if(!inside && area != 0 && signbit(area) == signbit(referenceDet)){
 			newEdge = new TEdge(v0 -> v, v2 -> v);
@@ -208,43 +208,6 @@ void Polygon::triangulateVisible(){
 	n = 0;
 
 	startVertex = NULL;
-}
-
-/*
-	The function insideTriangle() checks whether the vertex toCheck is inside the triangle
-	formed by the vertices v0, v1 and v2.
-
-	@param	v0 			First vertex of the triangle
-	@param 	v1 			Second vertex of the triangle
-	@param 	v2 			Third vertex of the triangle
-	@param 	toCheck 	The vertex for which should be checked whether it lays inside the
-						triangle or not
-	@return 			True if toCheck lays inside the triangle, otherwise false
-*/
-bool Polygon::insideTriangle(Vertex * const v0, Vertex * const v1, Vertex * const v2,
-	Vertex * const toCheck){
-	double area0, area1;
-	Triangle *t;
-
-	t = new Triangle(v0, v1, toCheck);
-	area0 = (*t).signedArea();
-	delete t;
-
-	t = new Triangle(v1, v2, toCheck);
-	area1 = (*t).signedArea();
-	delete t;
-
-	if(signbit(area0) != signbit(area1))
-		return false;
-
-	t = new Triangle(v2, v0, toCheck);
-	area1 = (*t).signedArea();
-	delete t;
-
-	if(signbit(area0) != signbit(area1))
-		return false;
-
-	return true;
 }
 
 

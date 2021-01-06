@@ -122,43 +122,6 @@ bool Translation::insideQuadrilateral(Vertex * const v) const{
 }
 
 /*
-	The function insideTriangle() checks whether the vertex toCheck is inside the triangle
-	formed by the vertices v0, v1 and v2.
-
-	@param	v0 			First vertex of the triangle
-	@param 	v1 			Second vertex of the triangle
-	@param 	v2 			Third vertex of the triangle
-	@param 	toCheck 	The vertex for which should be checked whether it lays inside the
-						triangle or not
-	@return 			True if toCheck lays inside the triangle, otherwise false
-*/
-bool Translation::insideTriangle(Vertex * const v0, Vertex * const v1, Vertex * const v2,
-	Vertex * const toCheck){
-	double area0, area1;
-	Triangle *t;
-
-	t = new Triangle(v0, v1, toCheck);
-	area0 = (*t).signedArea();
-	delete t;
-
-	t = new Triangle(v1, v2, toCheck);
-	area1 = (*t).signedArea();
-	delete t;
-
-	if(signbit(area0) != signbit(area1))
-		return false;
-
-	t = new Triangle(v2, v0, toCheck);
-	area1 = (*t).signedArea();
-	delete t;
-
-	if(signbit(area0) != signbit(area1))
-		return false;
-
-	return true;
-}
-
-/*
 	The function checkEdge() checks whether the edge newE starting at vertex fromV intersects any
 	polygon edge. Therefore it first checks whether newE intersects any edge of the surrounding
 	polygon of fromV. If it does not, then it can not intersect any polygon edge, otherwise we
@@ -383,8 +346,8 @@ bool Translation::checkOrientation(){
 		// Get a random vertex of the polygon
 		randomV = (*T).getVertex(0, i);
 
-		inside0 = insideTriangle(oldV, newV, prevV, randomV);
-		inside1 = insideTriangle(oldV, newV, nextV, randomV);
+		inside0 = Triangle::insideTriangle(oldV, newV, prevV, randomV);
+		inside1 = Triangle::insideTriangle(oldV, newV, nextV, randomV);
 
 		if(inside0 || inside1)
 			return true;

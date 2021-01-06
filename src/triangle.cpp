@@ -546,13 +546,6 @@ TEdge *Triangle::getNotIntersectedEdge() const{
 	return NULL;
 }
 
-/*
-	@return 	The recent number of existing instances of triangle
-*/
-unsigned long long Triangle::getNumberOfExistingTriangles(){
-	return existing;
-}
-
 
 /*
 	P ~ R ~ I ~ N ~ T ~ E ~ R
@@ -702,6 +695,37 @@ double Triangle::signedArea() const{
 		return signedAreaDouble();
 }
 
+/*
+	Checks whether the vertex v is in the interior of the triangle.
+
+	@param 	v 	The vertex of interest
+	@return 	True if v is in the interior of the triangle, otherwise false
+*/
+bool Triangle::inside(Vertex *v) const{
+	double area0, area1;
+	Triangle *t;
+
+	t = new Triangle(v0, v1, v);
+	area0 = (*t).signedArea();
+	delete t;
+
+	t = new Triangle(v1, v2, v);
+	area1 = (*t).signedArea();
+	delete t;
+
+	if(signbit(area0) != signbit(area1))
+		return false;
+
+	t = new Triangle(v2, v0, v);
+	area1 = (*t).signedArea();
+	delete t;
+
+	if(signbit(area0) != signbit(area1))
+		return false;
+
+	return true;
+}
+
 
 /*
 	D ~ E ~ S ~ T ~ R ~ U ~ C ~ T ~ O ~ R
@@ -726,4 +750,52 @@ Triangle::~Triangle(){
 		(*e2).removeTriangle(this);
 
 	existing--;
+}
+
+
+/*
+	S ~ T ~ A ~ T ~ I ~ C   F ~ U ~ N ~ C ~ T ~ I ~ O ~ N ~ S
+*/
+
+/*
+	@return 	The recent number of existing instances of triangle
+*/
+unsigned long long Triangle::getNumberOfExistingTriangles(){
+	return existing;
+}
+
+/*
+	The function insideTriangle() checks whether the vertex v is inside the triangle
+	formed by the vertices v0, v1 and v2.
+
+	@param	v0 			First vertex of the triangle
+	@param 	v1 			Second vertex of the triangle
+	@param 	v2 			Third vertex of the triangle
+	@param 	v 			The vertex for which should be checked whether it lies inside the
+						triangle or not
+	@return 			True if v lies inside the triangle, otherwise false
+*/
+bool Triangle::insideTriangle(Vertex  *v0, Vertex *v1, Vertex *v2, Vertex *v){
+	double area0, area1;
+	Triangle *t;
+
+	t = new Triangle(v0, v1, v);
+	area0 = (*t).signedArea();
+	delete t;
+
+	t = new Triangle(v1, v2, v);
+	area1 = (*t).signedArea();
+	delete t;
+
+	if(signbit(area0) != signbit(area1))
+		return false;
+
+	t = new Triangle(v2, v0, v);
+	area1 = (*t).signedArea();
+	delete t;
+
+	if(signbit(area0) != signbit(area1))
+		return false;
+
+	return true;
 }

@@ -817,8 +817,8 @@ bool TranslationKinetic::checkOrientation(){
 		// Get a random vertex of the polygon
 		randomV = (*T).getVertex(0, i);
 
-		inside0 = insideTriangle(oldV, newV, prevV, randomV);
-		inside1 = insideTriangle(oldV, newV, nextV, randomV);
+		inside0 = Triangle::insideTriangle(oldV, newV, prevV, randomV);
+		inside1 = Triangle::insideTriangle(oldV, newV, nextV, randomV);
 
 		// TODO:
 		// is this really correct and not the wrong way around?

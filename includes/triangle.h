@@ -1,5 +1,5 @@
 /* 
- * Copyright 2020 Philipp Mayer - philmay1992@gmail.com
+ * Copyright 2021 Philipp Mayer - philmay1992@gmail.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -161,7 +161,6 @@ public:
 		TEdge* 						getLongestEdgeAlt() const
 		double 						getRange(Vertex const * const v, const double alpha) const
 		TEdge* 						getNotIntersectedEdge() const
-		static unsigned long long 	getNumberOfExistingTriangles() const
 
 		PRINTER:
 
@@ -177,7 +176,13 @@ public:
 		double 						calculateCollapseTime(Vertex * const moving, const double dx,
 									const double dy) const
 		double 						signedArea() const
+		bool 						inside(Vertex *v) const
 
+
+		LIST OF STATIC FUNCTIONS
+
+		static bool  				insideTriangle(Vertex *v0, Vertex *v1, Vertex *v2, Vertex *v)
+		static unsigned long long 	getNumberOfExistingTriangles() const
 	*/
 
 
@@ -362,11 +367,6 @@ public:
 	*/
 	TEdge *getNotIntersectedEdge() const;
 
-	/*
-		@return 	The recent number of existing instances of triangle
-	*/
-	static unsigned long long getNumberOfExistingTriangles();
-
 
 	/*
 		P ~ R ~ I ~ N ~ T ~ E ~ R
@@ -442,6 +442,14 @@ public:
 			In fact, it computes two times the signed area of the triangle.
 	*/
 	double signedArea() const;
+
+	/*
+		Checks whether the vertex v is in the interior of the triangle.
+
+		@param 	v 	The vertex of interest
+		@return 	True if v is in the interior of the triangle, otherwise false
+	*/
+	bool inside(Vertex *v) const;
 	
 	
 	/*
@@ -452,7 +460,30 @@ public:
 		Destructor:
 		Removes also the dangling pointers from the vertices' an edges' triangles' lists.
 	*/
-	~Triangle();	
+	~Triangle();
+
+
+	/*
+		S ~ T ~ A ~ T ~ I ~ C   F ~ U ~ N ~ C ~ T ~ I ~ O ~ N ~ S
+	*/
+
+	/*
+		@return 	The recent number of existing instances of triangle
+	*/
+	static unsigned long long getNumberOfExistingTriangles();
+
+	/*
+		The function insideTriangle() checks whether the vertex v is inside the triangle
+		formed by the vertices v0, v1 and v2.
+
+		@param	v0 			First vertex of the triangle
+		@param 	v1 			Second vertex of the triangle
+		@param 	v2 			Third vertex of the triangle
+		@param 	v 			The vertex for which should be checked whether it lies inside the
+							triangle or not
+		@return 			True if v lies inside the triangle, otherwise false
+	*/
+	static bool insideTriangle(Vertex  *v0, Vertex *v1, Vertex *v2, Vertex *v);
 };
 	
 #endif
