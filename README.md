@@ -1,6 +1,6 @@
 # FPG
 
-Philipp Mayer's Fast Polygon Generator. Starting from a regular polygon of given size FPG randomly translates the polygon's vertices across the plane by maintaining the polygons' simplicity using a triangulation. To adjust the triangulation to changes, FPG has implemented two different approaches: A kinetic triangulation approach and an approach which finds obsolete parts of the triangulation and replaces them by a new triangulation.
+Philipp Mayer's Fast Polygon Generator. Starting from a regular polygon of given size FPG randomly translates the polygon's vertices across the plane by maintaining the polygon's simplicity using a triangulation. To adjust the triangulation to the translations, FPG has implemented two different approaches: A kinetic triangulation approach and an approach which finds obsolete parts of the triangulation and replaces them by new triangulation.
 
 # Algorithm
 
@@ -27,7 +27,7 @@ For the `RELEASE` version use `cmake -D CMAKE_BUILD_TYPE=Release ..`
 
 # Usage
 
-	./fpg [--help] [--verbose] [--mute] [--nrofholes <num>] [--startsize <num>] [--seed <num>] [--arithmetic] [--holesizes <num,num,...>] [--outputformat <format>] [--statsfile <filename>] [--disablelocalchecks] [--enableglobalchecks] [--enablestats] [--disableweightedselection] [--printtriang <filename>] <POLYGON_SIZE> [OUTPUT_FILE]
+	./fpg [--help] [--verbose] [--mute] [--nrofholes <num>] [--startsize <num>] [--seed <num>] [--arithmetic] [--kinetic] [--holesizes <num,num,...>] [--outputformat <format>] [--statsfile <filename>] [--disablelocalchecks] [--enableglobalchecks] [--enablestats] [--disableweightedselection] [--printtriang <filename>] <POLYGON_SIZE> [OUTPUT_FILE]
 
 | options       | shortform | description   |
 | -------------:|----------:|:------------- |
