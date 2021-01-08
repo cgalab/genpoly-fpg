@@ -149,7 +149,7 @@ void TranslationRetriangulation::bPSCOppositeDirection(){
 	delete tTest;
 
 	// Make sure to take the triangle in the right direction
-	if(signbit(areaOld) == signbit(areaNew) || (*v).getID() == (*nextV).getID())
+	if(signbit(areaOld) == signbit(areaNew) || *v == *nextV)
 		t = (*prevOldE).getT1();
 	
 	// Start building the polygon
@@ -665,8 +665,7 @@ void TranslationRetriangulation::bPSCTranslationDirection(){
 
 	// Case: 
 	// Translation ends in a triangle which is incident to the moving vertex
-	if((*v1).getID() == (*original).getID() || (*v2).getID() == (*original).getID()
-		|| (*v3).getID() == (*original).getID()){
+	if(*v1 == *original || *v2 == *original || *v3 == *original){
 
 		// The triangle is also incident to prevV
 		// => v3 is prevV
@@ -675,7 +674,7 @@ void TranslationRetriangulation::bPSCTranslationDirection(){
 			delete p1;
 			p1 = NULL;
 
-			if((*v1).getID() == (*original).getID()){
+			if(*v1 == *original){
 				// => v2 is another vertex to link with
 				e1 = new TEdge(original, v2);
 				new Triangle(prevOldE, e1, (*v3).getEdgeTo(v2), prevV, original, v2);
@@ -702,7 +701,7 @@ void TranslationRetriangulation::bPSCTranslationDirection(){
 			delete p2;
 			p2 = NULL;
 
-			if((*v1).getID() == (*original).getID()){
+			if(*v1 == *original){
 				// => v2 is another vertex to link with
 				e1 = new TEdge(original, v2);
 				new Triangle(nextOldE, e1, (*v3).getEdgeTo(v2), nextV, original, v2);
@@ -735,7 +734,7 @@ void TranslationRetriangulation::bPSCTranslationDirection(){
 			(*p1).addVertex(original);
 			(*p1).close(prevOldE);
 
-			if((*original).getID() == (*v1).getID()){
+			if(*v1 == *original){
 				// => v2 is the vertex to close the chain of nextOldE
 				e2 = new TEdge(original, v2);
 				(*T).addEdge(e2, 0);
@@ -778,7 +777,7 @@ void TranslationRetriangulation::bPSCTranslationDirection(){
 			// Case:
 			// v1 is the prevV
 			// => v2 will close the chain of nextV
-			if((*prevV).getID() == (*v1).getID()){
+			if(*v1 == *prevV){
 				
 				e2 = new TEdge(original, v2);
 				(*T).addEdge(e2, 0);
@@ -819,7 +818,7 @@ void TranslationRetriangulation::bPSCTranslationDirection(){
 			// Case:
 			// v1 is the nextV
 			// => v2 will close the chain of prevV
-			if((*nextV).getID() == (*v1).getID()){
+			if(*v1 == *nextV){
 		
 				e2 = new TEdge(original, v2);
 				(*T).addEdge(e2, 0);
@@ -959,7 +958,7 @@ void TranslationRetriangulation::bPSRC1TranslationDirection(){
 	// So we close the first polygon with a new edge and start the second one
 	// (only in case we have not reached nextOldE, otherwise we simply
 	// close p1 and do not need a second polygon)
-	if((*e).getID() == (*nextOldE).getID()){
+	if(*e == *nextOldE){
 		// Close
 		(*p1).addEdge(nextOldE);
 		(*p1).addVertex(original);
@@ -1036,7 +1035,7 @@ TEdge *TranslationRetriangulation::bPSRC3SPOld(Vertex *primaryV, Vertex *seconda
 	// the triangles in the other direction (except if there is just one triangle)
 	t = (*primaryE).getT0();
 
-	if(t == NULL || (*(*t).getOtherVertex(primaryE)).getID() == (*secondaryV).getID())
+	if(t == NULL || *(*t).getOtherVertex(primaryE) == *secondaryV)
 		t = (*primaryE).getT1();
 
 	p1 = new Polygon(T, PolygonType::STARSHAPED);
@@ -1090,7 +1089,7 @@ TEdge *TranslationRetriangulation::bPSRC3SPOld(Vertex *primaryV, Vertex *seconda
 
 		// First check, whether a second polygon is required
 		// It is not required if the actual triangle contains secondaryV
-		if((*v).getID() == (*secondaryV).getID())			
+		if(*v == *secondaryV)			
 
 			new Triangle(SPEdge, secondaryE, e1, original, borderV, secondaryV);
 

@@ -155,7 +155,7 @@ Triangle::Triangle(TEdge *E0, TEdge *E1, TEdge *E2, Vertex *V0, Vertex *V1, Vert
 
 	Triangle *t;
 
-	if((*v0).getID() == (*v1).getID() || (*v0).getID() == (*v2).getID() || (*v2).getID() == (*v1).getID()){
+	if(*v0 == *v1 || *v0 == *v2 || *v2 == *v1){
 		fprintf(stderr, "Two vertices of the new triangle are identical!\n");
 		exit(5);
 	}
@@ -573,11 +573,10 @@ void Triangle::print() const{
 	@return 	True if the triangle contains v, otherwise false
 */
 bool Triangle::contains(Vertex const * const v) const{
-	unsigned long long id = (*v).getID();
 
-	if((*v0).getID() == id) return true;
-	if((*v1).getID() == id) return true;
-	if((*v2).getID() == id) return true;
+	if(*v0 == *v) return true;
+	if(*v1 == *v) return true;
+	if(*v2 == *v) return true;
 	return false;
 }
 
@@ -588,11 +587,10 @@ bool Triangle::contains(Vertex const * const v) const{
 	@return 	True if the triangle contains e, otherwise false
 */
 bool Triangle::contains(TEdge const * const e) const{
-	unsigned long long id = (*e).getID();
 
-	if((*e0).getID() == id) return true;
-	if((*e1).getID() == id) return true;
-	if((*e2).getID() == id) return true;
+	if(*e0 == *e) return true;
+	if(*e1 == *e) return true;
+	if(*e2 == *e) return true;
 	return false;
 }
 
@@ -645,12 +643,12 @@ double Triangle::calculateCollapseTime(Vertex * const moving, const double dx, c
 	cx = (*moving).getX();
 	cy = (*moving).getY();
 
-	if((*moving).getID() == (*v0).getID()){
+	if(*moving == *v0){
 		ax = (*v1).getX();
 		ay = (*v1).getY();
 		bx = (*v2).getX();
 		by = (*v2).getY();
-	}else if((*moving).getID() == (*v1).getID()){
+	}else if(*moving == *v1){
 		ax = (*v0).getX();
 		ay = (*v0).getY();
 		bx = (*v2).getX();

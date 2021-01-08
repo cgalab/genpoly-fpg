@@ -131,7 +131,7 @@ private:
 
 public:
 
-	bool operator <(const Vertex& v){
+	bool operator <(const Vertex& v) const{
 
 		if(x < v.x)
 			return true;
@@ -140,6 +140,22 @@ public:
 				return true;
 			else
 				return false;
+		else
+			return false;
+	}
+
+	bool operator ==(const Vertex& v) const{
+
+		if(id == v.id)
+			return true;
+		else
+			return false;
+	}
+
+	bool operator !=(const Vertex& v) const{
+
+		if(id != v.id)
+			return true;
 		else
 			return false;
 	}

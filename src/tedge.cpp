@@ -49,7 +49,7 @@ TEdge::TEdge(Vertex * const V0, Vertex * const V1) :
 
 	n++;
 
-	if(v0 == NULL || v1 == NULL || (*v0).getID() == (*v1).getID()){
+	if(v0 == NULL || v1 == NULL || *v0 == *v1){
 		fprintf(stderr, "error circle edge\n");
 		exit(1);
 	}
@@ -86,7 +86,7 @@ TEdge::TEdge(Vertex * const V0, Vertex * const V1, const EdgeType tp) :
 
 	n++;
 
-	if(v0 == NULL || v1 == NULL || (*v0).getID() == (*v1).getID()){
+	if(v0 == NULL || v1 == NULL || *v0 == *v1){
 		fprintf(stderr, "error circle edge\n");
 		exit(1);
 	}
@@ -153,7 +153,7 @@ void TEdge::setTriangle(Triangle * const t){
 		exit(4);
 	}
 
-	if(t0 != NULL && t1 != NULL && (*t0).getID() == (*t1).getID()){
+	if(t0 != NULL && t1 != NULL && *t0 == *t1){
 		fprintf(stderr, "The edge from vertex %llu to vertex %llu has already registered the same triangle! \n", (*v0).getID(), (*v1).getID());
 		exit(5);
 	}	
@@ -253,7 +253,7 @@ Triangle *TEdge::getTriangleContaining(Vertex const * const v) const{
 	@return 	Another triangle
 */
 Triangle *TEdge::getOtherTriangle(Triangle const * const t) const{
-	if(t0 != NULL && (*t).getID() == (*t0).getID()) return t1;
+	if(t0 != NULL && *t == *t0) return t1;
 	else return t0;
 }
 
@@ -265,7 +265,7 @@ Triangle *TEdge::getOtherTriangle(Triangle const * const t) const{
 	@return 	Another vertex
 */
 Vertex *TEdge::getOtherVertex(Vertex const * const v) const{
-	if((*v).getID() == (*v0).getID())
+	if(*v == *v0)
 		return v1;
 	else
 		return v0;
@@ -308,9 +308,9 @@ bool TEdge::isIntersected() const{
 		This function does not remove the edge from the triangle
 */
 void TEdge::removeTriangle(Triangle * const t){
-	if(t0 != NULL && (*t0).getID() == (*t).getID())
+	if(t0 != NULL && *t0 == *t)
 	 	t0 = NULL;
-	else if(t1 != NULL && (*t1).getID() == (*t).getID()) 
+	else if(t1 != NULL && *t1 == *t) 
 		t1 = NULL;
 	else 
 		fprintf(stderr, "Removed triangle was not adjacent to edge from vertex %llu to vertex %llu \n", (*v0).getID(), (*v1).getID());
@@ -375,8 +375,8 @@ double TEdge::length() const{
 	@return 	True if the edge contains v, otherwise false
 */
 bool TEdge::contains(Vertex const * const v) const{
-	if((*v).getID() == (*v0).getID()) return true;
-	if((*v).getID() == (*v1).getID()) return true;
+	if(*v == *v0) return true;
+	if(*v == *v1) return true;
 	return false;
 }
 
@@ -403,7 +403,7 @@ double TEdge::getAngle(Vertex const * const v) const{
 	double x0, y0, x1, y1, dx, dy;
 	double cosa, alpha;
 
-	if((*v).getID() == (*v0).getID()){
+	if(*v == *v0){
 		x0 = (*v0).getX();
 		y0 = (*v0).getY();
 		x1 = (*v1).getX();

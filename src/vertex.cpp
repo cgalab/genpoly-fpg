@@ -237,12 +237,11 @@ unsigned long long Vertex::getID() const{
 					NULL
 */
 TEdge *Vertex::getEdgeTo(Vertex * const toV) const{
-	unsigned long long toID = (*toV).getID();
 	Vertex *v;
 
 	for(auto const& i : edges){
 		v = (*i).getOtherVertex(this);
-		if((*v).getID() == toID)
+		if(*v == *toV)
 			return i;
 	}
 

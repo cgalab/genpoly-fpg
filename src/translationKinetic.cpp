@@ -424,7 +424,7 @@ bool TranslationKinetic::flip(Triangle *t0, const bool singleFlip){
 			
 			// Decide which vertex is the non-moving vertex both new triangles share for an
 			// opposite flip 
-			if((*original).getID() == (*vn0).getID())
+			if(*vn0 == *original)
 				common = vn1;
 			else
 				common = vn0;
@@ -435,7 +435,7 @@ bool TranslationKinetic::flip(Triangle *t0, const bool singleFlip){
 			
 			// Decide which vertex is the non-shared vertex of the triangle which does not
 			// change anymore
-			if((*vj0).getID() == (*original).getID())
+			if(*vj0 == *original)
 				opposite = vj1;
 			else
 				opposite = vj0;

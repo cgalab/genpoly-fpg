@@ -53,7 +53,7 @@ void EventQueue::stabilize(struct Event *e0, struct Event *e1){
 	t = (*edge).getOtherTriangle(t0);
 
 	// Triangles do not share the first edge
-	if((*t).getID() != (*t1).getID()){
+	if(*t != *t1){
 		edge = (*t0).getOtherEdgeContaining(original, edge);
 		t = (*edge).getOtherTriangle(t0);
 

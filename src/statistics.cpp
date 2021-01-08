@@ -322,7 +322,10 @@ void Statistics::writeStatsFile(Triangulation const * const T){
 	trans.add("checked", translationTries);
 	trans.add("performed", translationsPerf);
 	trans.add("splits", splits);
-	trans.add("undone/aborted", undone);
+	if(Settings::kinetic)
+		trans.add("undone", undone);
+	else
+		trans.add("aborted", undone);
 	trans.add("averagesp", (double)nrSPTriangles / (double) nrChecks);
 	trans.add("maxsp", maxSPTriangles);
 	trans.add("averagepassed", (double)nrTriangles / (double) nrChecks);

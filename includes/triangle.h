@@ -134,6 +134,22 @@ private:
 	double det(Vertex * const V0, Vertex * const V1, Vertex * const V2) const;
 
 public:
+
+	bool operator ==(const Triangle& t) const{
+
+		if(id == t.id)
+			return true;
+		else
+			return false;
+	}
+
+	bool operator !=(const Triangle& t) const{
+
+		if(id != t.id)
+			return true;
+		else
+			return false;
+	}
 	
 	/*
 		LIST OF PUBLIC MEMBER FUNCTIONS

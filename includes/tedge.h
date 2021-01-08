@@ -121,6 +121,22 @@ private:
 
 public:
 
+	bool operator ==(const TEdge& e) const{
+
+		if(id == e.id)
+			return true;
+		else
+			return false;
+	}
+
+	bool operator !=(const TEdge& e) const{
+
+		if(id != e.id)
+			return true;
+		else
+			return false;
+	}
+
 	/*
 		LIST OF PUBLIC MEMBER FUNCTIONS
 
