@@ -65,6 +65,12 @@ private:
 	Vertex * const v2;
 
 	/*
+		Indicates whether the triangle is internal to the polygon or not.
+		Triangles in the interior of a hole are counted as external.
+	*/
+	const bool internal;
+
+	/*
 		Indicates whether the triangle is element of the actual event queue
 	*/
 	bool enqueued;
@@ -189,6 +195,7 @@ public:
 		void 						enqueue()
 		void 						dequeue()
 		bool 						isEnqueued() const
+		bool 						isInternal() const
 		double 						calculateCollapseTime(Vertex * const moving, const double dx,
 									const double dy) const
 		double 						signedArea() const
@@ -213,19 +220,21 @@ public:
 		whether a triangle built of the same edges already exists and in case errors with exit
 		code 5.
 
-		@param 	E0 	The first edge of the triangle
-		@param 	E1 	The second edge of the triangle
-		@param 	E2 	The third edge of the triangle
-		@param 	V0 	The first vertex of the triangle
-		@param 	V1 	The second vertex of the triangle
-		@param 	V2 	The third vertex of the triangle
+		@param 	E0 		The first edge of the triangle
+		@param 	E1 		The second edge of the triangle
+		@param 	E2 		The third edge of the triangle
+		@param 	V0 		The first vertex of the triangle
+		@param 	V1 		The second vertex of the triangle
+		@param 	V2 		The third vertex of the triangle
+		@param 	intern 	Indicates whether the triangle is internal or external to the polygon.
+						Triangles in the interior of a hole a counted as external.
 
 		Note:
 			- The order of the edges is not important if relative to the order of the vertices
 			- The order of the vertices is just important if you want to check the orientation
 				of the triangle
 	*/
-	Triangle(TEdge *E0, TEdge *E1, TEdge *E2, Vertex *V0, Vertex *V1, Vertex *V2);
+	Triangle(TEdge *E0, TEdge *E1, TEdge *E2, Vertex *V0, Vertex *V1, Vertex *V2, bool intern);
 
 	/*
 		Constructor:
@@ -429,6 +438,12 @@ public:
 					false
 	*/
 	bool isEnqueued() const;
+
+	/*
+		@return 	False it the triangle is external to the polygon or internal to a hole,
+					otherwise true
+	*/
+	bool isInternal() const;
 
 	/*
 		The function calculateCollapseTime() computes at which time of a translation of the vertex

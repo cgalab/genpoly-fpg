@@ -359,6 +359,7 @@ bool TranslationKinetic::flip(Triangle *t0, const bool singleFlip){
 	// Indicates whether a new triangle has been inserted into the event queue
 	bool insertion = false; 
 	Vertex *common, *opposite;
+	bool internal;
 
 	if(!singleFlip)
 		// Move vertex to event time
@@ -389,6 +390,11 @@ bool TranslationKinetic::flip(Triangle *t0, const bool singleFlip){
 	vn0 = (*t0).getOtherVertex(e);
 	vn1 = (*t1).getOtherVertex(e);
 
+	// Find out whether the triangles are internal or external
+	// As e is not allowed to be a polygon edge, both triangles must
+	// be at the same side of the polygon
+	internal = (*t0).isInternal();
+
 	// This automatically also deletes the two triangles
 	delete e;
 
@@ -399,7 +405,7 @@ bool TranslationKinetic::flip(Triangle *t0, const bool singleFlip){
 	e1 = (*vj0).getEdgeTo(vn0);
 	e2 = (*vj0).getEdgeTo(vn1);
 
-	t0 = new Triangle(e, e1, e2, vn0, vn1, vj0);
+	t0 = new Triangle(e, e1, e2, vn0, vn1, vj0, internal);
 
 	// New triangle vn0, vn1, vj1
 	(*T).addEdge(e, 0);
@@ -407,7 +413,7 @@ bool TranslationKinetic::flip(Triangle *t0, const bool singleFlip){
 	e1 = (*vj1).getEdgeTo(vn0);
 	e2 = (*vj1).getEdgeTo(vn1);
 
-	t1 = new Triangle(e, e1, e2, vn0, vn1, vj1);
+	t1 = new Triangle(e, e1, e2, vn0, vn1, vj1, internal);
 
 	if(!singleFlip){
 		
@@ -692,6 +698,8 @@ bool TranslationKinetic::undo(){
 	Vertex *oldD0, *oldD1;
 	Vertex *newD0, *newD1;
 	TEdge *e;
+	Triangle *t;
+	bool internal;
 
 	if(!Settings::localChecking)
 		return false;
@@ -717,6 +725,10 @@ bool TranslationKinetic::undo(){
 			// Get the new edge to delete it
 			e = (*newD0).getEdgeTo(newD1);
 
+			// Find out whether the triangle are internal or external
+			t = (*e).getT0();
+			internal = (*t).isInternal();
+
 			delete e;
 
 			// Recreate the old edge
@@ -724,8 +736,8 @@ bool TranslationKinetic::undo(){
 			(*T).addEdge(e, 0);
 
 			// And the old triangles
-			new Triangle(e, (*oldD0).getEdgeTo(newD0), (*oldD1).getEdgeTo(newD0), oldD0, oldD1, newD0);
-			new Triangle(e, (*oldD0).getEdgeTo(newD1), (*oldD1).getEdgeTo(newD1), oldD0, oldD1, newD1);
+			new Triangle(e, (*oldD0).getEdgeTo(newD0), (*oldD1).getEdgeTo(newD0), oldD0, oldD1, newD0, internal);
+			new Triangle(e, (*oldD0).getEdgeTo(newD1), (*oldD1).getEdgeTo(newD1), oldD0, oldD1, newD1, internal);
 
 			delete f;
 		}

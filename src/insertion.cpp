@@ -102,6 +102,7 @@ void Insertion::execute(){
 	TEdge *fromV0ToOther0, *fromV0ToOther1, *fromV1ToOther0, *fromV1ToOther1;
 	TEdge *fromV0ToNew, *fromV1ToNew;
 	TEdge *fromNewToOther0, *fromNewToOther1;
+	bool internal0, internal1;
 
 	// Calculate the coordinates of the new vertex
 	x = (*v0).getX() + ((*v1).getX() - (*v0).getX()) / 2;
@@ -117,6 +118,10 @@ void Insertion::execute(){
 	// Get the other two vertices of the concerned quadrilateral
 	other0 = (*t0).getOtherVertex(e);
 	other1 = (*t1).getOtherVertex(e);
+
+	// Get information which side is the interior
+	internal0 = (*t0).isInternal();
+	internal1 = (*t1).isInternal();
 
 	// Delete the edge and the old triangles with it
 	delete e;
@@ -139,10 +144,10 @@ void Insertion::execute(){
 	(*T).addEdge(fromNewToOther1, 0);
 
 	// Generate the new triangles
-	new Triangle(fromV0ToNew, fromV0ToOther0, fromNewToOther0, v0, newV, other0);
-	new Triangle(fromV0ToNew, fromV0ToOther1, fromNewToOther1, v0, newV, other1);
-	new Triangle(fromV1ToNew, fromV1ToOther0, fromNewToOther0, v1, newV, other0);
-	new Triangle(fromV1ToNew, fromV1ToOther1, fromNewToOther1, v1, newV, other1);
+	new Triangle(fromV0ToNew, fromV0ToOther0, fromNewToOther0, v0, newV, other0, internal0);
+	new Triangle(fromV0ToNew, fromV0ToOther1, fromNewToOther1, v0, newV, other1, internal1);
+	new Triangle(fromV1ToNew, fromV1ToOther0, fromNewToOther0, v1, newV, other0, internal0);
+	new Triangle(fromV1ToNew, fromV1ToOther1, fromNewToOther1, v1, newV, other1, internal1);
 }
 
 /*

@@ -88,6 +88,11 @@ private:
 	Triangulation * const T;
 
 	/*
+
+	*/
+	bool internal;
+
+	/*
 		Recent number of vertices/edges of the polygon
 	*/
 	int n;
@@ -180,8 +185,11 @@ public:
 
 		@param 	triang 	The triangulation the polygon lives in
 		@param 	tp 		The PolygonType of the polygon
+		@param 	intern 	Indicates whether the polygon is internal or
+						external to the polygon. The interior of a hole
+						is counted as exterior.
 	*/
-	Polygon(Triangulation *triang, PolygonType tp);
+	Polygon(Triangulation *triang, PolygonType tp, bool intern);
 
 
 	/*

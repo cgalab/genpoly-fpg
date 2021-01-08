@@ -70,7 +70,7 @@ void Polygon::triangulateStar(){
 			newEdge = new TEdge(v0 -> v, v2 -> v);
 			(*T).addEdge(newEdge, 0);
 
-			new Triangle(e0 -> e, e1 -> e, newEdge, v0 -> v, v1 -> v, v2 -> v);
+			new Triangle(e0 -> e, e1 -> e, newEdge, v0 -> v, v1 -> v, v2 -> v, internal);
 
 			// Remove the entries of the cut off entities
 			free(e0);
@@ -104,7 +104,7 @@ void Polygon::triangulateStar(){
 	
 	e2 = v2 -> nextE;
 
-	new Triangle(e0 -> e, e1 -> e, e2 -> e, v0 -> v, v1 -> v, v2 -> v);
+	new Triangle(e0 -> e, e1 -> e, e2 -> e, v0 -> v, v1 -> v, v2 -> v, internal);
 
 	free(e0);
 	free(e1);
@@ -162,7 +162,7 @@ void Polygon::triangulateVisible(){
 			newEdge = new TEdge(v0 -> v, v2 -> v);
 			(*T).addEdge(newEdge, 0);
 
-			new Triangle(e0 -> e, e1 -> e, newEdge, v0 -> v, v1 -> v, v2 -> v);
+			new Triangle(e0 -> e, e1 -> e, newEdge, v0 -> v, v1 -> v, v2 -> v, internal);
 
 			// Remove the entries of the cut off entities
 			free(e0);
@@ -196,7 +196,7 @@ void Polygon::triangulateVisible(){
 	
 	e2 = v2 -> nextE;
 
-	new Triangle(e0 -> e, e1 -> e, e2 -> e, v0 -> v, v1 -> v, v2 -> v);
+	new Triangle(e0 -> e, e1 -> e, e2 -> e, v0 -> v, v1 -> v, v2 -> v, internal);
 
 	free(e0);
 	free(e1);
@@ -221,9 +221,12 @@ void Polygon::triangulateVisible(){
 
 	@param 	triang 	The triangulation the polygon lives in
 	@param 	tp 		The PolygonType of the polygon
+	@param 	intern 	Indicates whether the polygon is internal or
+					external to the polygon. The interior of a hole
+					is counted as exterior.
 */
-Polygon::Polygon(Triangulation *triang, PolygonType tp) :
-	type(tp), T(triang), n(0), startVertex(NULL), closed(false), lastVUsed(NULL),
+Polygon::Polygon(Triangulation *triang, PolygonType tp, bool intern) :
+	type(tp), T(triang), internal(intern), n(0), startVertex(NULL), closed(false), lastVUsed(NULL),
 	lastEUsed(NULL), kernel(NULL) {}
 
 

@@ -94,7 +94,7 @@ void initialTriangulationPseudoStar(Triangulation * const T){
 	(*T).addEdge(e1, 0);
 	(*T).addEdge(start, 0);
 
-	new Triangle(e0, e1, start, v0, v1, center);
+	new Triangle(e0, e1, start, v0, v1, center, true);
 
 	for(i = 3; i < Settings::initialSize; i++){
 		v0 = v1;
@@ -107,7 +107,7 @@ void initialTriangulationPseudoStar(Triangulation * const T){
 		(*T).addEdge(e0, 0);
 		(*T).addEdge(e1, 0);
 
-		new Triangle(e0, e1, e2, v0, v1, center);
+		new Triangle(e0, e1, e2, v0, v1, center, true);
 	}
 
 	// At the end we have to insert a triangle outside of the polygon such that
@@ -116,7 +116,7 @@ void initialTriangulationPseudoStar(Triangulation * const T){
 	(*e1).setEdgeType(EdgeType::POLYGON, false);
 	e2 = new TEdge(v0, v1);
 	(*T).addEdge(e2, 0);
-	new Triangle(e1, e2, start, v0, v1, center);
+	new Triangle(e1, e2, start, v0, v1, center, false);
 }
 
 
@@ -156,7 +156,7 @@ void initialTriangulationZigZag(Triangulation * const T){
 			(*T).addEdge(e0, 0);
 			(*T).addEdge(e1, 0);
 
-			new Triangle(e0, e1, e2, v0, v1, v2);
+			new Triangle(e0, e1, e2, v0, v1, v2, true);
 
 		}else{
 			// v1 becomes v0 and v2 stays as it is
@@ -171,7 +171,7 @@ void initialTriangulationZigZag(Triangulation * const T){
 			(*T).addEdge(e0, 0);
 			(*T).addEdge(e1, 0);
 
-			new Triangle(e0, e1, e2, v0, v1, v2);
+			new Triangle(e0, e1, e2, v0, v1, v2, true);
 		}
 	}
 
@@ -229,7 +229,7 @@ void generateInitialHoleTriangle(Triangulation * const T){
 
 	start = e1;
 
-	new Triangle(e0, e1, e2, v0, v1, triangleV0);
+	new Triangle(e0, e1, e2, v0, v1, triangleV0, true);
 
 	for(i = 2; i <= Settings::initialSize / 3; i++){
 		v0 = v1;
@@ -241,7 +241,7 @@ void generateInitialHoleTriangle(Triangulation * const T){
 		(*T).addEdge(e0, 0);
 		(*T).addEdge(e2, 1);
 
-		new Triangle(e0, e1, e2, v0, v1, triangleV0);
+		new Triangle(e0, e1, e2, v0, v1, triangleV0, true);
 	}
 
 	// Connect the first third with the second one
@@ -251,7 +251,7 @@ void generateInitialHoleTriangle(Triangulation * const T){
 	(*T).addEdge(e0, 1);
 	(*T).addEdge(e2, 1);
 
-	new Triangle(e0, e1, e2, v1, triangleV0, triangleV1);
+	new Triangle(e0, e1, e2, v1, triangleV0, triangleV1, true);
 
 	triangleE0 = e0;
 
@@ -266,7 +266,7 @@ void generateInitialHoleTriangle(Triangulation * const T){
 		(*T).addEdge(e0, 0);
 		(*T).addEdge(e2, 1);
 
-		new Triangle(e0, e1, e2, v0, v1, triangleV1);
+		new Triangle(e0, e1, e2, v0, v1, triangleV1, true);
 	}
 
 	// Connect the second third with the third one
@@ -276,7 +276,7 @@ void generateInitialHoleTriangle(Triangulation * const T){
 	(*T).addEdge(e0, 1);
 	(*T).addEdge(e2, 1);
 
-	new Triangle(e0, e1, e2, v1, triangleV1, triangleV2);
+	new Triangle(e0, e1, e2, v1, triangleV1, triangleV2, true);
 
 	triangleE1 = e0;
 
@@ -291,7 +291,7 @@ void generateInitialHoleTriangle(Triangulation * const T){
 		(*T).addEdge(e0, 0);
 		(*T).addEdge(e2, 1);
 
-		new Triangle(e0, e1, e2, v0, v1, triangleV2);
+		new Triangle(e0, e1, e2, v0, v1, triangleV2, true);
 	}
 
 	// Connect the third third with the first one and close the outer polygon
@@ -301,16 +301,16 @@ void generateInitialHoleTriangle(Triangulation * const T){
 	(*T).addEdge(e0, 1);
 	(*T).addEdge(e2, 1);
 
-	new Triangle(e0, e1, e2, v1, triangleV2, triangleV0);
+	new Triangle(e0, e1, e2, v1, triangleV2, triangleV0, true);
 
 	triangleE2 = e0;
 
-	new Triangle(triangleE0, triangleE1, triangleE2, triangleV0, triangleV1, triangleV2);
+	new Triangle(triangleE0, triangleE1, triangleE2, triangleV0, triangleV1, triangleV2, false);
 
 	e0 = new TEdge(v1, (*T).getVertex(0, 0), EdgeType::POLYGON);
 	(*T).addEdge(e0, 0);
 
-	new Triangle(e0, e2, start, v1, (*T).getVertex(0, 0), triangleV0);
+	new Triangle(e0, e2, start, v1, (*T).getVertex(0, 0), triangleV0, true);
 }
 
 
@@ -387,7 +387,7 @@ void splitHoleTriangle(Triangulation * const T){
 	p1e1 = new TEdge(n2, v2, EdgeType::POLYGON);
 	(*T).addEdge(p1e0, n);
 	(*T).addEdge(p1e1, n);
-	new Triangle(p1e0, p1e1, e1, v1, v2, n2);
+	new Triangle(p1e0, p1e1, e1, v1, v2, n2, false);
 
 
 	/*
@@ -410,38 +410,38 @@ void splitHoleTriangle(Triangulation * const T){
 	(*T).addEdge(p2e0, n + 1);
 	(*T).addEdge(p2e1, n + 1);
 	(*T).addEdge(p2e2, n + 1);
-	new Triangle(p2e0, p2e1, p2e2, v0, n0, n1);
+	new Triangle(p2e0, p2e1, p2e2, v0, n0, n1, false);
 
 	// Add triangles to the outside
 	h0 = new TEdge(store1, n1);
 	h1 = (*v0).getEdgeTo(store1);
 	(*T).addEdge(h0, n + 1);
-	new Triangle(h0, h1, p2e2, v0, store1, n1);
+	new Triangle(h0, h1, p2e2, v0, store1, n1, true);
 
 	h1 = new TEdge(n1, v2);
 	h2 = (*store1).getEdgeTo(v2);
 	(*T).addEdge(h1, n + 1);
-	new Triangle(h0, h1, h2, store1, n1, v2);
+	new Triangle(h0, h1, h2, store1, n1, v2, true);
 
 	h0 = new TEdge(store0, n0);
 	h1 = (*v0).getEdgeTo(store0);
 	(*T).addEdge(h0, n + 1);
-	new Triangle(h0, h1, p2e0, v0, store0, n0);
+	new Triangle(h0, h1, p2e0, v0, store0, n0, true);
 
 	h1 = new TEdge(n0, v1);
 	h2 = (*store0).getEdgeTo(v1);
 	(*T).addEdge(h1, n + 1);
-	new Triangle(h0, h1, h2, store0, n0, v1);
+	new Triangle(h0, h1, h2, store0, n0, v1, true);
 
 	// Add triangles between the polygons
 	h0 = new TEdge(n1, n2);
 	h1 = new TEdge(n0, n2);
 	(*T).addEdge(h0, n + 1);
 	(*T).addEdge(h1, n + 1);
-	new Triangle(h0, h1, p2e1, n0, n1, n2);
+	new Triangle(h0, h1, p2e1, n0, n1, n2, true);
 
-	new Triangle(h0, (*n1).getEdgeTo(v2), (*n2).getEdgeTo(v2), n1, n2, v2);
-	new Triangle(h1, (*n0).getEdgeTo(v1), (*n2).getEdgeTo(v1), n0, n2, v1);
+	new Triangle(h0, (*n1).getEdgeTo(v2), (*n2).getEdgeTo(v2), n1, n2, v2, true);
+	new Triangle(h1, (*n0).getEdgeTo(v1), (*n2).getEdgeTo(v1), n0, n2, v1, true);
 }
 
 
@@ -507,7 +507,7 @@ void boxPolygon(Triangulation * const T, const int startIndex){
 		next = new TEdge(v1, rv0);
 		(*T).addEdge(next, 0);
 
-		new Triangle(prev, (*v0).getEdgeTo(v1), next, v0, v1, rv0);
+		new Triangle(prev, (*v0).getEdgeTo(v1), next, v0, v1, rv0, false);
 
 		v0 = v1;
 		prev = next;
@@ -518,7 +518,7 @@ void boxPolygon(Triangulation * const T, const int startIndex){
 	// Close the gap between first and second quadrant
 	next = new TEdge(v0, rv1);
 	(*T).addEdge(next, 0);
-	new Triangle(prev, next, re0, v0, rv0, rv1);
+	new Triangle(prev, next, re0, v0, rv0, rv1, false);
 	prev = next;
 
 	for(; i <= limit1; i++){
@@ -526,7 +526,7 @@ void boxPolygon(Triangulation * const T, const int startIndex){
 		next = new TEdge(v1, rv1);
 		(*T).addEdge(next, 0);
 
-		new Triangle(prev, (*v0).getEdgeTo(v1), next, v0, v1, rv1);
+		new Triangle(prev, (*v0).getEdgeTo(v1), next, v0, v1, rv1, false);
 
 		v0 = v1;
 		prev = next;
@@ -537,7 +537,7 @@ void boxPolygon(Triangulation * const T, const int startIndex){
 	// Close the gap between second and third quadrant
 	next = new TEdge(v0, rv2);
 	(*T).addEdge(next, 0);
-	new Triangle(prev, next, re1, v0, rv1, rv2);
+	new Triangle(prev, next, re1, v0, rv1, rv2, false);
 	prev = next;
 
 	for(; i <= limit2; i++){
@@ -545,7 +545,7 @@ void boxPolygon(Triangulation * const T, const int startIndex){
 		next = new TEdge(v1, rv2);
 		(*T).addEdge(next, 0);
 
-		new Triangle(prev, (*v0).getEdgeTo(v1), next, v0, v1, rv2);
+		new Triangle(prev, (*v0).getEdgeTo(v1), next, v0, v1, rv2, false);
 
 		v0 = v1;
 		prev = next;
@@ -556,7 +556,7 @@ void boxPolygon(Triangulation * const T, const int startIndex){
 	// Close the gap between third and fourth quadrant
 	next = new TEdge(v0, rv3);
 	(*T).addEdge(next, 0);
-	new Triangle(prev, next, re2, v0, rv2, rv3);
+	new Triangle(prev, next, re2, v0, rv2, rv3, false);
 	prev = next;
 
 	for(; i < Settings::initialSize; i++){
@@ -564,7 +564,7 @@ void boxPolygon(Triangulation * const T, const int startIndex){
 		next = new TEdge(v1, rv3);
 		(*T).addEdge(next, 0);
 
-		new Triangle(prev, (*v0).getEdgeTo(v1), next, v0, v1, rv3);
+		new Triangle(prev, (*v0).getEdgeTo(v1), next, v0, v1, rv3, false);
 
 		v0 = v1;
 		prev = next;
@@ -575,6 +575,6 @@ void boxPolygon(Triangulation * const T, const int startIndex){
 	next = new TEdge(v1, rv3);
 	(*T).addEdge(next, 0);
 
-	new Triangle(prev, (*v0).getEdgeTo(v1), next, v0, v1, rv3);
-	new Triangle(next, start, re3, v1, rv0, rv3);
+	new Triangle(prev, (*v0).getEdgeTo(v1), next, v0, v1, rv3, false);
+	new Triangle(next, start, re3, v1, rv0, rv3, false);
 }

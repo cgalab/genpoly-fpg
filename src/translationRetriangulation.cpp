@@ -131,6 +131,7 @@ void TranslationRetriangulation::bPSCOppositeDirection(){
 	Vertex *v;
 	TEdge *e, *oldEdge, *edgeToRemove;
 	double areaOld, areaNew;
+	bool internal;
 
 	// Find the polygon in opposite direction and remove the corresponding triangles
 
@@ -151,9 +152,13 @@ void TranslationRetriangulation::bPSCOppositeDirection(){
 	// Make sure to take the triangle in the right direction
 	if(signbit(areaOld) == signbit(areaNew) || *v == *nextV)
 		t = (*prevOldE).getT1();
+
+	// Find out whether the triangle is internal or external
+	// The whole polygon will have this property
+	internal = (*t).isInternal();
 	
 	// Start building the polygon
-	p0 = new Polygon(T, PolygonType::STARSHAPED);
+	p0 = new Polygon(T, PolygonType::STARSHAPED, internal);
 
 	(*p0).addVertex(prevV);
 
@@ -198,7 +203,7 @@ void TranslationRetriangulation::bPSCOppositeDirection(){
 		(*T).addEdge(e, 0);
 
 		// Add a new triangle to the triangulation
-		new Triangle(e, prevOldE, nextOldE, prevV, nextV, original);
+		new Triangle(e, prevOldE, nextOldE, prevV, nextV, original, internal);
 	}
 	
 	(*p0).close(e);
@@ -218,6 +223,7 @@ void TranslationRetriangulation::bPSRC1OppositeDirection(){
 	Vertex *v;
 	TEdge *e, *oldEdge, *edgeToRemove;
 	double areaOld, areaNew;
+	bool internal;
 
 	// Find the polygon in opposite direction and remove the corresponding triangles
 
@@ -238,9 +244,13 @@ void TranslationRetriangulation::bPSRC1OppositeDirection(){
 	// Make sure to take the triangle in the right direction
 	if(signbit(areaOld) == signbit(areaNew))
 		t = (*prevOldE).getT1();
+
+	// Find out whether the triangle is internal or external
+	// The whole polygon will have this property
+	internal = (*t).isInternal();
 	
 	// Start building the polygon
-	p0 = new Polygon(T, PolygonType::STARSHAPED);
+	p0 = new Polygon(T, PolygonType::STARSHAPED, internal);
 
 	(*p0).addVertex(prevV);
 
@@ -295,6 +305,7 @@ void TranslationRetriangulation::bPSRC2OppositeDirection(){
 	Vertex *v;
 	TEdge *e, *oldEdge, *edgeToRemove;
 	double areaOld, areaNew;
+	bool internal;
 
 	// Find the polygon in opposite direction and remove the corresponding triangles
 
@@ -315,9 +326,13 @@ void TranslationRetriangulation::bPSRC2OppositeDirection(){
 	// Make sure to take the triangle in the right direction
 	if(signbit(areaOld) != signbit(areaNew))
 		t = (*prevOldE).getT1();
+
+	// Find out whether the triangle is internal or external
+	// The whole polygon will have this property
+	internal = (*t).isInternal();
 	
 	// Start building the polygon
-	p0 = new Polygon(T, PolygonType::STARSHAPED);
+	p0 = new Polygon(T, PolygonType::STARSHAPED, internal);
 
 	(*p0).addVertex(prevV);
 
@@ -378,6 +393,7 @@ void TranslationRetriangulation::bPSRC3OppositeDirection(Vertex *primaryV, Verte
 	double area0, area1;
 	Triangle *t, *test;
 	std::list<TEdge*> edgesToRemove;
+	bool internal;
 
 	/*
 		Find the polygon at the other side of (prevV, nextV)
@@ -388,8 +404,6 @@ void TranslationRetriangulation::bPSRC3OppositeDirection(Vertex *primaryV, Verte
 	e = (*primaryV).getEdgeTo(secondaryV);
 
 	if(e == NULL) {
-		p0 = new Polygon(T, PolygonType::EDGEVISIBLE);
-		(*p0).addVertex(primaryV);
 
 		// Find the right triangle
 		t = (*primaryE).getT0();
@@ -405,6 +419,13 @@ void TranslationRetriangulation::bPSRC3OppositeDirection(Vertex *primaryV, Verte
 
 		if(signbit(area0) != signbit(area1))
 			t = (*primaryE).getT1();
+
+		// Find out whether the triangle is internal or external
+		// The whole polygon will have this property
+		internal = (*t).isInternal();
+
+		p0 = new Polygon(T, PolygonType::EDGEVISIBLE, internal);
+		(*p0).addVertex(primaryV);
 
 		e = (*t).getOtherEdgeContaining(original, primaryE);
 		while((*e).getID() != (*secondaryE).getID()){
@@ -446,14 +467,11 @@ void TranslationRetriangulation::bPSCTranslationDirection(){
 	std::vector<TEdge*> surEdges;
 	double areaOther, areaTest;
 	bool leavesSP1 = true, leavesSP2 = true;
+	bool internal;
 
 	/*
 		P O L Y G O N   C O N T A I N I N G   P R E V V
 	*/
-
-	// Start the polygon containing prevV
-	p1 = new Polygon(T, PolygonType::EDGEVISIBLE);
-	(*p1).addVertex(prevV);
 
 	// Get all edges of the surrounding polygon of prevV
 	surEdges = (*prevV).getSurroundingEdges();
@@ -490,7 +508,14 @@ void TranslationRetriangulation::bPSCTranslationDirection(){
 		if(signbit(areaOther) == signbit(areaTest))
 			v = (*e).getV1();
 
+		// Find the triangle to start with
 		t = (*e).getTriangleContaining(prevV);
+		internal = (*t).isInternal();
+
+		// Start the polygon containing prevV
+		p1 = new Polygon(T, PolygonType::EDGEVISIBLE, internal);
+
+		(*p1).addVertex(prevV);
 		(*p1).addEdge((*t).getEdgeContaining(prevV, v));
 
 		// Advance to the next triangle
@@ -539,10 +564,6 @@ void TranslationRetriangulation::bPSCTranslationDirection(){
 
 	e = NULL;
 
-	// Start the polygon containing nextV
-	p2 = new Polygon(T, PolygonType::EDGEVISIBLE);
-	(*p2).addVertex(nextV);
-
 	// Get all edges of the surrounding polygon of nextV
 	surEdges = (*nextV).getSurroundingEdges();
 
@@ -581,6 +602,11 @@ void TranslationRetriangulation::bPSCTranslationDirection(){
 			v = (*e).getV1();
 
 		t = (*e).getTriangleContaining(nextV);
+		internal = (*t).isInternal();
+
+		// Start the polygon containing nextV
+		p2 = new Polygon(T, PolygonType::EDGEVISIBLE, internal);
+		(*p2).addVertex(nextV);
 		(*p2).addEdge((*t).getEdgeContaining(nextV, v));
 
 		// Advance to the next triangle
@@ -624,12 +650,7 @@ void TranslationRetriangulation::bPSCTranslationDirection(){
 	// we can repair the triangulation with one single edge
 	if(!leavesSP1 && !leavesSP2){
 
-		// So we do not need the polygons to retriangulate here
-		delete p1;
-		delete p2;
-
-		p1 = NULL;
-		p2 = NULL;
+		// So we do not need to retriangulate hole polygons
 
 		// Find the other entities of the triangle in which the translation ends and
 		// split it into two triangles
@@ -640,12 +661,15 @@ void TranslationRetriangulation::bPSCTranslationDirection(){
 		e1 = new TEdge(original, v);
 		(*T).addEdge(e1, 0);
 
+		// Find out whether the old triangle is internal or external
+		internal = (*t).isInternal();
+
 		// Remove the old triangle
 		delete t;
 
 		// Fill the empty space with two new triangles
-		new Triangle(prevOldE, e1, (*prevV).getEdgeTo(v), prevV, original, v);
-		new Triangle(nextOldE, e1, (*nextV).getEdgeTo(v), nextV, original, v);
+		new Triangle(prevOldE, e1, (*prevV).getEdgeTo(v), prevV, original, v, internal);
+		new Triangle(nextOldE, e1, (*nextV).getEdgeTo(v), nextV, original, v, internal);
 
 		return;
 	}
@@ -677,13 +701,13 @@ void TranslationRetriangulation::bPSCTranslationDirection(){
 			if(*v1 == *original){
 				// => v2 is another vertex to link with
 				e1 = new TEdge(original, v2);
-				new Triangle(prevOldE, e1, (*v3).getEdgeTo(v2), prevV, original, v2);
+				new Triangle(prevOldE, e1, (*v3).getEdgeTo(v2), prevV, original, v2, internal);
 
 				(*p2).addVertex(v2);
 			}else{
 				// => v1 is another vertex to link with
 				e1 = new TEdge(original, v1);
-				new Triangle(prevOldE, e1, (*v3).getEdgeTo(v1), prevV, original, v1);
+				new Triangle(prevOldE, e1, (*v3).getEdgeTo(v1), prevV, original, v1, internal);
 
 				(*p2).addVertex(v1);
 			}
@@ -704,13 +728,13 @@ void TranslationRetriangulation::bPSCTranslationDirection(){
 			if(*v1 == *original){
 				// => v2 is another vertex to link with
 				e1 = new TEdge(original, v2);
-				new Triangle(nextOldE, e1, (*v3).getEdgeTo(v2), nextV, original, v2);
+				new Triangle(nextOldE, e1, (*v3).getEdgeTo(v2), nextV, original, v2, internal);
 
 				(*p1).addVertex(v2);
 			}else{
 				// => v1 is another vertex to link with
 				e1 = new TEdge(original, v1);
-				new Triangle(nextOldE, e1, (*v3).getEdgeTo(v1), nextV, original, v1);
+				new Triangle(nextOldE, e1, (*v3).getEdgeTo(v1), nextV, original, v1, internal);
 
 				(*p1).addVertex(v1);
 			}
@@ -739,7 +763,7 @@ void TranslationRetriangulation::bPSCTranslationDirection(){
 				e2 = new TEdge(original, v2);
 				(*T).addEdge(e2, 0);
 
-				new Triangle(e1, e2, (*v3).getEdgeTo(v2), original, v2, v3);
+				new Triangle(e1, e2, (*v3).getEdgeTo(v2), original, v2, v3, internal);
 
 				(*p2).addVertex(v2);
 				(*p2).addEdge(e2);
@@ -750,7 +774,7 @@ void TranslationRetriangulation::bPSCTranslationDirection(){
 				e2 = new TEdge(original, v1);
 				(*T).addEdge(e2, 0);
 
-				new Triangle(e1, e2, (*v3).getEdgeTo(v1), original, v1, v3);
+				new Triangle(e1, e2, (*v3).getEdgeTo(v1), original, v1, v3, internal);
 
 				(*p2).addVertex(v1);
 				(*p2).addEdge(e2);
@@ -772,7 +796,7 @@ void TranslationRetriangulation::bPSCTranslationDirection(){
 			e1 = new TEdge(original, v3);
 			(*T).addEdge(e1, 0);
 
-			new Triangle(prevOldE, e1, (*prevV).getEdgeTo(v3), original, prevV, v3);
+			new Triangle(prevOldE, e1, (*prevV).getEdgeTo(v3), original, prevV, v3, internal);
 
 			// Case:
 			// v1 is the prevV
@@ -782,7 +806,7 @@ void TranslationRetriangulation::bPSCTranslationDirection(){
 				e2 = new TEdge(original, v2);
 				(*T).addEdge(e2, 0);
 
-				new Triangle(e1, e2, (*v3).getEdgeTo(v2), original, v2, v3);
+				new Triangle(e1, e2, (*v3).getEdgeTo(v2), original, v2, v3, internal);
 
 				(*p2).addVertex(v2);
 				(*p2).addEdge(e2);
@@ -796,7 +820,7 @@ void TranslationRetriangulation::bPSCTranslationDirection(){
 				e2 = new TEdge(original, v1);
 				(*T).addEdge(e2, 0);
 
-				new Triangle(e1, e2, (*v3).getEdgeTo(v1), original, v1, v3);
+				new Triangle(e1, e2, (*v3).getEdgeTo(v1), original, v1, v3, internal);
 
 				(*p2).addVertex(v1);
 				(*p2).addEdge(e2);
@@ -813,7 +837,7 @@ void TranslationRetriangulation::bPSCTranslationDirection(){
 			e1 = new TEdge(original, v3);
 			(*T).addEdge(e1, 0);
 
-			new Triangle(nextOldE, e1, (*nextV).getEdgeTo(v3), original, nextV, v3);
+			new Triangle(nextOldE, e1, (*nextV).getEdgeTo(v3), original, nextV, v3, internal);
 
 			// Case:
 			// v1 is the nextV
@@ -823,7 +847,7 @@ void TranslationRetriangulation::bPSCTranslationDirection(){
 				e2 = new TEdge(original, v2);
 				(*T).addEdge(e2, 0);
 
-				new Triangle(e1, e2, (*v3).getEdgeTo(v2), original, v2, v3);
+				new Triangle(e1, e2, (*v3).getEdgeTo(v2), original, v2, v3, internal);
 
 				(*p1).addVertex(v2);
 				(*p1).addEdge(e2);
@@ -837,7 +861,7 @@ void TranslationRetriangulation::bPSCTranslationDirection(){
 				e2 = new TEdge(original, v1);
 				(*T).addEdge(e2, 0);
 
-				new Triangle(e1, e2, (*v3).getEdgeTo(v1), original, v1, v3);
+				new Triangle(e1, e2, (*v3).getEdgeTo(v1), original, v1, v3, internal);
 
 				(*p1).addVertex(v1);
 				(*p1).addEdge(e2);
@@ -856,8 +880,8 @@ void TranslationRetriangulation::bPSCTranslationDirection(){
 			(*T).addEdge(e2, 0);
 			(*T).addEdge(e3, 0);
 
-			new Triangle(e1, e3, (*v1).getEdgeTo(v3), v1, original, v3);
-			new Triangle(e2, e3, (*v2).getEdgeTo(v3), original, v2, v3);
+			new Triangle(e1, e3, (*v1).getEdgeTo(v3), v1, original, v3, internal);
+			new Triangle(e2, e3, (*v2).getEdgeTo(v3), original, v2, v3, internal);
 
 			t = new Triangle(nextV, newV, prevV);
 			areaOther = (*t).signedArea();
@@ -913,6 +937,7 @@ void TranslationRetriangulation::bPSRC1TranslationDirection(){
 	TEdge *e = NULL, *newEdge;
 	Triangle *t = NULL;
 	IntersectionType i;
+	bool internal;
 
 	// Check Whether there exists the triangle build by prevV, original
 	// and nextV
@@ -933,8 +958,11 @@ void TranslationRetriangulation::bPSRC1TranslationDirection(){
 	if(t == NULL)
 		t = (*prevOldE).getT1();
 
+	// Find out whether the triangle is internal
+	internal = (*t).isInternal();
+
 	// We start with the polygon containing prevV
-	p1 = new Polygon(T, PolygonType::EDGEVISIBLE);
+	p1 = new Polygon(T, PolygonType::EDGEVISIBLE, internal);
 	(*p1).addVertex(prevV);
 
 	e = (*t).getOtherEdgeContaining(original, prevOldE);
@@ -973,7 +1001,7 @@ void TranslationRetriangulation::bPSRC1TranslationDirection(){
 		(*p1).close(prevOldE);
 
 		// Start new polygon
-		p2 = new Polygon(T, PolygonType::EDGEVISIBLE);
+		p2 = new Polygon(T, PolygonType::EDGEVISIBLE, internal);
 		(*p2).addVertex(original);
 		(*p2).addEdge(newEdge);
 		(*p2).addVertex(v);
@@ -1029,6 +1057,7 @@ TEdge *TranslationRetriangulation::bPSRC3SPOld(Vertex *primaryV, Vertex *seconda
 	TEdge *e, *SPEdge, *e0, *e1, *e2, *borderE = NULL;
 	Vertex *v, *borderV;
 	std::list<TEdge*> edgesToRemove;
+	bool internal;
 
 	// First we have to find the right triangle
 	// For that we can exploit the fact, that we have already deleted
@@ -1038,7 +1067,10 @@ TEdge *TranslationRetriangulation::bPSRC3SPOld(Vertex *primaryV, Vertex *seconda
 	if(t == NULL || *(*t).getOtherVertex(primaryE) == *secondaryV)
 		t = (*primaryE).getT1();
 
-	p1 = new Polygon(T, PolygonType::STARSHAPED);
+	// Find out whether the triangle is internal
+	internal = (*t).isInternal();
+
+	p1 = new Polygon(T, PolygonType::STARSHAPED, internal);
 	(*p1).addVertex(primaryV);
 
 	e = (*t).getOtherEdgeContaining(original, primaryE);
@@ -1091,15 +1123,15 @@ TEdge *TranslationRetriangulation::bPSRC3SPOld(Vertex *primaryV, Vertex *seconda
 		// It is not required if the actual triangle contains secondaryV
 		if(*v == *secondaryV)			
 
-			new Triangle(SPEdge, secondaryE, e1, original, borderV, secondaryV);
+			new Triangle(SPEdge, secondaryE, e1, original, borderV, secondaryV, internal);
 
 		else{
 
 			e2 = new TEdge(v, original);
 			(*T).addEdge(e2, 0);
-			new Triangle(SPEdge, e1, e2, original, borderV, v);
+			new Triangle(SPEdge, e1, e2, original, borderV, v, internal);
 
-			p2 = new Polygon(T, PolygonType::EDGEVISIBLE);
+			p2 = new Polygon(T, PolygonType::EDGEVISIBLE, internal);
 
 			(*p2).addVertex(original);
 			(*p2).addEdge(e2);
@@ -1201,9 +1233,18 @@ void TranslationRetriangulation::bPSRC3TranslationDirection(Vertex *primaryV, Ve
 	std::list<TEdge*> edgesToRemove;
 	double areaRef, area;
 	bool containsSecondaryV;
+	bool internal;
 
-	p2 = new Polygon(T, PolygonType::EDGEVISIBLE);
-	p3 = new Polygon(T, PolygonType::EDGEVISIBLE);
+	// First we have to find out whether p2 and p3 are internal or external of the polygon
+	// For that we can take a look at the triangles containing borderE
+	t = (*borderE).getT0();
+	if(t == NULL)
+		t = (*borderE).getT1();
+
+	internal = (*t).isInternal();
+
+	p2 = new Polygon(T, PolygonType::EDGEVISIBLE, internal);
+	p3 = new Polygon(T, PolygonType::EDGEVISIBLE, internal);
 
 	(*p2).addVertex(secondaryV);
 
@@ -1330,21 +1371,21 @@ void TranslationRetriangulation::bPSRC3TranslationDirection(Vertex *primaryV, Ve
 		delete p2;
 		p2 = NULL;
 
-		new Triangle((*v).getEdgeTo(secondaryV), e, secondaryE, original, v, secondaryV);
+		new Triangle((*v).getEdgeTo(secondaryV), e, secondaryE, original, v, secondaryV, internal);
 
 	}else{
 
 		e2 = new TEdge(original, v2);
 		(*T).addEdge(e2, 0);
 
-		new Triangle(e2, e, (*v2).getEdgeTo(v), v2, original, v);
+		new Triangle(e2, e, (*v2).getEdgeTo(v), v2, original, v, internal);
 
 		(*p2).addEdge(e2);
 		(*p2).addVertex(original);
 		(*p2).close(secondaryE);
 	}
 
-	new Triangle(e3, e, (*v3).getEdgeTo(v), v3, original, v);
+	new Triangle(e3, e, (*v3).getEdgeTo(v), v3, original, v, internal);
 
 	(*p3).addEdge(e3);
 	(*p3).addVertex(original);

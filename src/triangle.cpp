@@ -138,20 +138,22 @@ double Triangle::det(Vertex * const V0, Vertex * const V1, Vertex * const V2) co
 	at their vertices and edges and sets the property enqueued to false. Additionally it checks
 	whether a triangle built of the same edges already exists and in case errors with exit code 5.
 
-	@param 	E0 	The first edge of the triangle
-	@param 	E1 	The second edge of the triangle
-	@param 	E2 	The third edge of the triangle
-	@param 	V0 	The first vertex of the triangle
-	@param 	V1 	The second vertex of the triangle
-	@param 	V2 	The third vertex of the triangle
+	@param 	E0 		The first edge of the triangle
+	@param 	E1 		The second edge of the triangle
+	@param 	E2 		The third edge of the triangle
+	@param 	V0 		The first vertex of the triangle
+	@param 	V1 		The second vertex of the triangle
+	@param 	V2 		The third vertex of the triangle
+	@param 	intern 	Indicates whether the triangle is internal or external to the polygon.
+					Triangles in the interior of a hole a counted as external.
 
 	Note:
 		- The order of the edges is not important if relative to the order of the vertices
 		- The order of the vertices is just important if you want to check the orientation
 			of the triangle
 */
-Triangle::Triangle(TEdge *E0, TEdge *E1, TEdge *E2, Vertex *V0, Vertex *V1, Vertex *V2) :
-	e0(E0), e1(E1), e2(E2), v0(V0), v1(V1), v2(V2), enqueued(false), id(n) {
+Triangle::Triangle(TEdge *E0, TEdge *E1, TEdge *E2, Vertex *V0, Vertex *V1, Vertex *V2, bool intern) :
+	e0(E0), e1(E1), e2(E2), v0(V0), v1(V1), v2(V2), internal(intern), enqueued(false), id(n) {
 
 	Triangle *t;
 
@@ -197,7 +199,7 @@ Triangle::Triangle(TEdge *E0, TEdge *E1, TEdge *E2, Vertex *V0, Vertex *V1, Vert
 		ordering v0 -> v1 -> v2 considered.
 */
 Triangle::Triangle(Vertex *V0, Vertex *V1, Vertex *V2) :
-	e0(NULL), e1(NULL), e2(NULL), v0(V0), v1(V1), v2(V2), enqueued(false), id(n) {
+	e0(NULL), e1(NULL), e2(NULL), v0(V0), v1(V1), v2(V2), internal(false), enqueued(false), id(n) {
 
 	(*v0).addTriangle(this);
 	(*v1).addTriangle(this);
@@ -614,6 +616,14 @@ void Triangle::dequeue(){
 */
 bool Triangle::isEnqueued() const{
 	return enqueued;
+}
+
+/*
+	@return 	False it the triangle is external to the polygon or internal to a hole,
+				otherwise true
+*/
+bool Triangle::isInternal() const{
+	return internal;
 }
 
 /*
