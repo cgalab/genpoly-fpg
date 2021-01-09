@@ -152,10 +152,12 @@ double Triangle::det(Vertex * const V0, Vertex * const V1, Vertex * const V2) co
 		- The order of the vertices is just important if you want to check the orientation
 			of the triangle
 */
-Triangle::Triangle(TEdge *E0, TEdge *E1, TEdge *E2, Vertex *V0, Vertex *V1, Vertex *V2, bool intern) :
-	e0(E0), e1(E1), e2(E2), v0(V0), v1(V1), v2(V2), internal(intern), enqueued(false), id(n) {
+Triangle::Triangle(TEdge *E0, TEdge *E1, TEdge *E2, Vertex *V0, Vertex *V1, Vertex *V2,
+	bool intern) : e0(E0), e1(E1), e2(E2), v0(V0), v1(V1), v2(V2), internal(intern),
+	enqueued(false), entry(NULL), id(n) {
 
 	Triangle *t;
+	Triangulation *T;
 
 	if(*v0 == *v1 || *v0 == *v2 || *v2 == *v1){
 		fprintf(stderr, "Two vertices of the new triangle are identical!\n");
@@ -177,6 +179,11 @@ Triangle::Triangle(TEdge *E0, TEdge *E1, TEdge *E2, Vertex *V0, Vertex *V1, Vert
 		exit(5);
 	}
 
+	// Add the triangle to the selection tree if it is internal
+	if(internal && !Settings::holeInsertionAtStart){
+		T = (*v0).getTriangulation();
+		(*T).addInternalTriangle(this);
+	}
 
 	n++;
 
@@ -199,7 +206,8 @@ Triangle::Triangle(TEdge *E0, TEdge *E1, TEdge *E2, Vertex *V0, Vertex *V1, Vert
 		ordering v0 -> v1 -> v2 considered.
 */
 Triangle::Triangle(Vertex *V0, Vertex *V1, Vertex *V2) :
-	e0(NULL), e1(NULL), e2(NULL), v0(V0), v1(V1), v2(V2), internal(false), enqueued(false), id(n) {
+	e0(NULL), e1(NULL), e2(NULL), v0(V0), v1(V1), v2(V2), internal(false), enqueued(false),
+	entry(NULL), id(n) {
 
 	(*v0).addTriangle(this);
 	(*v1).addTriangle(this);
@@ -548,6 +556,27 @@ TEdge *Triangle::getNotIntersectedEdge() const{
 	return NULL;
 }
 
+/*
+	@return 	A weight for the triangle, implemented as its area
+*/
+double Triangle::getWeight() const{
+	return fabs(signedArea());
+}
+
+
+/*
+	S ~ E ~ T ~ T ~ E ~ R ~ S
+*/
+
+/*
+	Adds the selection tree entry of the triangle.
+
+	@param 	e 	The selection tree entry
+*/
+void Triangle::setSTEntry(STEntry<Triangle*> *e){
+	entry = e;
+}
+
 
 /*
 	P ~ R ~ I ~ N ~ T ~ E ~ R
@@ -734,6 +763,16 @@ bool Triangle::inside(Vertex *v) const{
 	return true;
 }
 
+/*
+	Updates the selection tree entry of the triangle.
+*/
+void Triangle::updateSTEntry() const{
+	printf("start updateSTEntry\n");
+	if(entry != NULL)
+		(*entry).update();
+	printf("end updateSTEntry\n");
+}
+
 
 /*
 	D ~ E ~ S ~ T ~ R ~ U ~ C ~ T ~ O ~ R
@@ -758,6 +797,9 @@ Triangle::~Triangle(){
 		(*e2).removeTriangle(this);
 
 	existing--;
+
+	if(entry != NULL)
+		(*entry).removeObject();
 }
 
 

@@ -15,7 +15,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "predicates.h"
 #include "settings.h"
 
 /*
@@ -24,6 +23,7 @@
 unsigned int Settings::nrInnerPolygons = 0;
 unsigned int Settings::outerSize = 0;
 std::vector<unsigned int> Settings::innerSizes;
+bool Settings::holeInsertionAtStart = false;
 
 /*
 	Initial polygon

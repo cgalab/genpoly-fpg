@@ -20,7 +20,7 @@
 #include <getopt.h>
 #include <boost/algorithm/string.hpp>
 
-static const char* short_options = "hn:i:s:aH:o:T:lgvmtwp:k";
+static const char* short_options = "hn:i:s:aH:o:T:lgvmtwp:kI";
 static struct option long_options[] = {
 		{ "help"                , no_argument      , 0, 'h'},
 		{ "nrofholes"           , required_argument, 0, 'n'},
@@ -29,6 +29,7 @@ static struct option long_options[] = {
 		{ "arithmetic"          , no_argument,       0, 'a'},
 		{ "kinetic"             , no_argument,       0, 'k'},
 		{ "holesizes"           , required_argument, 0, 'H'},
+		{ "initialHoles"        , no_argument,       0, 'I'},
 		{ "outputformat"        , required_argument, 0, 'o'},
 		{ "statsfile"           , required_argument, 0, 'T'},
 		{ "disablelocalchecks"       , no_argument,  0, 'l'},
@@ -53,6 +54,7 @@ static struct option long_options[] = {
 	fprintf(f,"           --arithmetic               enable 'exact' arithmetic? (default off).\n");
 	fprintf(f,"           --kinetic                  enable execution using kinetic triangulation.\n");
 	fprintf(f,"           --holesizes <a,b,c,...>    define hole sizes.\n");
+	fprintf(f,"           --initalHoles              insert the holes directly in the start polygon instead of an insertion during growth.\n");
 	fprintf(f,"           --outputformat <format>    dat, line, or graphml (default graphml).\n");
 	fprintf(f,"           --disablelocalchecks       (default on).\n");
 	fprintf(f,"           --enableglobalchecks       (default off).\n");
@@ -136,6 +138,10 @@ private:
 				for(auto n : nr) {
 					innerSizes.push_back(std::stoi(n));
 				}
+				break;
+			}
+			case 'I': {
+				holeInsertionAtStart = true;
 				break;
 			}
 			case 'o': {
@@ -224,5 +230,10 @@ private:
 		// In the strategy used the number of additional translations after the growth
 		// of the polygon equals the desired number of vertices
 		additionalTrans = outerSize;
+
+		// In case there are no holes we set holeInsertionAtStart true, to avoid
+		// building a selection tree for internal triangles
+		if(nrInnerPolygons == 0)
+			holeInsertionAtStart = true;
 	}
 };

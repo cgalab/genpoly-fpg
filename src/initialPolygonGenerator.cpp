@@ -46,7 +46,7 @@ Triangulation *generateRegularPolygon(){
 	}
 
 	// Triangulate the inner of the polygon in zig-zag style
-	if(Settings::nrInnerPolygons == 0)
+	if(Settings::nrInnerPolygons == 0 || !Settings::holeInsertionAtStart)
 		initialTriangulationZigZag(T);
 	else{
 		generateInitialHoleTriangle(T);

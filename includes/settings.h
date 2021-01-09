@@ -56,6 +56,9 @@ public:
 	// Target sizes of the inner polygons
 	static std::vector<unsigned int> innerSizes;
 
+	// Strategy for building holes
+	static bool holeInsertionAtStart;
+
 
 	/*
 		Initial polygon

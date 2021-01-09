@@ -47,6 +47,7 @@ class TPolygon;
 #include "tedge.h"
 #include "triangle.h"
 #include "tpolygon.h"
+#include "selectionTree.h"
 
 class Triangulation{
 
@@ -72,6 +73,11 @@ private:
 				the deletion of elements is implemented their
 	*/
 	std::map<int, TEdge*> edges;
+
+	/*
+		A selection tree for selecting a triangle interior to the polygon		
+	*/
+	SelectionTree<Triangle*> *internalTriangles;
 
 	/*
 		Vertices of the bounding box
@@ -103,6 +109,7 @@ public:
 		void 			changeVertex(const int i, const unsigned int fromP,
 						const unsigned int toP)
 		void 			addEdge(TEdge * const e , const unsigned int pID)
+		void 			addInternalTriangle(Triangle *t)
 		void 			setRectangle(Vertex * const v0, Vertex * const v1, Vertex * const v2,
 						Vertex * const v3)
 
@@ -190,6 +197,13 @@ public:
 						meaning
 	*/
 	void addEdge(TEdge * const e , const unsigned int pID);
+
+	/*
+		Adds an internal triangle to the selection tree of internal triangles.
+
+		@param 	t 	The triangle
+	*/
+	void addInternalTriangle(Triangle *t);
 
 	/*
 		The function setRectangle() sets the vertices of the Rectangle0, ..., Rectangle3 of

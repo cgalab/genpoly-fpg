@@ -33,6 +33,7 @@
 	Include my headers	
 */
 #include "predicates.h"
+#include "stentry.h"
 
 #ifndef __TRIANGLE_H_
 #define __TRIANGLE_H_
@@ -74,6 +75,11 @@ private:
 		Indicates whether the triangle is element of the actual event queue
 	*/
 	bool enqueued;
+
+	/*
+		The triangles selection tree entry
+	*/
+	STEntry<Triangle*> *entry;
 
 	/*
 		The unique ID of the triangle
@@ -183,6 +189,11 @@ public:
 		TEdge* 						getLongestEdgeAlt() const
 		double 						getRange(Vertex const * const v, const double alpha) const
 		TEdge* 						getNotIntersectedEdge() const
+		double 						getWeight() const
+
+		SETTER:
+
+		void 						setSTEntry(STEntry<Triangle*> *e)
 
 		PRINTER:
 
@@ -200,6 +211,7 @@ public:
 									const double dy) const
 		double 						signedArea() const
 		bool 						inside(Vertex *v) const
+		void 						updateSTEntry() const
 
 
 		LIST OF STATIC FUNCTIONS
@@ -392,6 +404,23 @@ public:
 	*/
 	TEdge *getNotIntersectedEdge() const;
 
+	/*
+		@return 	A weight for the triangle, implemented as its area
+	*/
+	double getWeight() const;
+
+
+	/*
+		S ~ E ~ T ~ T ~ E ~ R ~ S
+	*/
+
+	/*
+		Adds the selection tree entry of the triangle.
+
+		@param 	e 	The selection tree entry
+	*/
+	void setSTEntry(STEntry<Triangle*> *e);
+
 
 	/*
 		P ~ R ~ I ~ N ~ T ~ E ~ R
@@ -481,6 +510,11 @@ public:
 		@return 	True if v is in the interior of the triangle, otherwise false
 	*/
 	bool inside(Vertex *v) const;
+
+	/*
+		Updates the selection tree entry of the triangle.
+	*/
+	void updateSTEntry() const;
 	
 	
 	/*

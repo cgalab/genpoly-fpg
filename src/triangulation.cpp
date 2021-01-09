@@ -27,7 +27,8 @@
 	instances for the outer polygon.
 */
 Triangulation::Triangulation() :
-	Rectangle0(NULL), Rectangle1(NULL), Rectangle2(NULL), Rectangle3(NULL), N(0) { 
+	internalTriangles(NULL), Rectangle0(NULL), Rectangle1(NULL), Rectangle2(NULL),
+	Rectangle3(NULL), N(0) { 
 
 	// Calculate the total number of vertices
 	N = Settings::outerSize;
@@ -40,6 +41,9 @@ Triangulation::Triangulation() :
 	outerPolygon = new TPolygon(this, Settings::outerSize);
 
 	innerPolygons.reserve(Settings::nrInnerPolygons);
+
+	if(!Settings::holeInsertionAtStart)
+		internalTriangles = new SelectionTree<Triangle*>(true);
 }
 
 
@@ -126,6 +130,15 @@ void Triangulation::addEdge(TEdge * const e , const unsigned int pID){
 		else if(pID > 0 && pID <= Settings::nrInnerPolygons)
 			(*innerPolygons[pID - 1]).addEdge(e);
 	}
+}
+
+/*
+	Adds an internal triangle to the selection tree of internal triangles.
+
+	@param 	t 	The triangle
+*/
+void Triangulation::addInternalTriangle(Triangle *t){
+	(*internalTriangles).insert(t);
 }
 
 /*
@@ -542,6 +555,9 @@ void Triangulation::checkST() const{
 
 	for(auto const& i : innerPolygons)
 		(*i).checkST();
+
+	if(internalTriangles != NULL)
+		(*internalTriangles).check();
 }
 
 /*

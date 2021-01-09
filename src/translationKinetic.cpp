@@ -998,11 +998,20 @@ enum Executed TranslationKinetic::execute(){
 TranslationKinetic::~TranslationKinetic(){
 	bool ok;
 	struct Flip *f;
+	std::list<Triangle*> triangles;
 
 	// Update the edge lengths in the SelectionTree
 	if(Settings::weightedEdgeSelection){
 		(*prevOldE).updateSTEntry();
 		(*nextOldE).updateSTEntry();
+	}
+
+	// And also the weights of the internal triangles incident to original
+	if(!Settings::holeInsertionAtStart){
+		triangles = (*original).getTriangles();
+
+		for(auto& i : triangles)
+			(*i).updateSTEntry();
 	}
 
 	// Delete the flip stack

@@ -63,13 +63,15 @@ int main(int argc, char *argv[]){
 
 	T = generateRegularPolygon();
 
+	(*T).checkST();
+
 	(*T).check();
 
 	if(Settings::feedback != FeedbackMode::MUTE)
 		fprintf(stderr, "Initial polygon with %d vertices in regular shape computed after %f seconds\n",
 			Settings::initialSize, (*Settings::timer).elapsedTime());
 
-	if(Settings::nrInnerPolygons == 0)
+	if(Settings::nrInnerPolygons == 0 || !Settings::holeInsertionAtStart)
 		strategyNoHoles0(T);
 	else
 		strategyWithHoles0(T);

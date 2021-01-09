@@ -337,7 +337,7 @@ bool Translation::checkOrientation(){
 	// At first we check whether the moving vertex passes by another polygon
 	// Note:
 	// It can just pass by an inner polygon
-	for(i = 1; i <= Settings::nrInnerPolygons; i++){
+	for(i = 1; i <= (*T).getActualNrInnerPolygons(); i++){
 
 		// Skip the changing polygon itself
 		if((*original).getPID() == i)
@@ -406,7 +406,7 @@ bool Translation::checkOrientation(){
 	// It is not possible that an inner polygon rolls over the outer one, so here we
 	// just have to check the inner ones
 
-	for(i = 1; i <= Settings::nrInnerPolygons; i++){
+	for(i = 1; i <= (*T).getActualNrInnerPolygons(); i++){
 
 		// Skip the changing polygon itself
 		if((*original).getPID() == i)
