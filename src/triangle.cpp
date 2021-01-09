@@ -767,10 +767,8 @@ bool Triangle::inside(Vertex *v) const{
 	Updates the selection tree entry of the triangle.
 */
 void Triangle::updateSTEntry() const{
-	printf("start updateSTEntry\n");
 	if(entry != NULL)
 		(*entry).update();
-	printf("end updateSTEntry\n");
 }
 
 
