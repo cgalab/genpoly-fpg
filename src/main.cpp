@@ -71,10 +71,12 @@ int main(int argc, char *argv[]){
 		fprintf(stderr, "Initial polygon with %d vertices in regular shape computed after %f seconds\n",
 			Settings::initialSize, (*Settings::timer).elapsedTime());
 
-	if(Settings::nrInnerPolygons == 0 || !Settings::holeInsertionAtStart)
+	if(Settings::nrInnerPolygons == 0)
 		strategyNoHoles0(T);
-	else
+	else if(Settings::holeInsertionAtStart)
 		strategyWithHoles0(T);
+	else
+		strategyWithHoles1(T);
 
 	switch (Settings::outputFormat) {
 		case OutputFormat::DAT: (*T).writePolygonToDat(Settings::polygonFile); break;

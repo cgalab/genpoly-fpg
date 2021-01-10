@@ -122,6 +122,7 @@ public:
 		Vertex*			getVertex(const int i, const unsigned int pID) const
 		Vertex* 		getVertex(const int i) const
 		TEdge*			getRandomEdgeWeighted(const unsigned int pID) const;
+		Triangle* 		getRandomInternalTriangleWeighted() const;
 
 		REMOVER:
 
@@ -269,6 +270,12 @@ public:
 		@return 		Any edge of the polygon selected uniformly at random by its length
 	*/
 	TEdge *getRandomEdgeWeighted(const unsigned int pID) const;
+
+	/*
+		@return 	A randomly selected (based on their weights) triangle in the interior
+					of the polygon
+	*/
+	Triangle *getRandomInternalTriangleWeighted() const;
 
 
 	/*

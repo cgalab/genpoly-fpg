@@ -252,6 +252,14 @@ TEdge *Triangulation::getRandomEdgeWeighted(const unsigned int pID) const{
 		return NULL;
 }
 
+/*
+	@return 	A randomly selected (based on their weights) triangle in the interior
+				of the polygon
+*/
+Triangle *Triangulation::getRandomInternalTriangleWeighted() const{
+	return (*internalTriangles).getRandomObject();
+}
+
 
 /*
 	R ~ E ~ M ~ O ~ V ~ E ~ R
@@ -551,13 +559,18 @@ bool Triangulation::check() const{
 	Checks the correctness of the SelectionTrees
 */
 void Triangulation::checkST() const{
+	int i;
+
 	(*outerPolygon).checkST();
 
 	for(auto const& i : innerPolygons)
 		(*i).checkST();
 
-	if(internalTriangles != NULL)
+	if(internalTriangles != NULL){
+		fprintf(stderr, "Start checking the SelectionTree of inner triangles\n");
 		(*internalTriangles).check();
+		fprintf(stderr, "SelectionTree successfully checked\n");
+	}
 }
 
 /*

@@ -201,10 +201,14 @@ void TranslationRetriangulation::bPSCOppositeDirection(){
 	if(e == NULL){
 		e = new TEdge(prevV, nextV);
 		(*T).addEdge(e, 0);
+	// In case it does exist, we must change the internal property of the triangle
+	}else{
+		t = (*e).getTriangleContaining(original);
 
-		// Add a new triangle to the triangulation
-		new Triangle(e, prevOldE, nextOldE, prevV, nextV, original, internal);
+		delete t;
 	}
+	// Add a new triangle to the triangulation
+	new Triangle(e, prevOldE, nextOldE, prevV, nextV, original, internal);
 	
 	(*p0).close(e);
 	(*p0).setKernel(oldV);

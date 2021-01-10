@@ -37,6 +37,7 @@
 #include "translation.h"
 #include "insertion.h"
 #include "settings.h"
+#include "holeInsertion.h"
 
 
 /*
@@ -106,3 +107,5 @@ void strategyNoHoles1(Triangulation * const T);
 	@param 	T 	The triangulation the polygon lives in
 */
 void strategyWithHoles0(Triangulation * const T);
+
+void strategyWithHoles1(Triangulation * const T);

@@ -373,6 +373,39 @@ void strategyWithHoles0(Triangulation * const T){
 
 	if(!(*T).check()){
 		fprintf(stderr, "Triangulation error: something is wrong in the triangulation after \
+			growing the polygon to its final size\n");
+		exit(9);
+	}
+
+	Settings::timing = (*Settings::timer).elapsedTime();
+}
+
+
+void strategyWithHoles1(Triangulation * const T){
+	int performed;
+	int nrInsertions;
+	unsigned int i, k;
+	int actualN;
+
+	performed = transformPolygonByMoves(T, Settings::initialTranslationNumber);
+
+	if(Settings::feedback != FeedbackMode::MUTE)
+		fprintf(stderr, "Transformed initial polygon with %d of %d translations in %f seconds\n\n",
+			performed, Settings::initialTranslationNumber, (*Settings::timer).elapsedTime());
+
+	if(!(*T).check()){
+		fprintf(stderr, "Triangulation error: something is wrong in the triangulation at the \
+			end of transforming the initial polygon\n");
+		exit(9);
+	}
+
+	for(i = 0; i < Settings::nrInnerPolygons; i++){
+		insertHole(T);
+	}
+
+
+	if(!(*T).check()){
+		fprintf(stderr, "Triangulation error: something is wrong in the triangulation after \
 			growing the initial polygon\n");
 		exit(9);
 	}

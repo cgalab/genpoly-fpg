@@ -172,6 +172,9 @@ public:
 		whether the object of each node can still be found.
 	*/
 	void check(){
+
+		if(!emptyNodes.empty())
+			fprintf(stderr, "Warning: the SelectionTree contains empty nodes at the moment!\n");
 	
 		if(root == NULL){
 			fprintf(stderr, "This SelectionTree is empty!\n");
