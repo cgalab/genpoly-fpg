@@ -308,8 +308,8 @@ public:
 	Triangle *getTriangleNotContaining(Vertex const * const v) const;
 
 	/*
-		The function getTriangleContaining() returns t0 if it does contain the vertex v,
-		otherwise it returns t0 without checking whether it contains v.
+		The function getTriangleContaining() returns the triangle which contains v.
+		If none of the triangles contains v, then it returns NULL.
 		
 		@param	v 	The vertex which should be contained by the triangle
 		@return 	The triangle containing v

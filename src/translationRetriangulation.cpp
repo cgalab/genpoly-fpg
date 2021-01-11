@@ -407,7 +407,10 @@ void TranslationRetriangulation::bPSRC3OppositeDirection(Vertex *primaryV, Verte
 	// we do not have to do something in this direction
 	e = (*primaryV).getEdgeTo(secondaryV);
 
-	if(e == NULL) {
+	// Note:
+	// For polygons with holes it may happen that the edge between primarV
+	// and secondaryV exists, but it has no triangle containing original.
+	if(e == NULL || (*e).getTriangleContaining(original) == NULL) {
 
 		// Find the right triangle
 		t = (*primaryE).getT0();
@@ -1081,7 +1084,7 @@ TEdge *TranslationRetriangulation::bPSRC3SPOld(Vertex *primaryV, Vertex *seconda
 	v = (*t).getOtherVertex(primaryE);
 	SPEdge = (*t).getEdgeNotContaining(original);
 
-	// Note: In the first iteration SPEdge contains primaryV and thus, intersects primaryNewW
+	// Note: In the first iteration SPEdge contains primaryV and thus, intersects primaryNewE
 	// This intersection must be filtered
 	while((*SPEdge).contains(primaryV) || (!(*t).inside(newV) && checkIntersection(SPEdge, primaryNewE, true) == IntersectionType::NONE)){
 		(*p1).addEdge(SPEdge);
@@ -1141,7 +1144,7 @@ TEdge *TranslationRetriangulation::bPSRC3SPOld(Vertex *primaryV, Vertex *seconda
 			(*p2).addEdge(e2);
 			(*p2).addVertex(v);
 
-			while((*e).getID() != (*secondaryE).getID()){
+			while(*e != *secondaryE){
 				edgesToRemove.push_back(e);
 
 				e = (*t).getOtherEdgeContaining(original, e);

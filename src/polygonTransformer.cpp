@@ -21,7 +21,7 @@
 /*
 	The function transformPolygonByMoves() transforms a polygon by randomly selecting a
 	vertex and a direction to move and then randomly computing a distance to shift in
-	the chosen direction which with the constraint that the movement should be
+	the chosen direction with the constraint that the movement should be
 	applicable with reasonable effort. This is done iterations times.
 
 	@param 	T 			The triangulation the polygon lives in
@@ -404,9 +404,19 @@ void strategyWithHoles1(Triangulation * const T){
 	}
 
 	if(Settings::feedback != FeedbackMode::MUTE)
-		fprintf(stderr, "Inserted %d holes into the polygon\n", Settings::nrInnerPolygons);
+		fprintf(stderr, "Inserted %d holes into the polygon\n\n", Settings::nrInnerPolygons);
 
-	(*T).checkST();
+	performed = transformPolygonByMoves(T, Settings::initialTranslationNumber);
+
+	if(Settings::feedback != FeedbackMode::MUTE)
+		fprintf(stderr, "Transformed initial polygon with %d of %d translations in %f seconds\n\n",
+			performed, Settings::initialTranslationNumber, (*Settings::timer).elapsedTime());
+
+	if(!(*T).check()){
+		fprintf(stderr, "Triangulation error: something is wrong in the triangulation at the \
+			end of transforming the initial polygon\n");
+		exit(9);
+	}
 
 	performed = 1;
 

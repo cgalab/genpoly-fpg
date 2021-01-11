@@ -235,15 +235,16 @@ Triangle *TEdge::getTriangleNotContaining(Vertex const * const v) const{
 }
 
 /*
-	The function getTriangleContaining() returns t0 if it does contain the vertex v,
-	otherwise it returns t0 without checking whether it contains v.
+	The function getTriangleContaining() returns the triangle which contains v.
+	If none of the triangles contains v, then it returns NULL.
 		
 	@param	v 	The vertex which should be contained by the triangle
 	@return 	The triangle containing v
 */
 Triangle *TEdge::getTriangleContaining(Vertex const * const v) const{
-	if((*t0).contains(v)) return t0;
-	else return t1;
+	if(t0 != NULL && (*t0).contains(v)) return t0;
+	else if(t1 != NULL && (*t1).contains(v)) return t1;
+	else return NULL;
 }
 
 /*
