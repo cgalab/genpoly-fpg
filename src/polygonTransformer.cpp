@@ -403,10 +403,62 @@ void strategyWithHoles1(Triangulation * const T){
 		insertHole(T);
 	}
 
+	if(Settings::feedback != FeedbackMode::MUTE)
+		fprintf(stderr, "Inserted %d holes into the polygon\n", Settings::nrInnerPolygons);
+
+	(*T).checkST();
+
+	performed = 1;
+
+	// TODO:
+	// What the hell is this k doing?
+	// Ok....maybe it is an insurance in case no further insertions can be executed such that
+	// the program would run forever?!
+	k = 0;
+	while(performed != 0 && k < 20){
+		performed = 0;
+
+		// Double up the sizes of the inner polygons (if still possible)
+		for(i = 1; i <= Settings::nrInnerPolygons; i++){
+
+			actualN = (*T).getActualNumberOfVertices(i);
+
+			if(Settings::innerSizes[i - 1] >= (unsigned int)(2 * actualN))
+				nrInsertions = actualN;
+			else
+				nrInsertions = Settings::innerSizes[i - 1] - actualN;
+
+			growPolygonBy(T, i, nrInsertions);
+
+			performed = performed + nrInsertions;
+
+			if(nrInsertions != 0 && Settings::feedback != FeedbackMode::MUTE)
+				fprintf(stderr, "Grew the inner polygon with ID %d by %d vertices to %d vertices\n\n",
+					i, nrInsertions, nrInsertions + actualN);
+		}
+
+		// Double up the size of the outer polygon
+		actualN = (*T).getActualNumberOfVertices(0);
+
+		if(Settings::outerSize >= (unsigned int)(2 * actualN))
+			nrInsertions = actualN;
+		else
+			nrInsertions = Settings::outerSize - actualN;
+
+		growPolygonBy(T, 0, nrInsertions);
+
+		performed = performed + nrInsertions;
+
+		if(nrInsertions != 0 && Settings::feedback != FeedbackMode::MUTE)
+			fprintf(stderr, "Grew outer polygon by %d vertices to %d vertices\n\n", nrInsertions,
+				nrInsertions + actualN);
+
+		k++;
+	}
 
 	if(!(*T).check()){
 		fprintf(stderr, "Triangulation error: something is wrong in the triangulation after \
-			growing the initial polygon\n");
+			growing the polygon to its final size\n");
 		exit(9);
 	}
 

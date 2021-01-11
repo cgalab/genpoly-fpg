@@ -42,7 +42,7 @@ void insertHole(Triangulation *T){
 	delete t;
 
 	// Generate the new polygon in the triangulation
-	index = (*T).getActualNrInnerPolygons();
+	index = (*T).getActualNrInnerPolygons() + 1;
 	(*T).addInnerPolygon(new TPolygon(T, Settings::innerSizes[index]));
 
 	// Compute the mean value of the triangles' vertices

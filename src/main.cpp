@@ -63,8 +63,6 @@ int main(int argc, char *argv[]){
 
 	T = generateRegularPolygon();
 
-	(*T).checkST();
-
 	(*T).check();
 
 	if(Settings::feedback != FeedbackMode::MUTE)
