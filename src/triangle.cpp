@@ -560,7 +560,37 @@ TEdge *Triangle::getNotIntersectedEdge() const{
 	@return 	A weight for the triangle, implemented as its area
 */
 double Triangle::getWeight() const{
-	return fabs(signedArea());
+	int n = 1;
+	unsigned long long pid;
+	Vertex *v;
+
+	if((*e0).getEdgeType() == EdgeType::POLYGON){
+		v = (*e0).getV0();
+		pid = (*v).getPID();
+		if(pid == 0)
+			n++;
+
+	}
+
+	if((*e1).getEdgeType() == EdgeType::POLYGON){
+		v = (*e1).getV0();
+		pid = (*v).getPID();
+		if(pid == 0)
+			n++;
+
+	}
+
+	if((*e2).getEdgeType() == EdgeType::POLYGON){
+		v = (*e2).getV0();
+		pid = (*v).getPID();
+		if(pid == 0)
+			n++;
+
+	}
+
+	n = n * n;
+	
+	return (double)n;
 }
 
 

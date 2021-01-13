@@ -399,12 +399,35 @@ void strategyWithHoles1(Triangulation * const T){
 		exit(9);
 	}
 
+
+
+	// Grow the outer polygon to the size 10 * number of holes if possible
+	actualN = (*T).getActualNumberOfVertices(0);
+	k = Settings::nrInnerPolygons;
+
+	if(Settings::outerSize >= (unsigned int)(10 * k - actualN))
+		nrInsertions = actualN;
+	else
+		nrInsertions = Settings::outerSize - actualN;
+
+	growPolygonBy(T, 0, nrInsertions);
+
+	performed = performed + nrInsertions;
+
+	if(nrInsertions != 0 && Settings::feedback != FeedbackMode::MUTE)
+		fprintf(stderr, "Grew outer polygon by %d vertices to %d vertices\n\n", nrInsertions,
+			nrInsertions + actualN);
+
+
+
 	for(i = 0; i < Settings::nrInnerPolygons; i++){
 		insertHole(T);
 	}
 
 	if(Settings::feedback != FeedbackMode::MUTE)
 		fprintf(stderr, "Inserted %d holes into the polygon\n\n", Settings::nrInnerPolygons);
+
+
 
 	performed = transformPolygonByMoves(T, Settings::initialTranslationNumber);
 
@@ -417,6 +440,8 @@ void strategyWithHoles1(Triangulation * const T){
 			end of transforming the initial polygon\n");
 		exit(9);
 	}
+
+
 
 	performed = 1;
 
@@ -465,6 +490,15 @@ void strategyWithHoles1(Triangulation * const T){
 
 		k++;
 	}
+	(*T).writePolygonToDat("unshrinked.dat");
+
+
+	// Shrink the polygon around the holes
+	for(k = 0; k < 10; k++)
+		for(i = 0; i <= Settings::nrInnerPolygons; i++){
+			shrinkAroundHole(T, i);
+		}
+	(*T).writePolygonToDat("shrinked.dat");
 
 	if(!(*T).check()){
 		fprintf(stderr, "Triangulation error: something is wrong in the triangulation after \
@@ -473,4 +507,115 @@ void strategyWithHoles1(Triangulation * const T){
 	}
 
 	Settings::timing = (*Settings::timer).elapsedTime();
+}
+
+void shrinkAroundHole(Triangulation * const T, int holeIndex){
+	int n = (*T).getActualNumberOfVertices(holeIndex);
+	int i, performedTranslations;
+	Vertex *vHole, *vPolygon;
+	double dx, dy;
+	TEdge *e;
+	double angle, stddev, r;
+	Translation *trans;
+	bool orientationChange, simple;
+	Executed ex;
+	int div;
+
+	div = 0.01 * n;
+	if(div == 0)
+		div = 1;
+
+	for(i = 0; i < n; i++){
+		vHole = (*T).getVertex(i, holeIndex);
+		vPolygon = getAdjacentPolygonVertex(vHole);
+
+		if(vPolygon != NULL){
+
+			// Get direction from vPolygon to vHole
+			e = (*vHole).getEdgeTo(vPolygon);
+			angle = (*e).getAngle(vPolygon);
+
+			// Chose a direction normally distributed around angle
+			angle = (*Settings::generator).getDoubleNormal(angle, 1);
+			stddev = (*vPolygon).getDirectedEdgeLength(angle);
+
+			// Generate a random distance
+			r = (*Settings::generator).getDoubleNormal(stddev / 2, stddev / Settings::stddevDiv);
+
+			// Split the translation into x- and y-components
+			dx = r * cos(angle);
+			dy = r * sin(angle);
+
+			if(Settings::kinetic)
+				trans = new TranslationKinetic(T, vPolygon, dx, dy);
+			else
+				trans = new TranslationRetriangulation(T, vPolygon, dy, dx);
+
+			// Check for an orientation change
+			orientationChange = (*trans).checkOrientation();
+
+			if(!orientationChange){
+				// Check whether the translation leads to a simple polygon
+				simple = (*trans).checkSimplicityOfTranslation();
+
+				if(simple){
+					// Try to execute the translation
+					ex = (*trans).execute();
+
+					// Count executed translations
+					if(ex != Executed::REJECTED){
+						performedTranslations++;
+
+						switch(ex){
+							case Executed::FULL:
+								Statistics::translationsPerf++;
+								break;
+							case Executed::PARTIAL:
+								Statistics::translationsPerf++;
+								break;
+							case Executed::UNDONE:
+								Statistics::undone++;
+								performedTranslations--;
+								break;
+							case Executed::REJECTED:
+							default:
+								break;
+						}
+
+					}
+				}
+			}
+
+			delete trans;
+
+			if(i % div == 0 && Settings::feedback != FeedbackMode::MUTE)
+				fprintf(stderr, "%f%% of %d translations performed after %f seconds \n", (double) i / (double) n * 100, n, (*Settings::timer).elapsedTime());
+			
+
+		}
+	}
+}
+
+/*
+	The function getAdjacentPolygonVertex() returns any Vertex which is adjacent to v in the
+	triangulation and belongs to the polygon or another hole. If there is no such
+	vertex, it returns NULL.
+
+	@param 	v 	A vertex of a hole
+	@return 	Any adjacent vertex to v of the polygon (with polygon id equals 0)
+*/
+Vertex *getAdjacentPolygonVertex(Vertex const * const v){
+	std::list<TEdge*> edges = (*v).getEdges();
+	Vertex *otherV;
+	int pid, hid = (*v).getPID();
+
+	for(auto& i : edges){
+		otherV = (*i).getOtherVertex(v);
+
+		pid = (*otherV).getPID();
+		if(pid != hid && pid != -1)
+			return otherV;
+	}
+
+	return NULL;
 }

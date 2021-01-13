@@ -29,7 +29,7 @@ static struct option long_options[] = {
 		{ "arithmetic"          , no_argument,       0, 'a'},
 		{ "kinetic"             , no_argument,       0, 'k'},
 		{ "holesizes"           , required_argument, 0, 'H'},
-		{ "initialHoles"        , no_argument,       0, 'I'},
+		{ "initialholes"        , no_argument,       0, 'I'},
 		{ "outputformat"        , required_argument, 0, 'o'},
 		{ "statsfile"           , required_argument, 0, 'T'},
 		{ "disablelocalchecks"       , no_argument,  0, 'l'},
@@ -54,7 +54,7 @@ static struct option long_options[] = {
 	fprintf(f,"           --arithmetic               enable 'exact' arithmetic? (default off).\n");
 	fprintf(f,"           --kinetic                  enable execution using kinetic triangulation.\n");
 	fprintf(f,"           --holesizes <a,b,c,...>    define hole sizes.\n");
-	fprintf(f,"           --initalHoles              insert the holes directly in the start polygon instead of an insertion during growth.\n");
+	fprintf(f,"           --initialholes             insert the holes into the start polygon instead of an insertion during growth.\n");
 	fprintf(f,"           --outputformat <format>    dat, line, or graphml (default graphml).\n");
 	fprintf(f,"           --disablelocalchecks       (default on).\n");
 	fprintf(f,"           --enableglobalchecks       (default off).\n");

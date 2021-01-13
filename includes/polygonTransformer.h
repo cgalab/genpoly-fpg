@@ -109,3 +109,15 @@ void strategyNoHoles1(Triangulation * const T);
 void strategyWithHoles0(Triangulation * const T);
 
 void strategyWithHoles1(Triangulation * const T);
+
+void shrinkAroundHole(Triangulation * const T, int holeIndex);
+
+/*
+	The function getAdjacentPolygonVertex() returns any Vertex which is adjacent to v in the
+	triangulation and belongs to the polygon or another hole. If there is no such
+	vertex, it returns NULL.
+
+	@param 	v 	A vertex of a hole
+	@return 	Any adjacent vertex to v of the polygon (with polygon id equals 0)
+*/
+Vertex *getAdjacentPolygonVertex(Vertex const * const v);

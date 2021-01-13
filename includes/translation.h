@@ -162,6 +162,7 @@ public:
 		CONSTRUCTORS:
 		
 						Translation(Triangulation *Tr, int i, double dX, double dY)
+						Translation(Triangulation *Tr, Vertex *v, double dX, double dY)
 
 		OTHERS:
 
@@ -186,6 +187,18 @@ public:
 		@param 	dY 		The y-component of the translation vector
 	*/
 	Translation(Triangulation *Tr, int i, double dX, double dY);
+
+	/*
+		Constructor:
+		Generates a new Translation. Picks the moving vertex and its neighbors from the
+		triangulations vertices list and initialize the translation path.
+
+		@param 	Tr 		The triangulation the moving vertex lives in
+		@param 	v 		The vertex to move
+		@param 	dX 		The x-component of the translation vector
+		@param 	dY 		The y-component of the translation vector
+	*/
+	Translation(Triangulation *Tr, Vertex *v, double dX, double dY);
 
 
 	/*

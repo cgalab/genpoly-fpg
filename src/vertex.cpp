@@ -281,6 +281,13 @@ std::list<TEdge*> Vertex::getPolygonEdges() const{
 }
 
 /*
+	@return 	A list of all edges incident to the vertex
+*/
+std::list<TEdge*> Vertex::getEdges() const{
+	return edges;
+}
+
+/*
 	@return 	True if the vertex is part of the bounding box, otherwise false
 */
 bool Vertex::isRectangleVertex() const{
@@ -395,10 +402,14 @@ Triangle *Vertex::getTriangleWith(Vertex const * const v0, Vertex const * const 
 }
 
 /*
-	@return 	The id of the polygon the vertex belongs to
+	@return 	The id of the polygon the vertex belongs to, -1 if it does not
+				belong to a polygon.
 */
 unsigned int Vertex::getPID() const{
-	return (*P).getID();
+	if(!rectangleVertex)
+		return (*P).getID();
+	else
+		return -1;
 }
 
 /*

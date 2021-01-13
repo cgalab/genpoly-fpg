@@ -297,6 +297,35 @@ Translation::Translation(Triangulation *Tr, int i, double dX, double dY) :
 	Statistics::translationTries++;
 }
 
+/*
+	Constructor:
+	Generates a new Translation. Picks the moving vertex and its neighbors from the
+	triangulations vertices list and initialize the translation path.
+
+	@param 	Tr 		The triangulation the moving vertex lives in
+	@param 	v 		The vertex to move
+	@param 	dX 		The x-component of the translation vector
+	@param 	dY 		The y-component of the translation vector
+*/
+Translation::Translation(Triangulation *Tr, Vertex *v, double dX, double dY) :
+	T(Tr), index(-1), original(v), dx(dX), dy(dY), id(n){
+
+	prevV = (*original).getPrev();
+	nextV = (*original).getNext();
+
+	oldV = (*original).getTranslated(0, 0);
+	newV = (*original).getTranslated(dx, dy);
+
+	prevOldE = (*original).getToPrev();
+	nextOldE = (*original).getToNext();
+
+	prevNewE = new TEdge(prevV, newV);
+	nextNewE = new TEdge(newV, nextV);
+
+	n++;
+	Statistics::translationTries++;
+}
+
 
 /*
 	O ~ T ~ H ~ E ~ R ~ S

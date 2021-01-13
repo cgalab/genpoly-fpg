@@ -188,6 +188,7 @@ public:
 		TEdge* 					getEdgeTo(Vertex * const toV) const
 		std::vector<TEdge*> 	getSurroundingEdges() const
 		std::list<TEdge*> 		getPolygonEdges() const
+		std::list<TEdge*> 		getEdges() const
 		bool 					isRectangleVertex() const
 		double 					getMediumEdgeLength() const
 		double 					getDirectedEdgeLength(const double alpha) const
@@ -379,6 +380,11 @@ public:
 	std::list<TEdge*> getPolygonEdges() const;
 
 	/*
+		@return 	A list of all edges incident to the vertex
+	*/
+	std::list<TEdge*> getEdges() const;
+
+	/*
 		@return 	True if the vertex is part of the bounding box, otherwise false
 	*/
 	bool isRectangleVertex() const;
@@ -447,7 +453,8 @@ public:
 	Triangle *getTriangleWith(Vertex const * const v0, Vertex const * const v1) const;
 
 	/*
-		@return 	The id of the polygon the vertex belongs to
+		@return 	The id of the polygon the vertex belongs to, -1 if it does not
+					belong to a polygon.
 	*/
 	unsigned int getPID() const;
 
