@@ -98,19 +98,63 @@ void strategyNoHoles1(Triangulation * const T);
 
 /*
 	Strategy for the generation of polygons with holes:
+		- Assumption: Holes are already inserted into the start polygon
 		- Apply a bunch of translations to the initial polygon
 		- Until all polygons have reached the desired number of vertices:
 			- Double up the size of the inner polygons
 			- Double up the size of the outer polygon
-			- Apply a bunch of translations
 
 	@param 	T 	The triangulation the polygon lives in
 */
 void strategyWithHoles0(Triangulation * const T);
 
+
+/*
+	Strategy for the generation of polygons with holes:
+		- Assumption: Holes have not been inserted into the start polygon
+		- Apply a bunch of translations to the initial polygon
+		- Grow the outer polygon to the size 10 * the number of holes 
+			(if possible)
+		- Insert the holes
+		- Grow all holes to size 20
+		- Apply a bunch of translations
+		- Apply 10 inflate stages
+		- Apply 10 shrinking stages
+		- Apply a bunch of translations
+		- Until all polygons have reached the desired number of vertices:
+			- Double up the size of the inner polygons
+			- Double up the size of the outer polygon
+
+	@param 	T 	The triangulation the polygon lives in
+*/
 void strategyWithHoles1(Triangulation * const T);
 
-void shrinkAroundHole(Triangulation * const T, int holeIndex);
+
+/*
+	The function shrinkAroundHole() tries to shrink the polygon around the hole with
+	id holeIndex. For that it repeatedly selects a random vertex of the hole and searches
+	for an adjacent vertex of the polygon or another hole. Then it tries a translation
+	of the adjacent vertex in direction to the vertex of the hole. The number of times
+	this is done equals the number of vertices of the selected hole.
+
+	@param	T 			The triangulation the polygon lives in
+	@param 	holeIndex 	The id of the selected hole
+	@param 	offset 		A parameter for selecting an adjacent vertex
+*/
+void shrinkAroundHole(Triangulation * const T, int holeIndex, int index);
+
+
+/*
+	The function inflateHole() tries to inflate the hole with id holeIndex. For that
+	it repeatedly selects a random vertex of the hole and tries to execute a 
+	translation of it in direction to the its exterior. The number of times
+	this is done equals the number of vertices of the selected hole.
+
+	@param 	T 			The triangulation the polygon lives in
+	@param 	holeIndex 	The id of the selected hole
+*/
+void inflateHole(Triangulation * const T, int holeIndex);
+
 
 /*
 	The function getAdjacentPolygonVertex() returns any Vertex which is adjacent to v in the
@@ -120,4 +164,4 @@ void shrinkAroundHole(Triangulation * const T, int holeIndex);
 	@param 	v 	A vertex of a hole
 	@return 	Any adjacent vertex to v of the polygon (with polygon id equals 0)
 */
-Vertex *getAdjacentPolygonVertex(Vertex const * const v);
+Vertex *getAdjacentPolygonVertex(Vertex const * const v, int index);

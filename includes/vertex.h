@@ -201,6 +201,7 @@ public:
 		unsigned int 			getPID() const
 		int 					getActualPolygonSize() const
 		double					getInsideAngle() const;
+		double 					getNormalDirectionOutside() const;
 
 		REMOVER:
 
@@ -471,6 +472,15 @@ public:
 		@return 	The interior angle of the polygon at this vertex
 	*/
 	double getInsideAngle() const;
+
+	/*
+		The function getNormalDirectionOutside() computes the direction pointing
+		to the exterior of the polygon which is normal to the boundary of the
+		polygon.
+
+		@return 	The angle of the normal direction between -pi and pi
+	*/
+	double getNormalDirectionOutside() const;
 
 
 	/*

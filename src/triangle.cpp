@@ -557,7 +557,8 @@ TEdge *Triangle::getNotIntersectedEdge() const{
 }
 
 /*
-	@return 	A weight for the triangle, implemented as its area
+	@return 	A weight for the triangle, implemented as (1 + k) ^ 2
+				where k is the number of its polygon edges 
 */
 double Triangle::getWeight() const{
 	int n = 1;

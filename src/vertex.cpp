@@ -467,6 +467,44 @@ double Vertex::getInsideAngle() const{
 	return angle;
 }
 
+/*
+	The function getNormalDirectionOutside() computes the direction pointing
+	to the exterior of the polygon which is normal to the boundary of the
+	polygon.
+
+	@return 	The angle of the normal direction between -pi and pi
+*/
+double Vertex::getNormalDirectionOutside() const{
+	double insideAngle = getInsideAngle();
+	double refAngle1 = (*toPrev).getAngle(this);
+	double refAngle2 = (*toNext).getAngle(this);
+	double normalAngle;
+
+	// Turn the refAngles around the origin such that refAngle1 is 0
+	refAngle2 = refAngle2 - refAngle1;
+	refAngle1 = 0;
+
+	// Normalize to the range from -pi to pi
+	if(refAngle2 > M_PI)
+		refAngle2 = refAngle2 - 2 * M_PI;
+	else if(refAngle2 < -M_PI)
+		refAngle2 = refAngle2 + 2 * M_PI;
+
+	// Selected the right external direction
+	if(insideAngle < M_PI)
+		normalAngle = refAngle2 / 2 + M_PI;
+	else
+		normalAngle = refAngle2 / 2;
+
+	// Normalize to the range from -pi to pi
+	if(normalAngle > M_PI)
+		normalAngle = normalAngle - 2 * M_PI;
+	else if(normalAngle < -M_PI)
+		normalAngle = normalAngle + 2 * M_PI;
+
+	return normalAngle;
+}
+
 
 /*
 	R ~ E ~ M ~ O ~ V ~ E ~ R
