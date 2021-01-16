@@ -66,7 +66,7 @@ int main(int argc, char *argv[]){
 	(*T).check();
 
 	if(Settings::feedback != FeedbackMode::MUTE)
-		fprintf(stderr, "Initial polygon with %d vertices in regular shape computed after %f seconds\n",
+		fprintf(stderr, "Initial polygon with %d vertices in regular shape computed after %f seconds\n\n",
 			Settings::initialSize, (*Settings::timer).elapsedTime());
 
 	if(Settings::nrInnerPolygons == 0)
