@@ -24,4 +24,13 @@
 #include "tpolygon.h"
 #include "settings.h"
 
+/*
+	The function insertHole() inserts one hole into an inner triangle of the
+	polygon. The inner triangle is selected randomly based on triangle specific
+	weights. The inserted hole has the same shape as the triangle into which
+	it is inserted, but is shrunk by 50% in each direction. The area in the
+	triangle, but external to the hole gets retriangulated.
+
+	@param 	T 	The triangulation the polygon lives in
+*/
 void insertHole(Triangulation *T);
