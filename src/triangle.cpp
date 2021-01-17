@@ -334,9 +334,9 @@ TEdge *Triangle::getEdgeContaining(Vertex const * const v) const{
 				is wrong)
 */
 TEdge *Triangle::getOtherEdgeContaining(Vertex const * const v, TEdge const * const e) const{
-	if((*e).getID() != (*e0).getID() && (*e0).contains(v)) return e0;
-	if((*e).getID() != (*e1).getID() && (*e1).contains(v)) return e1;
-	if((*e).getID() != (*e2).getID() && (*e2).contains(v)) return e2;
+	if(*e != *e0 && (*e0).contains(v)) return e0;
+	if(*e != *e1 && (*e1).contains(v)) return e1;
+	if(*e != *e2 && (*e2).contains(v)) return e2;
 
 	(*e0).print();
 	(*e1).print();
@@ -370,15 +370,15 @@ std::vector<TEdge*> Triangle::getOtherEdges(TEdge * const e) const{
 	std::vector<TEdge*> out(2);
 	int index = 0;
 
-	if((*e0).getID() != (*e).getID()){
+	if(*e != *e0){
 		out[index] = e0;
 		index++;
 	}
-	if((*e1).getID() != (*e).getID()){
+	if(*e != *e1){
 		out[index] = e1;
 		index++;
 	}
-	if((*e2).getID() != (*e).getID()){
+	if(*e != *e2){
 		out[index] = e2;
 		index++;
 	}

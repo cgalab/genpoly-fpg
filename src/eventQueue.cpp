@@ -59,7 +59,7 @@ void EventQueue::stabilize(struct Event *e0, struct Event *e1){
 
 		// Triangles also don't share the second edge => triangles aren't adjacent
 		// => the exact order doesn't matter
-		if((*t).getID() != (*t1).getID())
+		if(*t != *t1)
 			return;
 	}
 

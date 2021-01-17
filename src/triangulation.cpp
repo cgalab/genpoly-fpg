@@ -434,7 +434,7 @@ void Triangulation::writePolygonToDat(const char *filename) const{
 	(*start).writeToDat(f);
 
 	other = (*start).getNext();
-	while((*start).getID() != (*other).getID()){
+	while(*start != *other){
 		(*other).writeToDat(f);
 
 		other = (*other).getNext();
@@ -449,7 +449,7 @@ void Triangulation::writePolygonToDat(const char *filename) const{
 		(*start).writeToDat(f);
 
 		other = (*start).getNext();
-		while((*start).getID() != (*other).getID()){
+		while(*start != *other){
 			(*other).writeToDat(f);
 
 			other = (*other).getNext();

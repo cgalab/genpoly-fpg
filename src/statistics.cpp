@@ -138,7 +138,7 @@ void Statistics::calculateMaxTwist(Triangulation const * const T){
 	max = angle;
 
 	v = (*start).getNext();
-	while((*v).getID() != (*start).getID()){
+	while(*v != *start){
 		angle = (*v).getInsideAngle() / M_PI * 180;
 		angle = angle - average;
 
@@ -188,7 +188,7 @@ void Statistics::calculateDirectionChanges(Triangulation const * const T){
 				n++;
 			toRight = false;
 		}
-	}while((*v).getID() != (*start).getID());
+	}while(*v != *start);
 
 	directionChanges = n;
 }
@@ -222,7 +222,7 @@ void Statistics::calculateTwistNumber(Triangulation const * const T){
 				count++;
 				t = t - M_PI;
 			}
-		}while((*v).getID() != (*start).getID());
+		}while(*v != *start);
 
 		twistNumber = (((count - 1) / 2) + 1) * 2;
 	}

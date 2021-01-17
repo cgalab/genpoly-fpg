@@ -167,7 +167,7 @@ void TranslationRetriangulation::bPSCOppositeDirection(){
 	e = prevOldE;
 	oldEdge = NULL;
 	edgeToRemove = NULL;
-	while((*e).getID() != (*nextOldE).getID()){
+	while(*e != *nextOldE){
 		(*p0).addEdge((*t).getEdgeNotContaining(original));
 
 		// Go further to the next triangle
@@ -263,7 +263,7 @@ void TranslationRetriangulation::bPSRC1OppositeDirection(){
 	e = prevOldE;
 	oldEdge = NULL;
 	edgeToRemove = NULL;
-	while((*e).getID() != (*nextOldE).getID()){
+	while(*e != *nextOldE){
 		(*p0).addEdge((*t).getEdgeNotContaining(original));
 
 		// Go further to the next triangle
@@ -345,7 +345,7 @@ void TranslationRetriangulation::bPSRC2OppositeDirection(){
 	e = prevOldE;
 	oldEdge = NULL;
 	edgeToRemove = NULL;
-	while((*e).getID() != (*nextOldE).getID()){
+	while(*e != *nextOldE){
 		(*p0).addEdge((*t).getEdgeNotContaining(original));
 
 		// Go further to the next triangle
@@ -435,7 +435,7 @@ void TranslationRetriangulation::bPSRC3OppositeDirection(Vertex *primaryV, Verte
 		(*p0).addVertex(primaryV);
 
 		e = (*t).getOtherEdgeContaining(original, primaryE);
-		while((*e).getID() != (*secondaryE).getID()){
+		while(*e != *secondaryE){
 			edgesToRemove.push_back(e);
 
 			SPEdge = (*t).getEdgeNotContaining(original);
@@ -974,7 +974,7 @@ void TranslationRetriangulation::bPSRC1TranslationDirection(){
 
 	e = (*t).getOtherEdgeContaining(original, prevOldE);
 	i = checkIntersection(e, prevNewE, true);
-	while(i == IntersectionType::EDGE && (*e).getID() != (*nextOldE).getID()){
+	while(i == IntersectionType::EDGE && *e != *nextOldE){
 		(*p1).addEdge((*t).getEdgeNotContaining(original));
 		(*p1).addVertex((*e).getOtherVertex(original));
 		edgesToRemove.push_back(e);
@@ -1016,7 +1016,7 @@ void TranslationRetriangulation::bPSRC1TranslationDirection(){
 		t = (*e).getOtherTriangle(t);
 		edgesToRemove.push_back(e);
 		e = (*t).getOtherEdgeContaining(original, e);
-		while((*e).getID() != (*nextOldE).getID()){
+		while(*e != *nextOldE){
 			(*p2).addEdge((*t).getEdgeNotContaining(original));
 			(*p2).addVertex((*e).getOtherVertex(original));
 			edgesToRemove.push_back(e);

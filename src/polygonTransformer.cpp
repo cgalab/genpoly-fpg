@@ -253,7 +253,7 @@ void strategyNoHoles0(Triangulation * const T){
 	if(Settings::additionalTrans > 0){
 		if(Settings::feedback != FeedbackMode::MUTE)
 			fprintf(stderr, "Transform the polygon with %d translations:\n",
-				Settings::initialTranslationNumber);
+				Settings::additionalTrans);
 
 		performed = transformPolygonByMoves(T, Settings::additionalTrans);
 

@@ -792,7 +792,7 @@ bool Vertex::checkSurroundingPolygon(){
 	Q.push(first);
 
 	t = (*e).getOtherTriangle(t);
-	while((*t).getID() != (*t0).getID()){
+	while(*t != *t0){
 		e = (*t).getOtherEdgeContaining(this, e);
 		first = (*e).getOtherVertex(this);
 		Q.push(first);
