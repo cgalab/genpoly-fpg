@@ -509,6 +509,9 @@ bool Triangulation::check() const{
 	if(!Settings::globalChecking)
 		return true;
 
+	if(Settings::feedback != FeedbackMode::MUTE)
+		fprintf(stderr, "Global checking of the triangulation...");
+
 	for(auto const& i : edges){
 		e = i.second;
 		type = (*e).getEdgeType();
@@ -551,6 +554,9 @@ bool Triangulation::check() const{
 	// Check the simplicity of the polygon
 	if(Settings::simplicityCheck)
 		checkSimplicity();
+
+	if(Settings::feedback != FeedbackMode::MUTE)
+		fprintf(stderr, "successful\n\n");
 
 	return ok;
 }
