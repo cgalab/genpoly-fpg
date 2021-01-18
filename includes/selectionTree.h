@@ -67,6 +67,13 @@ private:
 	*/
 	bool weighted;
 
+	/*
+		Declare the entry class as friend such that it can add nodes
+		to the queue of empty nodes.
+	*/
+	friend class STEntry<T>;
+
+
 public:
 
 	/*
@@ -113,13 +120,6 @@ public:
 				(*entry).addChild(new STEntry<T>(e, entry, this));
 			}
 		}
-	}
-
-	/*
-		Adds a node which element has been removed to the queue for empty nodes.
-	*/
-	void addNodeToQueue(STEntry<T> *node){
-		emptyNodes.push(node);
 	}
 
 
@@ -184,6 +184,19 @@ public:
 		fprintf(stderr, "Total number of elements: %d\n", (*root).getNrElementsTotal());
 
 		(*root).check();
+	}
+
+
+	/*
+		D ~ E ~ S ~ T ~ R ~ U ~ C ~ T ~ O ~ R ~ S
+	*/
+
+	/*
+		Destructor:
+		Removes all entries.
+	*/
+	~SelectionTree(){		
+		delete root;		
 	}
 };
 

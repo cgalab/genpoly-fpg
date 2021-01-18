@@ -148,11 +148,13 @@ void TPolygon::writeToLine(std::ostream& os) const {
 	os << num_v << std::endl;
 	const Vertex * const start = getVertex(0);
 	const Vertex * other = start;
+
 	do {
 		os << other->getX() << " " << other->getY() << std::endl;
 		++cnt;
 		other = other->getNext();
 	} while (other != start);
+
 	os << other->getX() << " " << other->getY() << std::endl;
 	++cnt;
 	assert(cnt == num_v);

@@ -504,7 +504,8 @@ TEdge::~TEdge(){
 	if(entry != NULL)
 		(*entry).removeObject();
 
-	if(T != NULL) (*T).removeEdge(this);
+	if(T != NULL)
+		(*T).removeEdge(this);
 
 	if(t0 != NULL) delete t0;
 	if(t1 != NULL) delete t1;

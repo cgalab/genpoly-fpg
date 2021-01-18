@@ -155,7 +155,11 @@ public:
 		Assign a new object to the entry.
 	*/
 	void setObject(T e){
-		//TODO: some checking whether the entry really is empty at the moment
+		// Check whether the entry is really empty at the moment
+		if(element != NULL){
+			fprintf(stderr, "Selection tree error: assigning a new object to a non-empty entry!\n");
+			exit(17);
+		}
 
 		element = e;
 		(*e).setSTEntry(this);
@@ -180,7 +184,21 @@ public:
 		if(parent != NULL)
 			(*parent).update();
 
-		(*tree).addNodeToQueue(this);
+		(*tree).emptyNodes.push(this);
+	}
+
+	/*
+		Removes a child entry from an entry and calls update().
+
+		@param 	child 	The child entry to remove
+	*/
+	void removeChild(STEntry<T> child){
+		if(leftChild == child)
+			leftChild = NULL;
+		if(rightChild == child)
+			rightChild = NULL;
+
+		update();
 	}
 
 
@@ -294,6 +312,31 @@ public:
 
 		if(rightChild != NULL)
 			(*rightChild).check();
+	}
+
+
+	/*
+		D ~ E ~ S ~ T ~ R ~ U ~ C ~ T ~ O ~ R ~ S
+	*/
+
+	/*
+		Destructor:
+		Deregisters the entry at its object and its parent entry and also
+		removes all child entries.
+	*/
+	~STEntry(){
+		
+		if(leftChild != NULL)
+			delete leftChild;
+
+		if(rightChild != NULL)
+			delete rightChild;
+
+		if(element != NULL)
+			(*element).setSTEntry(NULL);
+
+		if(parent != NULL)
+			(*parent).removeChild(this);
 	}
 };
 
