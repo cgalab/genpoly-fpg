@@ -27,25 +27,26 @@ For the `RELEASE` version use `cmake -D CMAKE_BUILD_TYPE=Release ..`
 
 # Usage
 
-	./fpg [--help] [--verbose] [--mute] [--nrofholes <num>] [--startsize <num>] [--seed <num>] [--arithmetic] [--kinetic] [--holesizes <num,num,...>] [--outputformat <format>] [--statsfile <filename>] [--disablelocalchecks] [--enableglobalchecks] [--enablestats] [--disableweightedselection] [--printtriang <filename>] <POLYGON_SIZE> [OUTPUT_FILE]
+	./fpg [--help] [--verbose] [--mute] [--seed <num>] [--arithmetic] [--kinetic] [--disableweightedselection] [--disablelocalchecks] [--enableglobalchecks] [--startsize <num>] [--initialholes] [--nrofholes <num>] [--holesizes <num,num,...>] [--outputformat <format>] [--enablestats][--statsfile <filename>] [--printtriang <filename>] <POLYGON_SIZE> [OUTPUT_FILE]
 
 | options       | shortform | description   |
 | -------------:|----------:|:------------- |
 |  --help       | -h        | print help    |
 |  --verbose    | -v        | verbose mode, shows additional information on error correction |
 |  --mute       | -m        | suppress all command line outputs                              |
-|  --nrofholes  | -n        | state the number of holes (default: 0)                         |
-|  --startsize  | -i        | give the number of vertices of the start polygon (default: 10) |
 |  --seed       | -s        | set the seed for the random generator (default: random)        |
 |  --arithmetic | -a        | enable Shewchuk's 'exact' arithmetic                           |
 |  --kinetic    | -k        | uses the kinetic triangulation approach instead of replacing the obsolete triangulation parts  |
+|  --disableweightedselection | -w | disable the weighted edge selection for inserting new vertices |
+|  --disablelocalchecks  | -l    | disable the local checking and error correction after each translation       |
+|  --enableglobalchecks  | -g    | enable the global checking after each stage               |
+|  --startsize  | -i        | give the number of vertices of the start polygon (default: 10) |
+|  --initialholes  | -I     | insert holes into the start polygon instead of during the growth   |
+|  --nrofholes  | -n        | state the number of holes (default: 0)                         |
 |  --holesizes  | -H        | give a list for the number of vertices of the holes            |
 |  --outputformat  | -o     | select between dat, line or graphml (default: graphml)         |
 |  --enablestats   | -t     | enable the computation of statistics, results are printed      |
 |  --statsfile       | -T   | give a file to print in statistics in XML format               |
-|  --disablelocalchecks  | -l    | disable the local checking and error correction after each translation       |
-|  --enableglobalchecks  | -g    | enable the global checking after each stage               |
-|  --disableweightedselection | -w | disable the weighted edge selection for inserting new vertices |
 |  --printtriang  | -p      | print the whole triangulation to a file in graphml format      |
 
 # License
