@@ -162,12 +162,12 @@ void Insertion::translate() const{
 	double alpha, stddev, r, dx, dy;
 	Translation *trans;
 	unsigned int count = 0;
-	Executed ex = Executed::FULL;
+	Executed ex = Executed::REJECTED;
 
 	// The new vertex is the last one in the vertices vector of the triangulation
 	index = (*T).getActualNumberOfVertices() - 1;
 
-	while(!simple && count < Settings::insertionTries){
+	while(!(ex == Executed::FULL || ex == Executed::PARTIAL) && count < Settings::insertionTries){
 		// Chose a random direction for the movement
 		alpha = (*Settings::generator).getDoubleUniform(- M_PI, M_PI);
 		// Compute suitable distribution parameters
