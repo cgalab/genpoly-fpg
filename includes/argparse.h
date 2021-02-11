@@ -1,5 +1,5 @@
 /* 
- * Copyright 2021 Philipp Mayer - philmay1992@gmail.com
+ * Copyright 2021 Philipp Mayer - pmayer@cs.sbg.ac.at
  *                Günther Eder  - geder@cs.sbg.ac.at
  *
  * This program is free software: you can redistribute it and/or modify
